@@ -19,6 +19,31 @@ function inBounds(row, col) {
   return row >= 0 && row < BOARD_SIZE && col >= 0 && col < BOARD_SIZE;
 }
 
+// Does placing `player` at `idx` create a four-in-a-row with at least one
+// open end (a "live four") — i.e. a near-certain win next move, the single
+// most urgent pattern in Gomoku short of an outright five? Used to force
+// these cells into the AI's candidate list regardless of density ranking —
+// without this, a three being extended into an open four can have *lower*
+// density than crowded-but-irrelevant cells nearby and get pruned away by
+// MAX_CANDIDATES, so the AI neither finishes its own fours nor blocks the
+// opponent's (confirmed by a real missed block during live testing).
+function makesFour(cells, idx, player) {
+  const { row, col } = toCoords(idx);
+  for (const { dr, dc } of DIRS4) {
+    let length = 1;
+    let r = row + dr;
+    let c = col + dc;
+    while (inBounds(r, c) && cells[toIndex(r, c)] === player) { length++; r += dr; c += dc; }
+    const openEnd = inBounds(r, c) && cells[toIndex(r, c)] === null;
+    let r2 = row - dr;
+    let c2 = col - dc;
+    while (inBounds(r2, c2) && cells[toIndex(r2, c2)] === player) { length++; r2 -= dr; c2 -= dc; }
+    const openStart = inBounds(r2, c2) && cells[toIndex(r2, c2)] === null;
+    if (length >= 4 && (openStart || openEnd)) return true;
+  }
+  return false;
+}
+
 // Full-width minimax over all 225 points is far too slow — restrict the
 // search to empty, legal points near existing stones, ranked by how many
 // stones surround them (a cheap proxy for "this is where the action is")
@@ -70,8 +95,10 @@ function candidateMoves(state, player) {
     const trial = state.cells.slice();
     trial[idx] = player;
     if (analyzeMove(trial, idx, player, state.ruleset).win) { critical.push(idx); continue; }
+    if (makesFour(trial, idx, player)) { critical.push(idx); continue; }
     trial[idx] = opp;
-    if (analyzeMove(trial, idx, opp, state.ruleset).win) critical.push(idx);
+    if (analyzeMove(trial, idx, opp, state.ruleset).win) { critical.push(idx); continue; }
+    if (makesFour(trial, idx, opp)) critical.push(idx);
   }
 
   const ranked = [...density.entries()].sort((a, b) => b[1] - a[1]).map(([idx]) => idx);

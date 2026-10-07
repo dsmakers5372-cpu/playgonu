@@ -24,12 +24,12 @@ const NAMES_EN = [
   'SilentSail', 'MossyOak42', 'TwilightFox', 'CedarRidge', 'PineHollow', 'SaltMarsh', 'GentleGale', 'DuskRunner', 'FeatherFall', 'SlowCurrent',
 ];
 
-// Roughly 1:2 hard:master — user feedback after real play: normal/hard let
-// an opponent miss blocking an open four-in-a-row, which doesn't read as "a
-// real person," it reads as broken. Skews hard toward the strongest tier
-// available while keeping a minority at merely "hard" for some variety.
-function difficultyFor(index) {
-  return index % 3 === 0 ? 'hard' : 'master';
+// All master. The missed-block bug (candidate pruning dropping the one
+// cell that mattered) was the real cause of weak-looking play, not the
+// difficulty tier itself — now that it's fixed, there's no reason to seat
+// anyone below the strongest available tier.
+function difficultyFor() {
+  return 'master';
 }
 
 export const VIRTUAL_PLAYERS = [...NAMES_KO, ...NAMES_EN].map((name, i) => ({

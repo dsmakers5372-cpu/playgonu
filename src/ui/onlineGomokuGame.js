@@ -115,10 +115,13 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     resultPlayAgain.addEventListener('click', () => {
       const url = new URL(location.href);
       url.searchParams.delete('room');
+      // A bot match can jump straight back into a fresh bot challenge
+      // instead of dropping the player back at the lobby screen — there's
+      // no real opponent to lose by skipping it.
+      if (wasVsBot) url.searchParams.set('autoBot', '1');
       // Assigning an unchanged href is a no-op in some browsers (no history
-      // entry changes, so no reload happens) — most "Play again" clicks hit
-      // exactly this case, since a bot challenge never had a ?room= to begin
-      // with. Force a real reload whenever the URL wouldn't actually change.
+      // entry changes, so no reload happens) — force a real reload whenever
+      // the URL wouldn't actually change.
       if (url.href === location.href) location.reload();
       else location.href = url.href;
     });
@@ -132,6 +135,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   let mounted = false;
   let panel = null;
   let resultRecorded = false;
+  let wasVsBot = false;
   let pulseIndex = null; // the last-placed stone, briefly highlighted
   let pulseTimer = null;
 
@@ -249,6 +253,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       role = info.role;
       mounted = true;
       resultRecorded = false;
+      wasVsBot = !!info.vsBot;
       resultBanner?.classList.remove('is-visible');
       lobbyRoot.style.display = 'none';
       gameRoot.style.display = 'block';

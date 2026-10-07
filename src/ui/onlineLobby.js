@@ -139,12 +139,13 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     let myColor = null;
     let myRole = null;
     let opponentName = null;
+    let vsBot = false;
 
     function tryMatch(roomInfo) {
       if (matched) return;
       if (roomInfo.playerCount === 2 || myRole === 'spectator') {
         matched = true;
-        onMatched({ roomClient: client, color: myColor, role: myRole, name, opponentName, gameType, ruleset: roomInfo.ruleset });
+        onMatched({ roomClient: client, color: myColor, role: myRole, name, opponentName, vsBot, gameType, ruleset: roomInfo.ruleset });
       }
     }
 
@@ -166,6 +167,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
           // hostName is whoever created the room, i.e. our opponent.
           if (msg.opponentName) opponentName = msg.opponentName;
           else if (msg.color === 'B') opponentName = msg.room.hostName;
+          vsBot = !!msg.vsBot;
           if (msg.role === 'player' && msg.room.playerCount < 2) {
             statusArea.innerHTML = '';
             const waitingMsg = document.createElement('p');
@@ -245,6 +247,27 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     joinHint.style.width = '100%';
     joinHint.addEventListener('click', () => startAsGuest(incomingRoom));
     wrap.insertBefore(joinHint, statusArea);
+  } else if (new URLSearchParams(location.search).get('autoBot') === '1') {
+    // "Play again" after a bot match lands here instead of the create/browse
+    // UI — jump straight back into a fresh bot challenge (same name, a
+    // randomly picked virtual opponent) rather than making the player
+    // re-click through the lobby for a match that has no real human to wait
+    // on anyway.
+    const name = requireName();
+    if (name) {
+      fetch(`/api/lobby?game=${encodeURIComponent(gameType)}`)
+        .then((res) => res.json())
+        .then((rooms) => {
+          const virtual = rooms.filter((r) => r.isVirtual);
+          if (virtual.length === 0) { refreshLobby(); pollTimer = setInterval(refreshLobby, 3000); return; }
+          const pick = virtual[Math.floor(Math.random() * virtual.length)];
+          startAsGuest(`${pick.roomId}-${generateRoomId()}`);
+        })
+        .catch(() => { refreshLobby(); pollTimer = setInterval(refreshLobby, 3000); });
+    } else {
+      refreshLobby();
+      pollTimer = setInterval(refreshLobby, 3000);
+    }
   } else {
     refreshLobby();
     pollTimer = setInterval(refreshLobby, 3000);

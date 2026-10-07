@@ -132,7 +132,7 @@ export class GameRoom {
     // the client could rely on instead — it'd be read after this 'joined'
     // message already triggered the match).
     const other = this.room.players.find((p) => p.id !== connId);
-    this.send(ws, { type: 'joined', role: 'player', color, room: this.publicRoomView(), engineState: this.room.engineState, opponentName: other ? other.name : null });
+    this.send(ws, { type: 'joined', role: 'player', color, room: this.publicRoomView(), engineState: this.room.engineState, opponentName: other ? other.name : null, vsBot: !!this.room.vsBot });
     if (this.room.vsBot) {
       // The human is the only real socket in the room — send them the
       // "opponent joined" notice directly instead of broadcast-excluding
