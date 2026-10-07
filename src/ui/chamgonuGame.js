@@ -36,6 +36,13 @@ const POINT_PIXELS = [
   { x: 153, y: 267 }, { x: 153, y: 210 },
 ];
 
+function animate(node, attrs) {
+  const anim = document.createElementNS(SVG_NS, 'animate');
+  for (const [key, value] of Object.entries(attrs)) anim.setAttribute(key, value);
+  node.appendChild(anim);
+  return node;
+}
+
 function statusText(lang, game) {
   const name = PLAYER_NAME[lang][game.turn];
   if (game.winner) {
@@ -70,12 +77,14 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
   const opponentModeSelect = root.querySelector('[data-opponent-mode]');
   const aiDifficultySelect = root.querySelector('[data-ai-difficulty]');
   const sideSelect = root.querySelector('[data-side-select]');
-  const phaseNote = root.querySelector('[data-phase-note]');
+  const phaseBanner = root.querySelector('[data-phase-banner]');
+  const phaseBannerOk = root.querySelector('[data-phase-banner-ok]');
 
   let game = createInitialState();
   let selected = null;
   let history = [];
   let captureEffectIndex = null; // point a piece was just swept off of, briefly highlighted
+  let captureEffectPlayer = null; // whose piece it was, so the fade-out ghost is the right color
   let captureEffectTimer = null;
   let aiEnabled = opponentModeSelect.value === 'ai';
   let aiPlayer = sideSelect && sideSelect.value === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
@@ -99,37 +108,44 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
   }
 
   function checkPhaseTransition(prevPhase) {
-    if (prevPhase === 'placing' && game.phase === 'moving') showPhaseNote();
+    if (prevPhase === 'placing' && game.phase === 'moving') showPhaseBanner();
   }
 
-  function showPhaseNote() {
-    if (!phaseNote) return;
-    phaseNote.textContent = lang === 'ko'
-      ? '모든 말을 다 놓았습니다 — 이제부터는 말을 선으로 한 칸씩 옮기세요!'
-      : 'All pieces are placed — now slide one piece per turn to an adjacent point!';
-    phaseNote.style.opacity = '1';
-    clearTimeout(showPhaseNote._t);
-    showPhaseNote._t = setTimeout(() => { phaseNote.style.opacity = '0'; }, 4000);
+  function showPhaseBanner() {
+    if (!phaseBanner) return;
+    phaseBanner.classList.add('is-visible');
   }
 
-  function flashCapture(index) {
+  function hidePhaseBanner() {
+    if (!phaseBanner) return;
+    phaseBanner.classList.remove('is-visible');
+  }
+
+  // Slow and deliberate on purpose — the capture itself matters, so it
+  // shouldn't flash by in under a second.
+  const CAPTURE_EFFECT_MS = 1300;
+
+  function flashCapture(index, player) {
     captureEffectIndex = index;
+    captureEffectPlayer = player;
     playCaptureSound();
     clearTimeout(captureEffectTimer);
     captureEffectTimer = setTimeout(() => {
       captureEffectIndex = null;
+      captureEffectPlayer = null;
       renderBoard();
-    }, 700);
+    }, CAPTURE_EFFECT_MS);
   }
 
   function applyAction(from, to) {
     const prevPhase = game.phase;
     const wasCapture = game.pendingCapture; // `to` is the point being captured, not placed/moved
+    const capturedPlayer = wasCapture ? game.pieces[to] : null;
     history.push(game);
     game = move(game, from, to);
     stats.recordMove();
     selected = null;
-    if (wasCapture) flashCapture(to);
+    if (wasCapture) flashCapture(to, capturedPlayer);
     renderBoard();
     renderToolbar();
     checkPhaseTransition(prevPhase);
@@ -144,10 +160,11 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       const wasCapture = game.pendingCapture;
       const aiMove = chooseAIMove(game, { difficulty: aiDifficultySelect.value });
       if (!aiMove) return;
+      const capturedPlayer = wasCapture ? game.pieces[aiMove.to] : null;
       history.push(game);
       game = move(game, aiMove.from, aiMove.to);
       stats.recordMove();
-      if (wasCapture) flashCapture(aiMove.to);
+      if (wasCapture) flashCapture(aiMove.to, capturedPlayer);
       renderBoard();
       renderToolbar();
       checkPhaseTransition(prevPhase);
@@ -184,9 +201,10 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       const pa = POINT_PIXELS[ma];
       const pb = POINT_PIXELS[mb];
       const pc = POINT_PIXELS[mc];
-      const millAttrs = { stroke: '#D9A441', 'stroke-width': '6', 'stroke-linecap': 'round', opacity: '.85' };
-      svg.appendChild(el('line', { x1: pa.x, y1: pa.y, x2: pb.x, y2: pb.y, ...millAttrs }));
-      svg.appendChild(el('line', { x1: pb.x, y1: pb.y, x2: pc.x, y2: pc.y, ...millAttrs }));
+      const millAttrs = { stroke: '#D9A441', 'stroke-width': '6', 'stroke-linecap': 'round', opacity: '0' };
+      const fadeIn = { attributeName: 'opacity', from: '0', to: '.85', dur: '.6s', fill: 'freeze' };
+      svg.appendChild(animate(el('line', { x1: pa.x, y1: pa.y, x2: pb.x, y2: pb.y, ...millAttrs }), fadeIn));
+      svg.appendChild(animate(el('line', { x1: pb.x, y1: pb.y, x2: pc.x, y2: pc.y, ...millAttrs }), fadeIn));
     }
 
     // Points a capture already used up are marked with a "peg" (per the
@@ -244,26 +262,20 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       svg.appendChild(el('circle', { cx: x, cy: y, r: 17, fill: 'none', stroke: '#AC3B2A', 'stroke-width': '3' }));
     }
 
-    // A piece that was just captured gets a quick expanding-ring "swish" on
-    // the now-empty point it was swept off of, so it's obvious which one
-    // disappeared instead of the board just silently having one fewer piece.
+    // A piece that was just captured fades out in place (rather than just
+    // vanishing the instant the state updates) while an expanding ring
+    // sweeps outward from it — slow and deliberate on purpose, so a capture
+    // reads as an event worth noticing, not a blink-and-you-miss-it flicker.
     if (captureEffectIndex !== null) {
       const { x, y } = POINT_PIXELS[captureEffectIndex];
+      if (captureEffectPlayer) {
+        const colors = PLAYER_COLOR[captureEffectPlayer];
+        const ghost = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
+        svg.appendChild(animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.1s', fill: 'freeze' }));
+      }
       const ring = el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: '#AC3B2A', 'stroke-width': '3' });
-      const growR = document.createElementNS(SVG_NS, 'animate');
-      growR.setAttribute('attributeName', 'r');
-      growR.setAttribute('from', '10');
-      growR.setAttribute('to', '26');
-      growR.setAttribute('dur', '0.6s');
-      growR.setAttribute('fill', 'freeze');
-      const fadeOut = document.createElementNS(SVG_NS, 'animate');
-      fadeOut.setAttribute('attributeName', 'opacity');
-      fadeOut.setAttribute('from', '.9');
-      fadeOut.setAttribute('to', '0');
-      fadeOut.setAttribute('dur', '0.6s');
-      fadeOut.setAttribute('fill', 'freeze');
-      ring.appendChild(growR);
-      ring.appendChild(fadeOut);
+      animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.2s', fill: 'freeze' });
+      animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: '1.2s', fill: 'freeze' });
       svg.appendChild(ring);
     }
 
@@ -343,9 +355,11 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     history = [];
     clearTimeout(captureEffectTimer);
     captureEffectIndex = null;
+    captureEffectPlayer = null;
     stats.reset();
     stats.start();
     hideWinBanner();
+    hidePhaseBanner();
     renderBoard();
     renderToolbar();
     maybeTriggerAI();
@@ -355,6 +369,8 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     if (history.length === 0) return;
     clearTimeout(captureEffectTimer);
     captureEffectIndex = null;
+    captureEffectPlayer = null;
+    hidePhaseBanner();
     let popped = 0;
     do {
       game = history.pop();
@@ -371,6 +387,7 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
   newGameBtn.addEventListener('click', newGame);
   undoBtn.addEventListener('click', undo);
   winPlayAgain.addEventListener('click', newGame);
+  if (phaseBannerOk) phaseBannerOk.addEventListener('click', hidePhaseBanner);
   opponentModeSelect.addEventListener('change', () => {
     aiEnabled = opponentModeSelect.value === 'ai';
     maybeTriggerAI();

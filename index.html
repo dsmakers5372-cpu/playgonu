@@ -23,6 +23,7 @@
         <a href="jul.html" class="variant-tab">Jul-gonu</a>
         <a href="gomoku.html" class="variant-tab">Gomoku</a>
         <a href="howto.html" class="variant-tab">How to Play</a>
+        <a href="blog/index.html" class="variant-tab">Blog</a>
         <span data-lang-switcher></span>
       </nav>
     </div>
@@ -69,7 +70,6 @@
       <div class="board-frame" data-board-frame>
         <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
       </div>
-      <div class="tag" data-phase-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;text-align:center;"></div>
     </div>
 
     <div class="rules-panel">
@@ -107,6 +107,18 @@
       <a href="index.html" class="btn" style="text-align:center;">Back to Home</a>
     </div>
   </div>
+
+  <div class="win-banner" data-phase-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">First half over!</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">All 24 pieces are placed. For the second half, slide one piece per turn to an adjacent point instead of placing.</p>
+      <button class="btn-primary" data-phase-banner-ok>Got it</button>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="privacy.html" style="color:var(--muted);text-decoration:underline;">Privacy Policy</a>
+  </footer>
 
 </div>
 <script type="module">

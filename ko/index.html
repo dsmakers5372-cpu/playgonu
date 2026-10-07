@@ -69,7 +69,6 @@
       <div class="board-frame" data-board-frame>
         <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
       </div>
-      <div class="tag" data-phase-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;text-align:center;"></div>
     </div>
 
     <div class="rules-panel">
@@ -107,6 +106,18 @@
       <a href="index.html" class="btn" style="text-align:center;">홈으로 돌아가기</a>
     </div>
   </div>
+
+  <div class="win-banner" data-phase-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">전반 끝!</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">24개 말을 전부 놓았습니다. 후반부터는 놓는 대신 말 하나를 선을 따라 빈 자리로 한 칸씩 옮기세요.</p>
+      <button class="btn-primary" data-phase-banner-ok>확인</button>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">개인정보처리방침</a>
+  </footer>
 
 </div>
 <script type="module">

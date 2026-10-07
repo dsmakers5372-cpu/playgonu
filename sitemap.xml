@@ -34,6 +34,22 @@
   </url>
 
   <url>
+    <loc>https://playgonu.com/privacy.html</loc>
+  </url>
+  <url>
+    <loc>https://playgonu.com/blog/index.html</loc>
+  </url>
+  <url>
+    <loc>https://playgonu.com/blog/what-is-gonu.html</loc>
+  </url>
+  <url>
+    <loc>https://playgonu.com/blog/gomoku-vs-renju-vs-omok.html</loc>
+  </url>
+  <url>
+    <loc>https://playgonu.com/blog/cham-gonu-nine-mens-morris.html</loc>
+  </url>
+
+  <url>
     <loc>https://playgonu.com/ko/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/" />

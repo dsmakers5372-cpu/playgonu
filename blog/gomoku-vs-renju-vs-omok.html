@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gomoku vs. Renju vs. Omok: What's the Difference? — PlayGonu</title>
+<meta name="description" content="Gomoku, Renju, and Omok all mean roughly the same five-in-a-row game — but the names aren't interchangeable. Here's what actually separates them.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="../index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="../index.html" class="variant-tab">Cham-gonu</a>
+        <a href="../pat.html" class="variant-tab">Pat-gonu</a>
+        <a href="../jul.html" class="variant-tab">Jul-gonu</a>
+        <a href="../gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="../howto.html" class="variant-tab">How to Play</a>
+        <a href="index.html" class="variant-tab is-active">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <article style="max-width:720px;margin:0 auto;padding:56px 40px;display:flex;flex-direction:column;gap:28px;">
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="tag" style="color:var(--red);">Rules explained</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;">Gomoku vs. Renju vs. Omok: What's the Difference?</h1>
+      <p style="margin:0;font-size:13px;color:var(--muted);">A PlayGonu guide</p>
+    </div>
+
+    <p style="margin:0;font-size:16px;line-height:1.75;color:var(--ink-soft);">
+      Get five of your own stones in a row — horizontal, vertical, or diagonal — before your opponent does. That's the entire idea behind Gomoku, Renju, and Omok, and it's why people use the three names almost interchangeably. But they're not quite the same thing, and if you've ever lost a game wondering why a move that looked legal wasn't allowed, the difference between them is exactly why.
+    </p>
+
+    <h2 class="serif" style="font-size:22px;margin:0;">They're the same game, different names</h2>
+    <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
+      <strong>Gomoku</strong> (五目, "five points") is the Japanese name for the five-in-a-row game and the one most of the English-speaking world uses by default. <strong>Omok</strong> (오목) is simply the Korean word for the same game — same board, same basic rule, different language. If someone says "I play Omok," they mean Gomoku. There's no rules difference baked into the name change; it's a translation, not a variant.
+    </p>
+
+    <h2 class="serif" style="font-size:22px;margin:0;">Renju is different — it's a specific ruleset</h2>
+    <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
+      This is where it actually matters. Plain Gomoku — often called <strong>Freestyle</strong> — has one small problem: the first player has a significant, well-documented advantage. Played at a high level, the first player can force a win with correct play, which makes Freestyle Gomoku unsatisfying as a competitive game — the outcome leans too heavily on who moved first rather than who played better.
+    </p>
+    <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
+      <strong>Renju</strong> is the standardized ruleset built to fix that. It keeps the five-in-a-row win condition but adds restrictions that apply <em>only to the first player (Black)</em>:
+    </p>
+    <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;font-size:15.5px;line-height:1.7;color:var(--ink-soft);">
+      <li><strong>No double-three.</strong> Black can't play a move that creates two open three-in-a-rows at once — a fork that's normally very hard to defend against.</li>
+      <li><strong>No double-four.</strong> Same idea, one level stronger: Black can't create two simultaneous four-in-a-rows.</li>
+      <li><strong>No overline.</strong> Six or more in a row doesn't count as a win for Black — only an exact five does.</li>
+    </ul>
+    <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
+      White (the second player) plays under no such restrictions — the whole point is to offset Black's first-move advantage, not to make the game harder for both sides equally. And there's one important exception: if a move completes an outright five-in-a-row, it wins immediately regardless of whatever else it might look like — a real win always overrides the forbidden-move rules.
+    </p>
+
+    <h2 class="serif" style="font-size:22px;margin:0;">So which one should you play?</h2>
+    <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
+      If you're just starting out, Freestyle is the easier, more forgiving version to learn on — there's nothing to accidentally violate, any five wins. Once you've got the basics down and want a fairer, more tactical game where both sides have a genuine chance regardless of who goes first, switch to Renju. Serious tournament play is essentially always Renju for exactly that reason.
+    </p>
+
+    <h2 class="serif" style="font-size:22px;margin:0;">Play both, free</h2>
+    <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
+      PlayGonu's Gomoku lets you toggle between Freestyle and Standard (Renju) rules right from the game screen — forbidden points are marked with an × on the board when Renju is active, so you always know what's off-limits before you tap. Play locally with a friend or against a built-in AI with four difficulty levels.
+    </p>
+    <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:12px;">
+      <a href="../gomoku.html" style="font-size:15px;font-weight:600;">→ Play Gomoku (Freestyle or Renju)</a>
+    </div>
+
+  </article>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">Privacy Policy</a>
+  </footer>
+
+</div>
+</body>
+</html>
