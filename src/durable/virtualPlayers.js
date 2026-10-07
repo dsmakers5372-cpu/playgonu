@@ -61,7 +61,7 @@ function seededShuffle(items, seed) {
   return copy;
 }
 
-const ROTATE_MS = 45 * 1000; // roster composition shifts every ~45s, like people coming and going
+const ROTATE_MS = 60 * 60 * 1000; // roster composition shifts every 60 minutes, like people coming and going over the course of a session
 const MIN_ONLINE = 18;
 const MAX_ONLINE = 25;
 
