@@ -9,8 +9,9 @@ import {
 } from '../engine/chamgonu.js';
 import { chooseAIMove } from '../engine/chamgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el } from './svg.js';
+import { el, SVG_NS } from './svg.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
+import { playCaptureSound } from './sound.js';
 
 const AI_MOVE_DELAY_MS = 450;
 
@@ -74,6 +75,8 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
   let game = createInitialState();
   let selected = null;
   let history = [];
+  let captureEffectIndex = null; // point a piece was just swept off of, briefly highlighted
+  let captureEffectTimer = null;
   let aiEnabled = opponentModeSelect.value === 'ai';
   let aiPlayer = sideSelect && sideSelect.value === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
   const stats = createGameStats({ onTick: (ms) => { if (timerLabel) timerLabel.textContent = formatElapsed(ms); } });
@@ -109,12 +112,24 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     showPhaseNote._t = setTimeout(() => { phaseNote.style.opacity = '0'; }, 4000);
   }
 
+  function flashCapture(index) {
+    captureEffectIndex = index;
+    playCaptureSound();
+    clearTimeout(captureEffectTimer);
+    captureEffectTimer = setTimeout(() => {
+      captureEffectIndex = null;
+      renderBoard();
+    }, 700);
+  }
+
   function applyAction(from, to) {
     const prevPhase = game.phase;
+    const wasCapture = game.pendingCapture; // `to` is the point being captured, not placed/moved
     history.push(game);
     game = move(game, from, to);
     stats.recordMove();
     selected = null;
+    if (wasCapture) flashCapture(to);
     renderBoard();
     renderToolbar();
     checkPhaseTransition(prevPhase);
@@ -126,11 +141,13 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     if (!aiEnabled || game.winner || game.turn !== aiPlayer) return;
     setTimeout(() => {
       const prevPhase = game.phase;
+      const wasCapture = game.pendingCapture;
       const aiMove = chooseAIMove(game, { difficulty: aiDifficultySelect.value });
       if (!aiMove) return;
       history.push(game);
       game = move(game, aiMove.from, aiMove.to);
       stats.recordMove();
+      if (wasCapture) flashCapture(aiMove.to);
       renderBoard();
       renderToolbar();
       checkPhaseTransition(prevPhase);
@@ -158,6 +175,19 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       lineGroup.appendChild(el('line', { x1: from.x, y1: from.y, x2: to.x, y2: to.y }));
     }
     svg.appendChild(lineGroup);
+
+    // The mill (꼰) that was just completed — highlighted for as long as the
+    // resulting capture is still pending, so it's obvious which 3 points
+    // just connected before the board updates again.
+    if (game.lastMill.length === 3) {
+      const [ma, mb, mc] = game.lastMill;
+      const pa = POINT_PIXELS[ma];
+      const pb = POINT_PIXELS[mb];
+      const pc = POINT_PIXELS[mc];
+      const millAttrs = { stroke: '#D9A441', 'stroke-width': '6', 'stroke-linecap': 'round', opacity: '.85' };
+      svg.appendChild(el('line', { x1: pa.x, y1: pa.y, x2: pb.x, y2: pb.y, ...millAttrs }));
+      svg.appendChild(el('line', { x1: pb.x, y1: pb.y, x2: pc.x, y2: pc.y, ...millAttrs }));
+    }
 
     // Points a capture already used up are marked with a "peg" (per the
     // source rule: "말을 따낸 교차점에는 말뚝말을 놓아 표시한다") so it's
@@ -206,6 +236,29 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       const { x, y } = POINT_PIXELS[target];
       svg.appendChild(el('circle', { cx: x, cy: y, r: 19, fill: 'none', stroke: '#F6F1E6', 'stroke-width': '4', opacity: '.95' }));
       svg.appendChild(el('circle', { cx: x, cy: y, r: 17, fill: 'none', stroke: '#AC3B2A', 'stroke-width': '3' }));
+    }
+
+    // A piece that was just captured gets a quick expanding-ring "swish" on
+    // the now-empty point it was swept off of, so it's obvious which one
+    // disappeared instead of the board just silently having one fewer piece.
+    if (captureEffectIndex !== null) {
+      const { x, y } = POINT_PIXELS[captureEffectIndex];
+      const ring = el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: '#AC3B2A', 'stroke-width': '3' });
+      const growR = document.createElementNS(SVG_NS, 'animate');
+      growR.setAttribute('attributeName', 'r');
+      growR.setAttribute('from', '10');
+      growR.setAttribute('to', '26');
+      growR.setAttribute('dur', '0.6s');
+      growR.setAttribute('fill', 'freeze');
+      const fadeOut = document.createElementNS(SVG_NS, 'animate');
+      fadeOut.setAttribute('attributeName', 'opacity');
+      fadeOut.setAttribute('from', '.9');
+      fadeOut.setAttribute('to', '0');
+      fadeOut.setAttribute('dur', '0.6s');
+      fadeOut.setAttribute('fill', 'freeze');
+      ring.appendChild(growR);
+      ring.appendChild(fadeOut);
+      svg.appendChild(ring);
     }
 
     POINT_PIXELS.forEach((_, index) => {
@@ -282,6 +335,8 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     game = createInitialState();
     selected = null;
     history = [];
+    clearTimeout(captureEffectTimer);
+    captureEffectIndex = null;
     stats.reset();
     stats.start();
     hideWinBanner();
@@ -292,6 +347,8 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
 
   function undo() {
     if (history.length === 0) return;
+    clearTimeout(captureEffectTimer);
+    captureEffectIndex = null;
     let popped = 0;
     do {
       game = history.pop();

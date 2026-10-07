@@ -35,3 +35,26 @@ export function playPlaceSound() {
   osc.start(now);
   osc.stop(now + 0.14);
 }
+
+// A quick downward "swish" for a piece being captured/swept off the board —
+// deliberately a different shape (sawtooth, sweeping down) from the placement
+// click so the two read as distinct events by ear, not just by eye.
+export function playCaptureSound() {
+  const ctx = getContext();
+  if (!ctx) return;
+  if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sawtooth';
+  osc.frequency.setValueAtTime(900, now);
+  osc.frequency.exponentialRampToValueAtTime(120, now + 0.16);
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.13, now + 0.012);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.2);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.21);
+}
