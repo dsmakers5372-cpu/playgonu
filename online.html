@@ -49,10 +49,10 @@
       <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">No account needed — just a name. Create a private room and share the link with a friend, make it public so anyone can join, or hop into someone else's open room below.</p>
     </div>
 
-    <select class="pill" data-game-select data-intro style="width:fit-content;">
-      <option value="cham">Cham-gonu</option>
-      <option value="gomoku">Gomoku</option>
-    </select>
+    <div data-intro style="display:flex;gap:8px;">
+      <button type="button" class="variant-tab" data-game-tab="cham" style="border:1px solid var(--card-border);cursor:pointer;">Cham-gonu</button>
+      <button type="button" class="variant-tab" data-game-tab="gomoku" style="border:1px solid var(--card-border);cursor:pointer;">Gomoku</button>
+    </div>
 
     <div data-online-root></div>
   </div>
@@ -70,10 +70,9 @@
   mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'online.html' });
 
   const onlineRoot = document.querySelector('[data-online-root]');
-  const gameSelect = document.querySelector('[data-game-select]');
+  const gameTabs = document.querySelectorAll('[data-game-tab]');
   const params = new URLSearchParams(location.search);
   const initialGame = params.get('game') === 'gomoku' ? 'gomoku' : 'cham';
-  gameSelect.value = initialGame;
 
   // Once matched, the "which game / what's online battle" setup above is
   // already decided — hide it so the match (board, player bar, chat) has
@@ -86,12 +85,15 @@
   function mount(game) {
     onlineRoot.innerHTML = '';
     document.querySelectorAll('[data-intro]').forEach((el) => { el.style.display = ''; });
+    gameTabs.forEach((btn) => { btn.classList.toggle('is-active', btn.dataset.gameTab === game); });
     const opts = { lang: 'en', onMatchStart: hideIntro };
     if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, opts);
     else mountOnlineChamGame(onlineRoot, opts);
   }
   mount(initialGame);
-  gameSelect.addEventListener('change', () => mount(gameSelect.value));
+  gameTabs.forEach((btn) => {
+    btn.addEventListener('click', () => mount(btn.dataset.gameTab));
+  });
 </script>
 </body>
 </html>
