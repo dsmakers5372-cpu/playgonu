@@ -8,6 +8,15 @@ import { createMinimaxAI } from './minimaxAI.js';
 // dominating) before this got bumped.
 export const DIFFICULTY_DEPTH = { easy: 1, normal: 2, hard: 3, master: 4 };
 
+// Master searches shallow (depth 4, fast) while the board is still sparse —
+// the opening — then switches to depth 5 (several seconds slower) once
+// enough stones are down to call it the midgame. A flat depth either feels
+// slow on every single opening move or never gets to "think hard" later;
+// the multi-second cost from here on is acceptable because the bot already
+// waits BOT_MOVE_DELAY_MS to feel human, and a real opponent isn't instant
+// between their own moves either.
+const MASTER_DEEP_STONE_THRESHOLD = 10;
+
 const DIRS4 = [
   { dr: 0, dc: 1 },
   { dr: 1, dc: 0 },
@@ -120,7 +129,7 @@ const RUN_SCORE = {
   '1-2': 2, '1-1': 1, '1-0': 0,
 };
 
-function positionalScore(cells, player) {
+function positionalScore(cells, player, threats) {
   let score = 0;
   for (let row = 0; row < BOARD_SIZE; row++) {
     for (let col = 0; col < BOARD_SIZE; col++) {
@@ -145,6 +154,11 @@ function positionalScore(cells, player) {
         const endOpen = inBounds(r, c) && cells[toIndex(r, c)] === null;
         const openEnds = (startOpen ? 1 : 0) + (endOpen ? 1 : 0);
         score += RUN_SCORE[`${length}-${openEnds}`] ?? 0;
+        if (threats) {
+          if (length === 4 && openEnds > 0) threats.fours++;
+          if (length === 4 && openEnds === 2) threats.openFours++;
+          if (length === 3 && openEnds === 2) threats.openThrees++;
+        }
       }
     }
   }
@@ -159,12 +173,55 @@ function evaluate(state, perspective) {
   return positionalScore(state.cells, perspective) - positionalScore(state.cells, opp);
 }
 
-export const chooseAIMove = createMinimaxAI({
+// The plain evaluation ignores whose turn it is, which misleads odd search
+// depths: the leaf comes right after the AI's own move, so "my open four
+// vs. their simple four" scores as winning even though they move next and
+// complete five first. Hard reliably ignored an opponent's open three
+// because of this. Resolving the obvious forced outcomes by side-to-move
+// fixes it; easy/normal keep the plain version so they stay beatable.
+const FORCED_WIN = 500000;
+const OPEN_THREE_WIN = 200000;
+
+function evaluateTactical(state, perspective) {
+  if (state.winner) return evaluate(state, perspective);
+  const opp = opponent(perspective);
+  const mine = { fours: 0, openFours: 0, openThrees: 0 };
+  const theirs = { fours: 0, openFours: 0, openThrees: 0 };
+  const base = positionalScore(state.cells, perspective, mine) - positionalScore(state.cells, opp, theirs);
+  const moverIsMe = state.turn === perspective;
+  const mover = moverIsMe ? mine : theirs;
+  const waiter = moverIsMe ? theirs : mine;
+  const sign = moverIsMe ? 1 : -1;
+  if (mover.fours > 0) return sign * FORCED_WIN;
+  if (waiter.openFours > 0 || waiter.fours > 1) return -sign * FORCED_WIN;
+  if (mover.openThrees > 0 && waiter.fours === 0) return sign * OPEN_THREE_WIN;
+  return base;
+}
+
+const baseChooseAIMove = createMinimaxAI({
   move,
   allLegalMoves: candidateMoves,
   opponent,
   evaluate,
   depths: DIFFICULTY_DEPTH,
 });
+
+const tacticalChooseAIMove = createMinimaxAI({
+  move,
+  allLegalMoves: candidateMoves,
+  opponent,
+  evaluate: evaluateTactical,
+  depths: DIFFICULTY_DEPTH,
+});
+
+export function chooseAIMove(state, options) {
+  const difficulty = options?.difficulty;
+  if (difficulty === 'master') {
+    const stoneCount = state.cells.filter(Boolean).length;
+    DIFFICULTY_DEPTH.master = stoneCount < MASTER_DEEP_STONE_THRESHOLD ? 4 : 5;
+  }
+  if (difficulty === 'hard' || difficulty === 'master') return tacticalChooseAIMove(state, options);
+  return baseChooseAIMove(state, options);
+}
 
 export { PLAYERS };

@@ -15,7 +15,24 @@ export const DEFAULT_DIFFICULTY_DEPTH = { easy: 1, normal: 3, hard: 5, master: 6
 export function createMinimaxAI({ move, allLegalMoves, opponent, evaluate, depths = DEFAULT_DIFFICULTY_DEPTH }) {
   function minimax(state, depth, player, perspective, alpha, beta) {
     if (depth === 0 || state.winner) {
-      return { score: evaluate(state, perspective) };
+      let score = evaluate(state, perspective);
+      // A flat win/loss score makes every move that leads to "forced win
+      // regardless of what I play" or "forced loss regardless of what I
+      // play" look identical, once the search is deep enough to see that
+      // far ahead — e.g. an opponent's open three that will become an
+      // unstoppable open four is a loss in 2 more of their turns no matter
+      // what this side does right now, so every candidate ties at the same
+      // flat score and the (randomly shuffled) move order picks the winner,
+      // which can just as easily skip the one move that actually blocks.
+      // Nudging by the remaining depth breaks that tie correctly: a win
+      // found with more depth left happened sooner (prefer it over a
+      // slower win), and a loss found with more depth left happened sooner
+      // too (prefer the slower loss instead — i.e. still block/delay it,
+      // rather than conceding immediately with an unrelated move).
+      if (state.winner && state.winner !== 'draw') {
+        score += state.winner === perspective ? depth : -depth;
+      }
+      return { score };
     }
 
     const maximizing = player === perspective;
