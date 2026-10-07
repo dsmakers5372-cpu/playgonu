@@ -1,0 +1,20 @@
+# PlayGonu
+
+> PlayGonu is a free, browser-based collection of traditional Korean Gonu (고누) board games, plus Gomoku. Every game is playable solo against a built-in AI (four difficulty levels) or online against another real person in real time — no install, no account, no download. Available in English and Korean.
+
+## Games
+
+- [Cham-gonu](https://playgonu.com/index.html): The main game and PlayGonu's homepage. A 24-point board of three nested squares, 12 pieces per player — place pieces to form three-in-a-row "mills" and capture, then slide once the board fills. Same family as the Western game Nine Men's Morris.
+- [Jul-gonu](https://playgonu.com/jul.html): The simplest Gonu variant — a 4x4-point line board, 4 pieces per player, sandwich (custodian) capture. A two-minute starter game.
+- [Daseotjul-gonu](https://playgonu.com/daseotjul.html): Jul-gonu's exact rules on a bigger 5x5-point board with 5 pieces per side.
+- [Palpal-gonu](https://playgonu.com/palpal.html): Jul-gonu's exact rules on the widest board in the family — 8x8 points, 8 pieces per side.
+- [Bakwi-gonu](https://playgonu.com/bakwi.html): "Wheel gonu" — 4 pieces per side on a 4x4-point board; a piece standing on one of the board's four corner "wheels" can slide any distance in a straight line and capture the first enemy piece in its path.
+- [Gomoku](https://playgonu.com/gomoku.html): The classic five-in-a-row game, not part of the Gonu family — Freestyle or Standard (Renju) rules, 15x15 board.
+
+## Other pages
+
+- [How to Play](https://playgonu.com/howto.html): Full written rules for every game on the site, in one place.
+- [Online Battle](https://playgonu.com/online.html): Real-time multiplayer for Cham-gonu and Gomoku — create a private room and share the link, or join an open public room. No account needed, just a name.
+- [Blog](https://playgonu.com/blog/index.html): Articles on Gonu's history and how it compares to Nine Men's Morris, Gomoku, and Renju.
+- [Privacy Policy](https://playgonu.com/privacy.html)
+- [Korean version (한국어)](https://playgonu.com/ko/index.html): The full site, translated into Korean, at the /ko/ path.
