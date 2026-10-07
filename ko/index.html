@@ -45,7 +45,7 @@
         </select>
         <select class="pill" data-opponent-mode style="cursor:pointer;">
           <option value="local">2인 로컬</option>
-          <option value="ai">AI와 대전</option>
+          <option value="ai" selected>AI와 대전</option>
         </select>
         <select class="pill" data-ai-difficulty style="cursor:pointer;">
           <option value="easy">쉬움</option>
@@ -69,6 +69,7 @@
       <div class="board-frame" data-board-frame>
         <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
       </div>
+      <div class="tag" data-phase-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;text-align:center;"></div>
     </div>
 
     <div class="rules-panel">

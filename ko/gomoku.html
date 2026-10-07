@@ -33,10 +33,10 @@
       <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
         <div class="turn-indicator">
           <span class="turn-dot" data-turn-dot></span>
-          <span data-turn-label>빨강 차례</span>
+          <span data-turn-label>검정 차례</span>
         </div>
         <span class="tag" data-timer>0:00</span>
-        <div style="font-size:13px;color:var(--muted);" data-captured-label>놓은 돌 — 빨강: 0 · 검정: 0</div>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>놓은 돌 — 검정: 0 · 흰돌: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <select class="pill" data-ruleset style="cursor:pointer;">
@@ -44,12 +44,12 @@
           <option value="renju">표준(렌주룰)</option>
         </select>
         <select class="pill" data-side-select style="cursor:pointer;">
-          <option value="A">빨강 · 선공</option>
-          <option value="B">검정 · 후공</option>
+          <option value="A">검정 · 선공</option>
+          <option value="B">흰돌 · 후공</option>
         </select>
         <select class="pill" data-opponent-mode style="cursor:pointer;">
           <option value="local">2인 로컬</option>
-          <option value="ai">AI와 대전</option>
+          <option value="ai" selected>AI와 대전</option>
         </select>
         <select class="pill" data-ai-difficulty style="cursor:pointer;">
           <option value="easy">쉬움</option>
@@ -96,7 +96,7 @@
 
   <div class="win-banner" data-win-banner>
     <div class="win-banner__card">
-      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>빨강 승리!</div>
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>검정 승리!</div>
       <div style="display:flex;justify-content:center;gap:32px;">
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
           <span class="tag">수</span>

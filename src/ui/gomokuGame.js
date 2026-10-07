@@ -16,11 +16,13 @@ import { createGameStats, formatElapsed } from './gameStats.js';
 
 const AI_MOVE_DELAY_MS = 450;
 
+// Traditional Gomoku/Renju stone colors — Black moves first, White second
+// (matching the real convention, unlike the Gonu variants' Red/Black).
 const PLAYER_COLOR = {
-  [PLAYERS.A]: { fill: '#AC3B2A', stroke: '#7A2A1E' },
-  [PLAYERS.B]: { fill: '#2A2420', stroke: '#000000' },
+  [PLAYERS.A]: { fill: '#242019', stroke: '#000000' },
+  [PLAYERS.B]: { fill: '#F8F4E9', stroke: '#3A332C' },
 };
-const PLAYER_NAME = { en: { A: 'Red', B: 'Black' }, ko: { A: '빨강', B: '검정' } };
+const PLAYER_NAME = { en: { A: 'Black', B: 'White' }, ko: { A: '검정', B: '흰돌' } };
 
 const VIEWPORT = 420;
 const MARGIN = 24;
@@ -162,12 +164,14 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
       if (winSet.has(index)) {
         svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.46, fill: 'none', stroke: '#D9A441', 'stroke-width': '2.5' }));
       }
-      if (player === PLAYERS.B) {
+      if (player === PLAYERS.A) {
+        // A black stone can get lost against a dark board theme (e.g.
+        // "Ink") without a light ring to separate it from the background.
         svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.4, fill: 'none', stroke: '#F6F1E6', 'stroke-width': '1.4', opacity: '.8' }));
       }
       svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '1.4' }));
       if (index === game.lastMove) {
-        svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.12, fill: '#F6F1E6' }));
+        svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.12, fill: player === PLAYERS.B ? '#3A332C' : '#F6F1E6' }));
       }
     });
 
@@ -185,11 +189,11 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
     turnDot.style.background = game.winner === 'draw' ? '#6B5F53' : theme.fill;
     turnLabel.textContent = statusText(lang, game);
     if (capturedLabel) {
-      const redOnBoard = game.cells.filter((p) => p === PLAYERS.A).length;
-      const blackOnBoard = game.cells.filter((p) => p === PLAYERS.B).length;
+      const blackOnBoard = game.cells.filter((p) => p === PLAYERS.A).length;
+      const whiteOnBoard = game.cells.filter((p) => p === PLAYERS.B).length;
       capturedLabel.textContent = lang === 'ko'
-        ? `놓은 돌 — 빨강: ${redOnBoard} · 검정: ${blackOnBoard}`
-        : `Stones placed — Red: ${redOnBoard} · Black: ${blackOnBoard}`;
+        ? `놓은 돌 — 검정: ${blackOnBoard} · 흰돌: ${whiteOnBoard}`
+        : `Stones placed — Black: ${blackOnBoard} · White: ${whiteOnBoard}`;
     }
     undoBtn.disabled = history.length === 0;
   }

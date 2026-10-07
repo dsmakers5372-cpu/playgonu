@@ -69,6 +69,7 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
   const opponentModeSelect = root.querySelector('[data-opponent-mode]');
   const aiDifficultySelect = root.querySelector('[data-ai-difficulty]');
   const sideSelect = root.querySelector('[data-side-select]');
+  const phaseNote = root.querySelector('[data-phase-note]');
 
   let game = createInitialState();
   let selected = null;
@@ -94,13 +95,29 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     return [];
   }
 
+  function checkPhaseTransition(prevPhase) {
+    if (prevPhase === 'placing' && game.phase === 'moving') showPhaseNote();
+  }
+
+  function showPhaseNote() {
+    if (!phaseNote) return;
+    phaseNote.textContent = lang === 'ko'
+      ? '모든 말을 다 놓았습니다 — 이제부터는 말을 선으로 한 칸씩 옮기세요!'
+      : 'All pieces are placed — now slide one piece per turn to an adjacent point!';
+    phaseNote.style.opacity = '1';
+    clearTimeout(showPhaseNote._t);
+    showPhaseNote._t = setTimeout(() => { phaseNote.style.opacity = '0'; }, 4000);
+  }
+
   function applyAction(from, to) {
+    const prevPhase = game.phase;
     history.push(game);
     game = move(game, from, to);
     stats.recordMove();
     selected = null;
     renderBoard();
     renderToolbar();
+    checkPhaseTransition(prevPhase);
     showWinBanner();
     maybeTriggerAI();
   }
@@ -108,6 +125,7 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
   function maybeTriggerAI() {
     if (!aiEnabled || game.winner || game.turn !== aiPlayer) return;
     setTimeout(() => {
+      const prevPhase = game.phase;
       const aiMove = chooseAIMove(game, { difficulty: aiDifficultySelect.value });
       if (!aiMove) return;
       history.push(game);
@@ -115,6 +133,7 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       stats.recordMove();
       renderBoard();
       renderToolbar();
+      checkPhaseTransition(prevPhase);
       showWinBanner();
       maybeTriggerAI(); // chained: a mill the AI just formed means it must also capture
     }, AI_MOVE_DELAY_MS);
@@ -139,6 +158,18 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       lineGroup.appendChild(el('line', { x1: from.x, y1: from.y, x2: to.x, y2: to.y }));
     }
     svg.appendChild(lineGroup);
+
+    // Points a capture already used up are marked with a "peg" (per the
+    // source rule: "말을 따낸 교차점에는 말뚝말을 놓아 표시한다") so it's
+    // visually obvious why clicking there during placement does nothing —
+    // only relevant during placement; these open back up once moving starts.
+    if (game.phase === 'placing') {
+      game.deadForPlacement.forEach((dead, index) => {
+        if (!dead || game.pieces[index] !== null) return;
+        const { x, y } = POINT_PIXELS[index];
+        svg.appendChild(el('rect', { x: x - 6, y: y - 6, width: 12, height: 12, fill: theme.line, opacity: '.55', transform: `rotate(45 ${x} ${y})` }));
+      });
+    }
 
     // Targets on EMPTY points (placing/moving) render as a small dot — safe
     // to draw before the pieces since nothing else occupies that point yet.

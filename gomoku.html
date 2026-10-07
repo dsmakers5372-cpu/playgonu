@@ -33,10 +33,10 @@
       <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
         <div class="turn-indicator">
           <span class="turn-dot" data-turn-dot></span>
-          <span data-turn-label>Red to move</span>
+          <span data-turn-label>Black to move</span>
         </div>
         <span class="tag" data-timer>0:00</span>
-        <div style="font-size:13px;color:var(--muted);" data-captured-label>Stones placed — Red: 0 · Black: 0</div>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>Stones placed — Black: 0 · White: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <select class="pill" data-ruleset style="cursor:pointer;">
@@ -44,12 +44,12 @@
           <option value="renju">Standard (Renju)</option>
         </select>
         <select class="pill" data-side-select style="cursor:pointer;">
-          <option value="A">Play Red · First</option>
-          <option value="B">Play Black · Second</option>
+          <option value="A">Play Black · First</option>
+          <option value="B">Play White · Second</option>
         </select>
         <select class="pill" data-opponent-mode style="cursor:pointer;">
           <option value="local">2 Players (local)</option>
-          <option value="ai">vs AI</option>
+          <option value="ai" selected>vs AI</option>
         </select>
         <select class="pill" data-ai-difficulty style="cursor:pointer;">
           <option value="easy">Easy</option>
@@ -96,7 +96,7 @@
 
   <div class="win-banner" data-win-banner>
     <div class="win-banner__card">
-      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>Red wins!</div>
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>Black wins!</div>
       <div style="display:flex;justify-content:center;gap:32px;">
         <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
           <span class="tag">Moves</span>

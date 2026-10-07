@@ -45,7 +45,7 @@
         </select>
         <select class="pill" data-opponent-mode style="cursor:pointer;">
           <option value="local">2 Players (local)</option>
-          <option value="ai">vs AI</option>
+          <option value="ai" selected>vs AI</option>
         </select>
         <select class="pill" data-ai-difficulty style="cursor:pointer;">
           <option value="easy">Easy</option>
@@ -69,6 +69,7 @@
       <div class="board-frame" data-board-frame>
         <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
       </div>
+      <div class="tag" data-phase-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;text-align:center;"></div>
     </div>
 
     <div class="rules-panel">
