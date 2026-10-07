@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>플레이고누 — 줄고누 연습 라운드</title>
-<meta name="description" content="가장 단순한 고누 변형 줄고누 — 2분이면 익히는 입문 게임. 기본을 배우고 나면 참고누로 진짜 승부를 보세요.">
+<title>플레이고누 — 오목 온라인으로 즐기기</title>
+<meta name="description" content="오목(5목)을 브라우저에서 바로 — 자유룰과 표준(렌주룰) 모두 지원, 2인 로컬 대전·AI 대전.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
@@ -20,8 +20,8 @@
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">참고누</a>
         <a href="pat.html" class="variant-tab">밭고누</a>
-        <a href="jul.html" class="variant-tab is-active">줄고누</a>
-        <a href="gomoku.html" class="variant-tab">오목</a>
+        <a href="jul.html" class="variant-tab">줄고누</a>
+        <a href="gomoku.html" class="variant-tab is-active">오목</a>
         <a href="howto.html" class="variant-tab">하는 법</a>
         <span data-lang-switcher></span>
       </nav>
@@ -36,9 +36,13 @@
           <span data-turn-label>빨강 차례</span>
         </div>
         <span class="tag" data-timer>0:00</span>
-        <div style="font-size:13px;color:var(--muted);" data-captured-label>잡은 말 — 빨강: 0 · 검정: 0</div>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>놓은 돌 — 빨강: 0 · 검정: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-ruleset style="cursor:pointer;">
+          <option value="freestyle" selected>자유룰</option>
+          <option value="renju">표준(렌주룰)</option>
+        </select>
         <select class="pill" data-side-select style="cursor:pointer;">
           <option value="A">빨강 · 선공</option>
           <option value="B">검정 · 후공</option>
@@ -69,21 +73,22 @@
       <div class="board-frame" data-board-frame>
         <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
       </div>
+      <div class="tag" data-foul-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;"></div>
     </div>
 
     <div class="rules-panel">
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
-        <div class="serif" style="font-size:18px;font-weight:700;">줄고누 규칙 <span class="tag">연습 라운드</span></div>
+        <div class="serif" style="font-size:18px;font-weight:700;">오목 규칙</div>
         <ul>
-          <li>각자 말 4개를 자기 쪽 첫 줄에 나란히 놓고 시작합니다.</li>
-          <li>한 턴에 말 하나를 선을 따라 한 칸 움직입니다.</li>
-          <li>상대 말을 내 말 두 개 사이에 일직선으로 가두면 잡습니다.</li>
-          <li>상대 말을 1개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
+          <li>15×15판의 빈 교차점에 번갈아 돌을 하나씩 놓습니다.</li>
+          <li>내 돌 5개를 가로·세로·대각선 중 한 방향으로 일직선으로 놓으면 승리. 잡기·제거는 없습니다.</li>
+          <li><strong>자유룰</strong>에서는 5개 이상 일직선이면 모두 승리. <strong>표준(렌주룰)</strong>에서는 선공(1번 두는 쪽)만 삼삼·사사·장목(6목 이상) 금수 — 판에 ×로 표시됩니다. 후공은 제한이 없습니다.</li>
+          <li>225수 안에 승부가 안 나면 무승부입니다.</li>
         </ul>
       </div>
       <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
-        <div style="font-size:13px;font-weight:600;color:var(--muted);">고누란?</div>
-        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">한국의 전통 민속 보드게임 가족입니다. 줄고누는 게임을 익히기 위한 가장 단순한 버전이에요. 감을 잡았다면 <a href="index.html">참고누</a>로 진짜 승부를 보세요.</p>
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">고누 변형이 아닙니다</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">오목(五目)은 고누 가족에 속하지 않는 별개의 고전 보드게임입니다 — 같은 "종이와 연필" 느낌을 공유해서 플레이고누의 고누 변형들 옆에 함께 올렸습니다.</p>
       </div>
     </div>
 
@@ -109,10 +114,10 @@
 
 </div>
 <script type="module">
-  import { mountJulgonuGame } from '../src/ui/julgonuGame.js';
+  import { mountGomokuGame } from '../src/ui/gomokuGame.js';
   import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
-  mountJulgonuGame(document.querySelector('[data-root]'), { lang: 'ko' });
-  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'jul.html' });
+  mountGomokuGame(document.querySelector('[data-root]'), { lang: 'ko' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'gomoku.html' });
 </script>
 </body>
 </html>

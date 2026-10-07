@@ -21,6 +21,12 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/jul.html" />
   </url>
   <url>
+    <loc>https://playgonu.com/gomoku.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/gomoku.html" />
+  </url>
+  <url>
     <loc>https://playgonu.com/howto.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/howto.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/howto.html" />
@@ -44,6 +50,12 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/jul.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/jul.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/jul.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ko/gomoku.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/gomoku.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/howto.html</loc>
