@@ -9,12 +9,32 @@
 // src/ui/languageSwitcher.js) and is never auto-redirected again, so
 // their choice always wins over geolocation.
 
+import { GameRoom } from './durable/GameRoom.js';
+import { Lobby } from './durable/Lobby.js';
+
+export { GameRoom, Lobby };
+
 const COUNTRY_DEFAULT_LANG = { KR: 'ko' };
 const ASSET_PATH = /\.(js|css|svg|png|jpg|jpeg|webp|ico|json|woff2?|txt|xml)$/;
 
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Online-battle room — one Durable Object instance per room id, created
+    // lazily on first connection.
+    if (url.pathname.startsWith('/ws/room/')) {
+      const roomId = url.pathname.slice('/ws/room/'.length);
+      if (!roomId) return new Response('Missing room id', { status: 400 });
+      const id = env.GAME_ROOM.idFromName(roomId);
+      return env.GAME_ROOM.get(id).fetch(request);
+    }
+
+    // Public-room dashboard list, e.g. /api/lobby?game=cham
+    if (url.pathname === '/api/lobby') {
+      const id = env.LOBBY.idFromName('global');
+      return env.LOBBY.get(id).fetch(request);
+    }
 
     if (!ASSET_PATH.test(url.pathname)) {
       const cookie = request.headers.get('Cookie') || '';

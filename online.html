@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — Online Battle</title>
+<meta name="description" content="Play Cham-gonu or Gomoku online against another person — create a private room and share the link, or join an open public room.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
+        <a href="pat.html" class="variant-tab">Pat-gonu</a>
+        <a href="jul.html" class="variant-tab">Jul-gonu</a>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="online.html" class="variant-tab is-active">Online</a>
+        <a href="howto.html" class="variant-tab">How to Play</a>
+        <a href="blog/index.html" class="variant-tab">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:720px;margin:0 auto;padding:48px 40px;display:flex;flex-direction:column;gap:24px;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="tag" style="color:var(--red);">Online Battle</div>
+      <h1 class="serif" style="margin:0;font-size:28px;">Play against another person, live</h1>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">No account needed — just a name. Create a private room and share the link with a friend, make it public so anyone can join, or hop into someone else's open room below.</p>
+    </div>
+
+    <select class="pill" data-game-select style="width:fit-content;">
+      <option value="cham">Cham-gonu</option>
+      <option value="gomoku">Gomoku</option>
+    </select>
+
+    <div data-online-root></div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="privacy.html" style="color:var(--muted);text-decoration:underline;">Privacy Policy</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountOnlineChamGame } from './src/ui/onlineChamGame.js';
+  import { mountOnlineGomokuGame } from './src/ui/onlineGomokuGame.js';
+
+  const onlineRoot = document.querySelector('[data-online-root]');
+  const gameSelect = document.querySelector('[data-game-select]');
+  const params = new URLSearchParams(location.search);
+  const initialGame = params.get('game') === 'gomoku' ? 'gomoku' : 'cham';
+  gameSelect.value = initialGame;
+
+  function mount(game) {
+    onlineRoot.innerHTML = '';
+    if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, { lang: 'en' });
+    else mountOnlineChamGame(onlineRoot, { lang: 'en' });
+  }
+  mount(initialGame);
+  gameSelect.addEventListener('change', () => mount(gameSelect.value));
+</script>
+</body>
+</html>

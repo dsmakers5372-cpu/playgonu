@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>플레이고누 — 온라인 대전</title>
+<meta name="description" content="참고누나 오목을 다른 사람과 실시간으로 온라인 대전 — 비공개 방을 만들어 링크를 공유하거나, 공개 방을 만들어 아무나 참가하게 하거나, 열려있는 공개 방에 바로 참가하세요.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">참고누</a>
+        <a href="pat.html" class="variant-tab">밭고누</a>
+        <a href="jul.html" class="variant-tab">줄고누</a>
+        <a href="gomoku.html" class="variant-tab">오목</a>
+        <a href="online.html" class="variant-tab is-active">온라인 대전</a>
+        <a href="howto.html" class="variant-tab">하는 법</a>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:720px;margin:0 auto;padding:48px 40px;display:flex;flex-direction:column;gap:24px;">
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="tag" style="color:var(--red);">온라인 대전</div>
+      <h1 class="serif" style="margin:0;font-size:28px;">다른 사람과 실시간으로 대전하기</h1>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">계정 필요 없이 이름만 입력하면 됩니다 — 비공개 방을 만들어 친구에게 링크를 공유하거나, 공개 방으로 만들어 누구나 들어오게 하거나, 아래 열려있는 공개 방에 바로 참가하세요.</p>
+    </div>
+
+    <select class="pill" data-game-select style="width:fit-content;">
+      <option value="cham">참고누</option>
+      <option value="gomoku">오목</option>
+    </select>
+
+    <div data-online-root></div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">개인정보처리방침</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountOnlineChamGame } from '../src/ui/onlineChamGame.js';
+  import { mountOnlineGomokuGame } from '../src/ui/onlineGomokuGame.js';
+
+  const onlineRoot = document.querySelector('[data-online-root]');
+  const gameSelect = document.querySelector('[data-game-select]');
+  const params = new URLSearchParams(location.search);
+  const initialGame = params.get('game') === 'gomoku' ? 'gomoku' : 'cham';
+  gameSelect.value = initialGame;
+
+  function mount(game) {
+    onlineRoot.innerHTML = '';
+    if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, { lang: 'ko' });
+    else mountOnlineChamGame(onlineRoot, { lang: 'ko' });
+  }
+  mount(initialGame);
+  gameSelect.addEventListener('change', () => mount(gameSelect.value));
+</script>
+</body>
+</html>
