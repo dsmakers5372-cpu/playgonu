@@ -16,7 +16,6 @@ const MAX_PLAYERS = 2;
 const BOT_MOVE_DELAY_MS = [450, 950]; // feels like a person thinking, not an instant server reply
 const ROOM_IDLE_LIMIT_MS = 30 * 60 * 1000; // storage alarm cleans up long-abandoned rooms
 const CHAT_MAX_LEN = 200;
-const BOT_GREETINGS = ['안녕하세요 :)', '화이팅!', 'Hi, good luck!', 'gl hf', '좋은 게임 되세요'];
 
 export class GameRoom {
   constructor(state, env) {
@@ -147,10 +146,7 @@ export class GameRoom {
       this.room.status = 'playing';
       await this.setLobbyListing(false);
       this.broadcast({ type: 'state', engineState: this.room.engineState, status: this.room.status });
-      if (this.room.vsBot) {
-        this.sendBotGreeting();
-        await this.triggerBotMoves();
-      }
+      if (this.room.vsBot) await this.triggerBotMoves();
     } else if (this.room.isPublic) {
       await this.setLobbyListing(true);
     }
@@ -161,15 +157,6 @@ export class GameRoom {
     const text = String(msg.text || '').trim().slice(0, CHAT_MAX_LEN);
     if (!text) return;
     this.broadcast({ type: 'chat', from: conn.name || 'Player', text, ts: Date.now() });
-  }
-
-  sendBotGreeting() {
-    const line = BOT_GREETINGS[Math.floor(Math.random() * BOT_GREETINGS.length)];
-    setTimeout(() => {
-      if (this.room && this.room.vsBot) {
-        this.broadcast({ type: 'chat', from: this.room.vsBot.name, text: line, ts: Date.now() });
-      }
-    }, 900 + Math.random() * 700);
   }
 
   async handleMove(ws, conn, msg) {
