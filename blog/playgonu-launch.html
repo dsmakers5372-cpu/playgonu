@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="../index.html" class="variant-tab">Cham-gonu</a>
-        <a href="../pat.html" class="variant-tab">Pat-gonu</a>
-        <a href="../jul.html" class="variant-tab">Jul-gonu</a>
+        <span data-variant-menu></span>
         <a href="../gomoku.html" class="variant-tab">Gomoku</a>
         <a href="../online.html" class="variant-tab">Online</a>
         <a href="../howto.html" class="variant-tab">How to Play</a>
@@ -43,7 +42,7 @@
 
     <h2 class="serif" style="font-size:22px;margin:0;">What's live</h2>
     <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15.5px;line-height:1.7;color:var(--ink-soft);">
-      <li><strong>Three Gonu variants</strong> — <a href="../jul.html">Jul-gonu</a>, the simplest, a two-minute starter; <a href="../pat.html">Pat-gonu</a>, the same sandwich-capture idea with rook-style sliding moves; and <a href="../index.html">Cham-gonu</a>, the deep one — a 24-point board in the same family as Nine Men's Morris, with mill captures and a genuine mid-to-late-game that rewards real planning.</li>
+      <li><strong>Three Gonu variants</strong> — <a href="../jul.html">Jul-gonu</a>, the simplest, a two-minute starter; <a href="../bakwi.html">Bakwi-gonu</a>, with a corner-wheel slide that adds real tactical range; and <a href="../index.html">Cham-gonu</a>, the deep one — a 24-point board in the same family as Nine Men's Morris, with mill captures and a genuine mid-to-late-game that rewards real planning.</li>
       <li><strong><a href="../gomoku.html">Gomoku</a></strong> — the classic five-in-a-row game, not part of the Gonu family but close in spirit, with both Freestyle and Standard (Renju) rulesets.</li>
       <li><strong>A built-in AI</strong> for every game, four difficulty levels deep, so there's always an opponent even at 2am with nobody else around.</li>
       <li><strong>Online multiplayer</strong>, new as of today — play against another person in real time, anywhere. Create a private room and send the link to a friend, or open a public room and let anyone currently browsing PlayGonu join you. No account, no password — just a name.</li>
@@ -51,7 +50,7 @@
 
     <h2 class="serif" style="font-size:22px;margin:0;">Why bother with a 40-variant folk game nobody's heard of?</h2>
     <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
-      Because the gap between "centuries-old" and "genuinely good game" isn't as wide as it looks. Gonu was never a children's novelty — one branch of it (Cham-gonu) is structurally the same game as Nine Men's Morris, a game serious enough that mathematicians have since proven it's a draw with perfect play, same as checkers. The rest of the family ranges from Jul-gonu's two-minute simplicity up through Pat-gonu's added mobility — different enough from each other that "Gonu" is better understood as a design space than a single ruleset.
+      Because the gap between "centuries-old" and "genuinely good game" isn't as wide as it looks. Gonu was never a children's novelty — one branch of it (Cham-gonu) is structurally the same game as Nine Men's Morris, a game serious enough that mathematicians have since proven it's a draw with perfect play, same as checkers. The rest of the family ranges from Jul-gonu's two-minute simplicity up through Bakwi-gonu's wheel-powered slides — different enough from each other that "Gonu" is better understood as a design space than a single ruleset.
     </p>
 
     <h2 class="serif" style="font-size:22px;margin:0;">What's next</h2>
@@ -71,5 +70,9 @@
   </footer>
 
 </div>
+<script type="module">
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'playgonu-launch.html' });
+</script>
 </body>
 </html>

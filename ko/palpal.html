@@ -19,12 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">참고누</a>
-        <a href="jul.html" class="variant-tab">줄고누</a>
-        <a href="daseotjul.html" class="variant-tab">다섯줄고누</a>
-        <a href="palpal.html" class="variant-tab is-active">팔팔고누</a>
-        <a href="munsal.html" class="variant-tab">문살고누</a>
-        <a href="bakwi.html" class="variant-tab">바퀴고누</a>
-        <a href="naholo.html" class="variant-tab">나홀로고누</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">오목</a>
         <a href="howto.html" class="variant-tab">하는 법</a>
         <a href="online.html" class="variant-tab">온라인 대전</a>
@@ -120,8 +115,10 @@
 <script type="module">
   import { mountPalpalgonuGame } from '../src/ui/palpalgonuGame.js';
   import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
   mountPalpalgonuGame(document.querySelector('[data-root]'), { lang: 'ko' });
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'palpal.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ko', currentPage: 'palpal.html' });
 </script>
 </body>
 </html>

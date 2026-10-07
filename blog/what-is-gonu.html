@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="../index.html" class="variant-tab">Cham-gonu</a>
-        <a href="../pat.html" class="variant-tab">Pat-gonu</a>
-        <a href="../jul.html" class="variant-tab">Jul-gonu</a>
+        <span data-variant-menu></span>
         <a href="../gomoku.html" class="variant-tab">Gomoku</a>
         <a href="../online.html" class="variant-tab">Online</a>
         <a href="../howto.html" class="variant-tab">How to Play</a>
@@ -52,7 +51,7 @@
     </p>
     <ul style="margin:0;padding-left:20px;display:flex;flex-direction:column;gap:10px;font-size:15.5px;line-height:1.7;color:var(--ink-soft);">
       <li><strong>Jul-gonu (줄고누)</strong> — the simplest version: a small 4×4 line board, 4 pieces each, move one step at a time and sandwich your opponent's pieces between two of yours to capture them. Most Koreans' first introduction to Gonu as kids.</li>
-      <li><strong>Pat-gonu (밭고누)</strong> — the same sandwich-capture idea on a bigger 5×5 board, except pieces slide like a rook in chess instead of stepping one square at a time, which opens up a lot more tactics.</li>
+      <li><strong>Bakwi-gonu (바퀴고누)</strong> — "wheel gonu": a piece standing on one of the board's four corner "wheels" can spin and slide any distance in a straight line, turning a slow one-step game into something with real tactical range.</li>
       <li><strong>Cham-gonu (참고누)</strong> — the deep one. A 24-point board of three nested squares, 12 pieces each, and a "mill" capture mechanic (line up three in a row to take an opponent's piece) that puts it in the same family as the globally-known Nine Men's Morris.</li>
     </ul>
     <p style="margin:0;font-size:15.5px;line-height:1.75;color:var(--ink-soft);">
@@ -70,7 +69,7 @@
     </p>
     <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:12px;">
       <a href="../jul.html" style="font-size:15px;font-weight:600;">→ Play Jul-gonu (2-minute starter)</a>
-      <a href="../pat.html" style="font-size:15px;font-weight:600;">→ Play Pat-gonu (more strategy)</a>
+      <a href="../bakwi.html" style="font-size:15px;font-weight:600;">→ Play Bakwi-gonu (more strategy)</a>
       <a href="../index.html" style="font-size:15px;font-weight:600;">→ Play Cham-gonu (the deep one)</a>
     </div>
 
@@ -81,5 +80,9 @@
   </footer>
 
 </div>
+<script type="module">
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'what-is-gonu.html' });
+</script>
 </body>
 </html>

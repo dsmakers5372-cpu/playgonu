@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">참고누</a>
-        <a href="pat.html" class="variant-tab">밭고누</a>
-        <a href="jul.html" class="variant-tab">줄고누</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">오목</a>
         <a href="online.html" class="variant-tab is-active">온라인 대전</a>
         <a href="howto.html" class="variant-tab">하는 법</a>
@@ -51,6 +50,9 @@
 <script type="module">
   import { mountOnlineChamGame } from '../src/ui/onlineChamGame.js';
   import { mountOnlineGomokuGame } from '../src/ui/onlineGomokuGame.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ko', currentPage: 'online.html' });
 
   const onlineRoot = document.querySelector('[data-online-root]');
   const gameSelect = document.querySelector('[data-game-select]');

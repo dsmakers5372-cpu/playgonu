@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">Cham-gonu</a>
-        <a href="pat.html" class="variant-tab">Pat-gonu</a>
-        <a href="jul.html" class="variant-tab is-active">Jul-gonu</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">Gomoku</a>
         <a href="howto.html" class="variant-tab">How to Play</a>
         <a href="online.html" class="variant-tab">Online</a>
@@ -117,8 +116,10 @@
 <script type="module">
   import { mountJulgonuGame } from './src/ui/julgonuGame.js';
   import { mountLanguageSwitcher } from './src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from './src/ui/variantMenu.js';
   mountJulgonuGame(document.querySelector('[data-root]'), { lang: 'en' });
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'jul.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'jul.html' });
 </script>
 </body>
 </html>

@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>고누 하는 법 — 플레이고누</title>
-<meta name="description" content="참고누, 밭고누, 줄고누, 오목 — 플레이고누의 모든 게임 규칙을 한 곳에서 확인하세요.">
+<meta name="description" content="참고누, 줄고누 등 고누 8종, 오목 — 플레이고누의 모든 게임 규칙을 한 곳에서 확인하세요.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">참고누</a>
-        <a href="pat.html" class="variant-tab">밭고누</a>
-        <a href="jul.html" class="variant-tab">줄고누</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">오목</a>
         <a href="howto.html" class="variant-tab is-active">하는 법</a>
         <a href="online.html" class="variant-tab">온라인 대전</a>
@@ -35,7 +34,7 @@
       <div class="tag" style="color:var(--red);">규칙</div>
       <h1 class="serif" style="margin:0;font-size:32px;line-height:1.25;">고누 하는 법</h1>
       <p style="margin:0;font-size:15.5px;line-height:1.65;color:var(--ink-soft);">
-        고누는 한국의 전통 민속 보드게임 한 가족입니다 — 알려진 변형만 40종이 넘고, 원래 규칙집이 아니라 땅바닥에 금을 그어 입에서 입으로 전해졌습니다. 플레이고누의 메인 고누 게임은 참고누, 진짜 묵직한 한 판입니다 — 밭고누·줄고누는 그 전에 몸 푸는 연습 라운드예요. 오목은 고누 가족은 아니지만 같은 자리에 함께 올린 별개의 클래식입니다. 각각 이렇게 둡니다.
+        고누는 한국의 전통 민속 보드게임 한 가족입니다 — 알려진 변형만 40종이 넘고, 원래 규칙집이 아니라 땅바닥에 금을 그어 입에서 입으로 전해졌습니다. 플레이고누의 메인 고누 게임은 참고누, 진짜 묵직한 한 판입니다 — 줄고누와 아래 다른 변형들은 그 전에 몸 푸는 연습 라운드예요. 오목은 고누 가족은 아니지만 같은 자리에 함께 올린 별개의 클래식입니다. 각각 이렇게 둡니다.
       </p>
     </div>
 
@@ -51,17 +50,6 @@
     </div>
 
     <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
-      <div class="serif" style="font-size:19px;font-weight:700;">밭고누 <span class="tag">더 전략적</span></div>
-      <ul>
-        <li>각자 말 5개로 5×5 판의 자기 쪽 끝줄에 나란히 놓고 시작합니다.</li>
-        <li>말은 체스의 룩처럼 — 길이 막히기 전까지 — 선을 따라 원하는 만큼 미끄러지듯 이동합니다.</li>
-        <li>상대 말을 내 말 두 개 사이에 일직선으로 가두면 잡습니다.</li>
-        <li>상대 말을 전부 잡거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
-      </ul>
-      <a href="pat.html" style="font-size:14px;font-weight:600;">밭고누 플레이 →</a>
-    </div>
-
-    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
       <div class="serif" style="font-size:19px;font-weight:700;">줄고누 <span class="tag">연습 라운드</span></div>
       <ul>
         <li>각자 말 4개를 4×4 선판의 자기 쪽 첫 줄에 나란히 놓고 시작합니다.</li>
@@ -70,6 +58,58 @@
         <li>상대 말을 1개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
       </ul>
       <a href="jul.html" style="font-size:14px;font-weight:600;">줄고누 플레이 →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">다섯줄고누 <span class="tag" style="color:var(--teal, #2F6E6A);">줄고누 가족</span></div>
+      <ul>
+        <li>줄고누와 규칙은 같고 한 단계 큰 판 — 각자 말 5개, 5×5점판.</li>
+        <li>한 턴에 말 하나를 선을 따라 한 칸 움직이고, 상대 말을 내 말 두 개 사이에 가두면 잡습니다.</li>
+        <li>상대 말을 1개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
+      </ul>
+      <a href="daseotjul.html" style="font-size:14px;font-weight:600;">다섯줄고누 플레이 →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">팔팔고누 <span class="tag" style="color:var(--teal, #2F6E6A);">줄고누 가족</span></div>
+      <ul>
+        <li>줄고누 가족 중 가장 넓은 판 — 각자 말 8개, 8×8점판.</li>
+        <li>줄고누·다섯줄고누와 규칙은 같고, 움직일 공간만 훨씬 넓습니다.</li>
+        <li>상대 말을 1개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
+      </ul>
+      <a href="palpal.html" style="font-size:14px;font-weight:600;">팔팔고누 플레이 →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">문살고누 <span class="tag">신뢰도 낮음</span></div>
+      <ul>
+        <li>각자 말 5개로 5×5점판에서 시작합니다.</li>
+        <li>한 칸 움직이거나, 바로 옆 말(내 말이든 상대 말이든)을 뛰어넘어 그 너머 빈 칸으로 이동 — 상대 말을 뛰어넘으면 잡습니다.</li>
+        <li>뛰어넘은 뒤 같은 말로 또 넘을 수 있으면 계속 넘어야 합니다.</li>
+        <li>상대 말을 전부 잡거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
+      </ul>
+      <a href="munsal.html" style="font-size:14px;font-weight:600;">문살고누 플레이 →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">바퀴고누 <span class="tag">더 전략적</span></div>
+      <ul>
+        <li>각자 말 4개, 4×4점판의 자기 쪽 귀퉁이에 모아 놓고 시작합니다.</li>
+        <li>평소엔 한 칸 이동 — 네 귀퉁이는 "바퀴"라서, 말이 그 위에 있으면 바퀴를 돌아 직선으로 원하는 만큼 미끄러질 수 있습니다.</li>
+        <li>바퀴를 돌다가 상대 말을 만나면 그 자리에서 잡습니다 — 이 게임에서 잡는 방법은 이것뿐입니다.</li>
+        <li>상대 말을 전부 잡거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
+      </ul>
+      <a href="bakwi.html" style="font-size:14px;font-weight:600;">바퀴고누 플레이 →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">나홀로고누 <span class="tag">혼자 하는 퍼즐</span></div>
+      <ul>
+        <li>혼자 합니다 — 상대도 AI도 없는 펙 솔리테어 스타일 퍼즐입니다.</li>
+        <li>33점 십자 모양 판에 말 32개가 채워져 있고, 가운데 한 자리만 비어 있습니다.</li>
+        <li>말 하나를 바로 옆 말 너머 빈 자리로 뛰어넘으면 그 말을 제거합니다. 더 이상 못 넘을 때까지 계속하세요 — 말을 최대한 적게 남기면 좋고, 1개만 남으면 완벽한 클리어입니다.</li>
+      </ul>
+      <a href="naholo.html" style="font-size:14px;font-weight:600;">나홀로고누 플레이 →</a>
     </div>
 
     <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
@@ -107,7 +147,9 @@
 </div>
 <script type="module">
   import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'howto.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ko', currentPage: 'howto.html' });
 </script>
 </body>
 </html>

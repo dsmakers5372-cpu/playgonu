@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PlayGonu — Play Cham-gonu, a Korean Nine Men's Morris, Online</title>
-<meta name="description" content="Play Cham-gonu, the deepest variant of Korean traditional Gonu, free in your browser — 2-player local or vs AI. Warm up first on the simpler Jul-gonu and Pat-gonu.">
+<meta name="description" content="Play Cham-gonu, the deepest variant of Korean traditional Gonu, free in your browser — 2-player local or vs AI. Warm up first on the simpler Jul-gonu and Bakwi-gonu.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles/main.css">
@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab is-active">Cham-gonu</a>
-        <a href="pat.html" class="variant-tab">Pat-gonu</a>
-        <a href="jul.html" class="variant-tab">Jul-gonu</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">Gomoku</a>
         <a href="howto.html" class="variant-tab">How to Play</a>
         <a href="online.html" class="variant-tab">Online</a>
@@ -110,13 +109,29 @@
         <h2 class="serif" style="margin:0;font-size:22px;">Learn the basics in a couple of minutes</h2>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;">
-        <a href="jul.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
-          <div class="serif" style="font-size:18px;font-weight:700;">Jul-gonu 줄고누</div>
-          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">4 pieces each on a simple line board. Step one square, sandwich to capture — the easiest way to learn how Gonu works.</p>
+        <a href="jul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Jul-gonu 줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">4 pieces, a simple line board. Step one square, sandwich to capture.</p>
         </a>
-        <a href="pat.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
-          <div class="serif" style="font-size:18px;font-weight:700;">Pat-gonu 밭고누</div>
-          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">Same sandwich capture, a bigger 5×5 board, pieces slide like a rook — a bit more room to plan.</p>
+        <a href="daseotjul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Daseotjul-gonu 다섯줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">Same rules as Jul-gonu, one size bigger — 5 pieces, more room to plan.</p>
+        </a>
+        <a href="palpal.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Palpal-gonu 팔팔고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">The widest of the line-gonu family — 8 pieces a side on an 8x8 board.</p>
+        </a>
+        <a href="munsal.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Munsal-gonu 문살고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">Checkers-style: jump a piece to capture, with chained multi-jumps.</p>
+        </a>
+        <a href="bakwi.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Bakwi-gonu 바퀴고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">Stand on a corner "wheel" and slide any distance to capture.</p>
+        </a>
+        <a href="naholo.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Naholo-gonu 나홀로고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">A solo peg-jumping puzzle — no opponent needed, just you and the board.</p>
         </a>
       </div>
     </div>
@@ -188,8 +203,10 @@
 <script type="module">
   import { mountChamgonuGame } from './src/ui/chamgonuGame.js';
   import { mountLanguageSwitcher } from './src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from './src/ui/variantMenu.js';
   mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'en' });
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'index.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'index.html' });
 </script>
 </body>
 </html>

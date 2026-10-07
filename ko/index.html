@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>플레이고누 — 참고누 온라인으로 즐기기</title>
-<meta name="description" content="한국 전통 고누 중 가장 묵직한 참고누를 브라우저에서 바로 — 2인 로컬 대전·AI 대전 모두 지원. 처음이라면 줄고누·밭고누로 먼저 몸을 풀어보세요.">
+<meta name="description" content="한국 전통 고누 중 가장 묵직한 참고누를 브라우저에서 바로 — 2인 로컬 대전·AI 대전 모두 지원. 처음이라면 줄고누·바퀴고누로 먼저 몸을 풀어보세요.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab is-active">참고누</a>
-        <a href="pat.html" class="variant-tab">밭고누</a>
-        <a href="jul.html" class="variant-tab">줄고누</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">오목</a>
         <a href="howto.html" class="variant-tab">하는 법</a>
         <a href="online.html" class="variant-tab">온라인 대전</a>
@@ -109,13 +108,29 @@
         <h2 class="serif" style="margin:0;font-size:22px;">몇 분이면 기본기를 익힐 수 있어요</h2>
       </div>
       <div style="display:flex;gap:20px;flex-wrap:wrap;">
-        <a href="jul.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
-          <div class="serif" style="font-size:18px;font-weight:700;">줄고누 Jul-gonu</div>
-          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">각자 말 4개, 단순한 선판. 한 칸씩 움직이고 양옆으로 끼우면 포획 — 고누의 기본을 익히기 가장 쉬운 방법입니다.</p>
+        <a href="jul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">줄고누 Jul-gonu</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">각자 말 4개, 단순한 선판. 한 칸씩 움직이고 양옆으로 끼우면 포획.</p>
         </a>
-        <a href="pat.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
-          <div class="serif" style="font-size:18px;font-weight:700;">밭고누 Pat-gonu</div>
-          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">같은 끼워잡기 방식에 5×5 큰 판, 말은 룩처럼 여러 칸 슬라이딩 — 생각할 여지가 조금 더 있어요.</p>
+        <a href="daseotjul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">다섯줄고누 Daseotjul-gonu</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">줄고누와 규칙은 같고 한 단계 큰 판 — 말 5개, 더 넓은 생각할 공간.</p>
+        </a>
+        <a href="palpal.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">팔팔고누 Palpal-gonu</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">줄고누 계열 중 가장 넓은 판 — 각자 말 8개, 8x8점판.</p>
+        </a>
+        <a href="munsal.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">문살고누 Munsal-gonu</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">체커 스타일 — 뛰어넘어 잡고, 연속으로 계속 넘을 수도 있어요.</p>
+        </a>
+        <a href="bakwi.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">바퀴고누 Bakwi-gonu</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">귀퉁이 "바퀴"에 올라서면 원하는 만큼 미끄러져 잡을 수 있어요.</p>
+        </a>
+        <a href="naholo.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">나홀로고누 Naholo-gonu</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">혼자 하는 퍼즐 — 상대 없이, 판과 나 둘뿐이에요.</p>
         </a>
       </div>
     </div>
@@ -187,8 +202,10 @@
 <script type="module">
   import { mountChamgonuGame } from '../src/ui/chamgonuGame.js';
   import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
   mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'ko' });
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'index.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ko', currentPage: 'index.html' });
 </script>
 </body>
 </html>

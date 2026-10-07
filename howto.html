@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">Cham-gonu</a>
-        <a href="pat.html" class="variant-tab">Pat-gonu</a>
-        <a href="jul.html" class="variant-tab">Jul-gonu</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">Gomoku</a>
         <a href="howto.html" class="variant-tab is-active">How to Play</a>
         <a href="online.html" class="variant-tab">Online</a>
@@ -36,7 +35,7 @@
       <div class="tag" style="color:var(--red);">Rules</div>
       <h1 class="serif" style="margin:0;font-size:32px;line-height:1.25;">How to play Gonu</h1>
       <p style="margin:0;font-size:15.5px;line-height:1.65;color:var(--ink-soft);">
-        Gonu (고누) is a whole family of Korean folk board games — more than forty known variants, traditionally scratched into dirt yards rather than printed in a rulebook. PlayGonu's main Gonu game is Cham-gonu, a genuinely deep one; Pat-gonu and Jul-gonu are shorter warm-up rounds. Gomoku is a separate classic (not part of the Gonu family) added alongside them — here's how each works.
+        Gonu (고누) is a whole family of Korean folk board games — more than forty known variants, traditionally scratched into dirt yards rather than printed in a rulebook. PlayGonu's main Gonu game is Cham-gonu, a genuinely deep one; Jul-gonu and the other variants below are shorter warm-up rounds. Gomoku is a separate classic (not part of the Gonu family) added alongside them — here's how each works.
       </p>
     </div>
 
@@ -52,17 +51,6 @@
     </div>
 
     <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
-      <div class="serif" style="font-size:19px;font-weight:700;">Pat-gonu 밭고누 <span class="tag">More strategy</span></div>
-      <ul>
-        <li>Each player starts with 5 pieces lined up on their own edge of a 5×5 field.</li>
-        <li>A piece slides any number of empty squares in a straight line — like a rook in chess — stopping before the first piece in its path.</li>
-        <li>Trap an enemy piece between two of yours in a straight line to capture it.</li>
-        <li>Win by capturing every one of your opponent's pieces, or leaving them with no legal move.</li>
-      </ul>
-      <a href="pat.html" style="font-size:14px;font-weight:600;">Play Pat-gonu →</a>
-    </div>
-
-    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
       <div class="serif" style="font-size:19px;font-weight:700;">Jul-gonu 줄고누 <span class="tag" style="color:var(--teal, #2F6E6A);">Warm-up round</span></div>
       <ul>
         <li>Each player starts with 4 pieces lined up on their own edge of a 4×4 line board.</li>
@@ -71,6 +59,58 @@
         <li>Win by reducing your opponent to one piece, or leaving them with no legal move.</li>
       </ul>
       <a href="jul.html" style="font-size:14px;font-weight:600;">Play Jul-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Daseotjul-gonu 다섯줄고누 <span class="tag" style="color:var(--teal, #2F6E6A);">Jul-gonu family</span></div>
+      <ul>
+        <li>Same rules as Jul-gonu, one size bigger: 5 pieces each on a 5×5-point board.</li>
+        <li>Move one piece per turn, one step along a line; sandwich an enemy piece between two of yours to capture it.</li>
+        <li>Win by reducing your opponent to one piece, or leaving them with no legal move.</li>
+      </ul>
+      <a href="daseotjul.html" style="font-size:14px;font-weight:600;">Play Daseotjul-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Palpal-gonu 팔팔고누 <span class="tag" style="color:var(--teal, #2F6E6A);">Jul-gonu family</span></div>
+      <ul>
+        <li>The widest Jul-gonu-family board — 8 pieces each on an 8×8-point grid.</li>
+        <li>Same sandwich-capture rules as Jul-gonu and Daseotjul-gonu, just with a lot more room to maneuver.</li>
+        <li>Win by reducing your opponent to one piece, or leaving them with no legal move.</li>
+      </ul>
+      <a href="palpal.html" style="font-size:14px;font-weight:600;">Play Palpal-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Munsal-gonu 문살고누 <span class="tag">Low-confidence rules</span></div>
+      <ul>
+        <li>Each player starts with 5 pieces on a 5×5-point board.</li>
+        <li>Step one square, or jump over an adjacent piece (yours or an opponent's) onto the empty point beyond it — jumping an opponent captures it.</li>
+        <li>A capturing jump that opens another jump must keep chaining with the same piece before your turn ends.</li>
+        <li>Win by capturing every enemy piece, or leaving your opponent with no legal move.</li>
+      </ul>
+      <a href="munsal.html" style="font-size:14px;font-weight:600;">Play Munsal-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Bakwi-gonu 바퀴고누 <span class="tag">More strategy</span></div>
+      <ul>
+        <li>4 pieces each, clustered at opposite corners of a 4×4-point board.</li>
+        <li>A normal move is one step — but a piece standing on one of the board's four corner "wheels" may instead spin and slide any distance in a straight line.</li>
+        <li>A wheel slide that runs into an enemy piece captures it — the only way to capture in this game.</li>
+        <li>Win by capturing every one of your opponent's pieces, or leaving them with no legal move.</li>
+      </ul>
+      <a href="bakwi.html" style="font-size:14px;font-weight:600;">Play Bakwi-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Naholo-gonu 나홀로고누 <span class="tag">Solo puzzle</span></div>
+      <ul>
+        <li>One player, no opponent — a peg-solitaire-style puzzle.</li>
+        <li>32 pegs fill a 33-point cross board, leaving only the center empty.</li>
+        <li>Jump a peg over an adjacent peg into the empty point beyond it to remove it. Keep going until no jump is left — fewer pegs remaining is better, 1 is a perfect clear.</li>
+      </ul>
+      <a href="naholo.html" style="font-size:14px;font-weight:600;">Play Naholo-gonu →</a>
     </div>
 
     <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
@@ -108,7 +148,9 @@
 </div>
 <script type="module">
   import { mountLanguageSwitcher } from './src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from './src/ui/variantMenu.js';
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'howto.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'howto.html' });
 </script>
 </body>
 </html>

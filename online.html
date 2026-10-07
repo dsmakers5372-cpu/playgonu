@@ -19,8 +19,7 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">Cham-gonu</a>
-        <a href="pat.html" class="variant-tab">Pat-gonu</a>
-        <a href="jul.html" class="variant-tab">Jul-gonu</a>
+        <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">Gomoku</a>
         <a href="online.html" class="variant-tab is-active">Online</a>
         <a href="howto.html" class="variant-tab">How to Play</a>
@@ -52,6 +51,9 @@
 <script type="module">
   import { mountOnlineChamGame } from './src/ui/onlineChamGame.js';
   import { mountOnlineGomokuGame } from './src/ui/onlineGomokuGame.js';
+  import { mountVariantMenu } from './src/ui/variantMenu.js';
+
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'online.html' });
 
   const onlineRoot = document.querySelector('[data-online-root]');
   const gameSelect = document.querySelector('[data-game-select]');
