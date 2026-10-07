@@ -28,36 +28,52 @@ test('initial state: empty 24-point board, placing phase, A to move', () => {
   assert.equal(state.phase, 'placing');
   assert.equal(state.turn, PLAYERS.A);
   assert.equal(state.winner, null);
-  assert.equal(legalPlacements(state).length, 24);
+});
+
+test('the opening move is restricted to the middle square\'s 4 corners', () => {
+  const state = createInitialState();
+  assert.deepEqual(legalPlacements(state).sort((a, b) => a - b), [8, 10, 12, 14]);
+  assert.throws(() => move(state, null, 0), /Illegal placement/); // outer corner, not allowed as the opening move
+  assert.throws(() => move(state, null, 9), /Illegal placement/); // middle-ring mid-side, not a corner
+  const next = move(state, null, 10); // a legal opening move
+  assert.equal(next.pieces[10], PLAYERS.A);
+});
+
+test('after the opening move, every other empty point is open again', () => {
+  const state = createInitialState();
+  const next = move(state, null, 8);
+  assert.equal(legalPlacements(next).length, 23);
+  assert.deepEqual(legalPlacements(next).includes(8), false);
+  assert.deepEqual(legalPlacements(next).includes(0), true); // no longer restricted to corners
 });
 
 test('placing on an occupied point is illegal', () => {
   const state = createInitialState();
-  const next = move(state, null, 5);
-  assert.throws(() => move(next, null, 5), /Illegal placement/);
+  const next = move(state, null, 8); // a legal opening move
+  assert.throws(() => move(next, null, 8), /Illegal placement/);
 });
 
 test('completing a mill triggers a pending capture without passing the turn', () => {
   let state = createInitialState();
-  state = move(state, null, 0); // A
+  state = move(state, null, 8); // A (opening move — a valid corner)
   state = move(state, null, 12); // B
-  state = move(state, null, 1); // A
+  state = move(state, null, 9); // A
   state = move(state, null, 13); // B
-  state = move(state, null, 2); // A completes mill [0,1,2]
+  state = move(state, null, 10); // A completes mill [8,9,10]
 
   assert.equal(state.pendingCapture, true);
   assert.equal(state.turn, PLAYERS.A);
-  assert.deepEqual(state.lastMill.sort((a, b) => a - b), [0, 1, 2]);
+  assert.deepEqual(state.lastMill.sort((a, b) => a - b), [8, 9, 10]);
   assert.deepEqual(legalCaptures(state).sort((a, b) => a - b), [12, 13]);
 });
 
 test('capturing during the placing phase removes the piece and marks the point dead', () => {
   let state = createInitialState();
-  state = move(state, null, 0);
+  state = move(state, null, 8); // A (opening move)
   state = move(state, null, 12);
-  state = move(state, null, 1);
+  state = move(state, null, 9);
   state = move(state, null, 13);
-  state = move(state, null, 2); // mill, pending capture
+  state = move(state, null, 10); // mill, pending capture
 
   const next = move(state, null, 12);
   assert.equal(next.pieces[12], null);
@@ -69,11 +85,11 @@ test('capturing during the placing phase removes the piece and marks the point d
 
 test('a point marked dead during placing cannot be placed on again', () => {
   let state = createInitialState();
-  state = move(state, null, 0);
+  state = move(state, null, 8); // A (opening move)
   state = move(state, null, 12);
-  state = move(state, null, 1);
+  state = move(state, null, 9);
   state = move(state, null, 13);
-  state = move(state, null, 2);
+  state = move(state, null, 10);
   state = move(state, null, 12); // capture, point 12 now dead
 
   assert.throws(() => move(state, null, 12), /Illegal placement/);

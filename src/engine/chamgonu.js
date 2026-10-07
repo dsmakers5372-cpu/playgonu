@@ -91,8 +91,18 @@ export function legalMovesFrom(state, index) {
   return ADJACENCY[index].filter((n) => state.pieces[n] === null);
 }
 
+// The very first placement of the game (쟁두 winner's opening move) is
+// restricted to one of the middle square's 4 corners — not the full 24
+// points. After that single move, every other placement is unrestricted.
+const OPENING_MOVE_POINTS = Object.freeze([8, 10, 12, 14]);
+
+function isOpeningMove(state) {
+  return state.placedCount[PLAYERS.A] === 0 && state.placedCount[PLAYERS.B] === 0;
+}
+
 export function legalPlacements(state) {
   if (state.winner || state.pendingCapture || state.phase !== 'placing') return [];
+  if (isOpeningMove(state)) return OPENING_MOVE_POINTS.slice();
   const targets = [];
   for (let i = 0; i < POINT_COUNT; i++) {
     if (state.pieces[i] === null && !state.deadForPlacement[i]) targets.push(i);
