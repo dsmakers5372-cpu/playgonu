@@ -115,7 +115,12 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     resultPlayAgain.addEventListener('click', () => {
       const url = new URL(location.href);
       url.searchParams.delete('room');
-      location.href = url.toString();
+      // Assigning an unchanged href is a no-op in some browsers (no history
+      // entry changes, so no reload happens) — most "Play again" clicks hit
+      // exactly this case, since a bot challenge never had a ?room= to begin
+      // with. Force a real reload whenever the URL wouldn't actually change.
+      if (url.href === location.href) location.reload();
+      else location.href = url.href;
     });
   }
   if (resultLeave) resultLeave.addEventListener('click', () => { location.href = 'index.html'; });

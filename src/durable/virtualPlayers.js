@@ -24,10 +24,12 @@ const NAMES_EN = [
   'SilentSail', 'MossyOak42', 'TwilightFox', 'CedarRidge', 'PineHollow', 'SaltMarsh', 'GentleGale', 'DuskRunner', 'FeatherFall', 'SlowCurrent',
 ];
 
-// Roughly 3:2 normal:hard — enough bite to feel like a real opponent
-// without every early visitor's first online game being a brutal loss.
+// Roughly 1:2 hard:master — user feedback after real play: normal/hard let
+// an opponent miss blocking an open four-in-a-row, which doesn't read as "a
+// real person," it reads as broken. Skews hard toward the strongest tier
+// available while keeping a minority at merely "hard" for some variety.
 function difficultyFor(index) {
-  return index % 5 < 3 ? 'normal' : 'hard';
+  return index % 3 === 0 ? 'hard' : 'master';
 }
 
 export const VIRTUAL_PLAYERS = [...NAMES_KO, ...NAMES_EN].map((name, i) => ({
