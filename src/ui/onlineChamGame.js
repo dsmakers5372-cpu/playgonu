@@ -34,6 +34,9 @@ const T = {
     gameStarted: (c) => `The game has started — you are ${PLAYER_NAME.en[c]}. Good luck!`,
     youWin: 'You win! 🎉',
     youLose: 'You lost — good game.',
+    phaseBannerTitle: 'First half over!',
+    phaseBannerBody: 'All 24 pieces are placed. For the second half, slide one piece per turn to an adjacent point instead of placing.',
+    phaseBannerOk: 'Got it',
   },
   ko: {
     youAre: (c) => `당신은 ${PLAYER_NAME.ko[c]}입니다`,
@@ -45,6 +48,9 @@ const T = {
     gameStarted: (c) => `게임이 시작되었습니다 — 당신은 ${PLAYER_NAME.ko[c]}입니다. 화이팅!`,
     youWin: '승리했습니다! 🎉',
     youLose: '패배했습니다 — 다음엔 이길 거예요.',
+    phaseBannerTitle: '전반 끝!',
+    phaseBannerBody: '24개 말을 전부 놓았습니다. 후반부터는 놓는 대신 말 하나를 선을 따라 빈 자리로 한 칸씩 옮기세요.',
+    phaseBannerOk: '확인',
   },
 };
 
@@ -70,6 +76,13 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       </div>
       <div data-match-panel></div>
     </div>
+    <div class="win-banner" data-phase-banner>
+      <div class="win-banner__card">
+        <div class="serif" style="font-size:22px;font-weight:700;">${t.phaseBannerTitle}</div>
+        <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">${t.phaseBannerBody}</p>
+        <button class="btn-primary" data-phase-banner-ok>${t.phaseBannerOk}</button>
+      </div>
+    </div>
   `;
 
   const lobbyRoot = root.querySelector('[data-lobby-root]');
@@ -81,6 +94,9 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
   const youLabel = root.querySelector('[data-you-label]');
   const swatchRow = root.querySelector('[data-theme-row]');
   const matchPanelRoot = root.querySelector('[data-match-panel]');
+  const phaseBanner = root.querySelector('[data-phase-banner]');
+  const phaseBannerOk = root.querySelector('[data-phase-banner-ok]');
+  if (phaseBannerOk) phaseBannerOk.addEventListener('click', () => phaseBanner?.classList.remove('is-visible'));
 
   let roomClient = null;
   let myColor = null;
@@ -209,6 +225,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       role = info.role;
       mounted = true;
       resultRecorded = false;
+      phaseBanner?.classList.remove('is-visible');
       lobbyRoot.style.display = 'none';
       gameRoot.style.display = 'block';
       renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });
@@ -232,6 +249,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
     onState(engineState, status) {
       const prevCount = game ? game.pieces.filter(Boolean).length : 0;
       const wasWinner = game ? game.winner : null;
+      const prevPhase = game ? game.phase : null;
       game = engineState;
       selected = null;
       if (!mounted) return;
@@ -240,6 +258,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       else if (newCount < prevCount) playCaptureSound();
       renderBoard();
       renderToolbar();
+      if (prevPhase === 'placing' && game.phase === 'moving') phaseBanner?.classList.add('is-visible');
       if (panel && !resultRecorded && !wasWinner && game.winner) {
         resultRecorded = true;
         panel.stopTimer();
