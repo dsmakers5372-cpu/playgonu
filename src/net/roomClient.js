@@ -20,6 +20,7 @@ export function connectToRoom({ roomId, name, isPublic, gameType, ruleset, handl
       case 'opponent-joined': handlers.onOpponentJoined?.(msg); break;
       case 'opponent-left': handlers.onOpponentLeft?.(msg); break;
       case 'state': handlers.onState?.(msg); break;
+      case 'chat': handlers.onChat?.(msg); break;
       case 'error': handlers.onError?.(msg); break;
       default: break;
     }
@@ -34,6 +35,9 @@ export function connectToRoom({ roomId, name, isPublic, gameType, ruleset, handl
   return {
     sendMove(from, to) {
       if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'move', from, to }));
+    },
+    sendChat(text) {
+      if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'chat', text }));
     },
     close() {
       closedByUs = true;

@@ -29,13 +29,13 @@
   </header>
 
   <div style="max-width:720px;margin:0 auto;padding:48px 40px;display:flex;flex-direction:column;gap:24px;">
-    <div style="display:flex;flex-direction:column;gap:10px;">
+    <div data-intro style="display:flex;flex-direction:column;gap:10px;">
       <div class="tag" style="color:var(--red);">온라인 대전</div>
       <h1 class="serif" style="margin:0;font-size:28px;">다른 사람과 실시간으로 대전하기</h1>
       <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">계정 필요 없이 이름만 입력하면 됩니다 — 비공개 방을 만들어 친구에게 링크를 공유하거나, 공개 방으로 만들어 누구나 들어오게 하거나, 아래 열려있는 공개 방에 바로 참가하세요.</p>
     </div>
 
-    <select class="pill" data-game-select style="width:fit-content;">
+    <select class="pill" data-game-select data-intro style="width:fit-content;">
       <option value="cham">참고누</option>
       <option value="gomoku">오목</option>
     </select>
@@ -58,10 +58,16 @@
   const initialGame = params.get('game') === 'gomoku' ? 'gomoku' : 'cham';
   gameSelect.value = initialGame;
 
+  function hideIntro() {
+    document.querySelectorAll('[data-intro]').forEach((el) => { el.style.display = 'none'; });
+  }
+
   function mount(game) {
     onlineRoot.innerHTML = '';
-    if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, { lang: 'ko' });
-    else mountOnlineChamGame(onlineRoot, { lang: 'ko' });
+    document.querySelectorAll('[data-intro]').forEach((el) => { el.style.display = ''; });
+    const opts = { lang: 'ko', onMatchStart: hideIntro };
+    if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, opts);
+    else mountOnlineChamGame(onlineRoot, opts);
   }
   mount(initialGame);
   gameSelect.addEventListener('change', () => mount(gameSelect.value));

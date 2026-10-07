@@ -34,7 +34,7 @@ const STRINGS = {
 // `onMatched({ roomClient, color, name, engineState, gameType, ruleset })`
 // once two players are connected — from that point on, the caller owns the
 // actual board UI.
-export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatched, onState, onOpponentLeft }) {
+export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatched, onState, onOpponentLeft, onChat }) {
   const t = STRINGS[lang] || STRINGS.en;
   root.innerHTML = '';
 
@@ -107,7 +107,12 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       const joinBtn = document.createElement('button');
       joinBtn.className = 'btn-primary';
       joinBtn.textContent = t.join;
-      joinBtn.addEventListener('click', () => startAsGuest(r.roomId));
+      // A virtual (bot) opponent's listed roomId is just a display id, not a
+      // live room — generate a fresh one per challenge so each match gets
+      // its own Durable Object instead of reusing a possibly-finished one.
+      joinBtn.addEventListener('click', () => {
+        startAsGuest(r.isVirtual ? `${r.roomId}-${generateRoomId()}` : r.roomId);
+      });
       row.append(label, joinBtn);
       lobbyRows.appendChild(row);
     }
@@ -133,12 +138,13 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     let matched = false;
     let myColor = null;
     let myRole = null;
+    let opponentName = null;
 
     function tryMatch(roomInfo) {
       if (matched) return;
       if (roomInfo.playerCount === 2 || myRole === 'spectator') {
         matched = true;
-        onMatched({ roomClient: client, color: myColor, role: myRole, name, gameType, ruleset: roomInfo.ruleset });
+        onMatched({ roomClient: client, color: myColor, role: myRole, name, opponentName, gameType, ruleset: roomInfo.ruleset });
       }
     }
 
@@ -152,6 +158,14 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
         onJoined(msg) {
           myColor = msg.color;
           myRole = msg.role;
+          // The server includes opponentName directly whenever a second
+          // player is already seated at join time (the vsBot case, where
+          // there's no later 'opponent-joined' message to rely on instead —
+          // it'd arrive only after this 'joined' message already triggered
+          // the match). Otherwise, as the guest (color B), the room's
+          // hostName is whoever created the room, i.e. our opponent.
+          if (msg.opponentName) opponentName = msg.opponentName;
+          else if (msg.color === 'B') opponentName = msg.room.hostName;
           if (msg.role === 'player' && msg.room.playerCount < 2) {
             statusArea.innerHTML = '';
             const waitingMsg = document.createElement('p');
@@ -182,6 +196,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
           onState?.(msg.engineState, msg.room.status);
         },
         onOpponentJoined(msg) {
+          opponentName = msg.name;
           tryMatch(msg.room);
         },
         onState(msg) {
@@ -189,6 +204,9 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
         },
         onOpponentLeft() {
           onOpponentLeft?.();
+        },
+        onChat(msg) {
+          onChat?.(msg);
         },
         onError(msg) {
           console.error('[online]', msg.message);

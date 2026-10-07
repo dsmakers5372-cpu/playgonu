@@ -30,13 +30,13 @@
   </header>
 
   <div style="max-width:720px;margin:0 auto;padding:48px 40px;display:flex;flex-direction:column;gap:24px;">
-    <div style="display:flex;flex-direction:column;gap:10px;">
+    <div data-intro style="display:flex;flex-direction:column;gap:10px;">
       <div class="tag" style="color:var(--red);">Online Battle</div>
       <h1 class="serif" style="margin:0;font-size:28px;">Play against another person, live</h1>
       <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">No account needed — just a name. Create a private room and share the link with a friend, make it public so anyone can join, or hop into someone else's open room below.</p>
     </div>
 
-    <select class="pill" data-game-select style="width:fit-content;">
+    <select class="pill" data-game-select data-intro style="width:fit-content;">
       <option value="cham">Cham-gonu</option>
       <option value="gomoku">Gomoku</option>
     </select>
@@ -59,10 +59,20 @@
   const initialGame = params.get('game') === 'gomoku' ? 'gomoku' : 'cham';
   gameSelect.value = initialGame;
 
+  // Once matched, the "which game / what's online battle" setup above is
+  // already decided — hide it so the match (board, player bar, chat) has
+  // the full page, instead of sitting below settings the player can't
+  // change mid-game anyway.
+  function hideIntro() {
+    document.querySelectorAll('[data-intro]').forEach((el) => { el.style.display = 'none'; });
+  }
+
   function mount(game) {
     onlineRoot.innerHTML = '';
-    if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, { lang: 'en' });
-    else mountOnlineChamGame(onlineRoot, { lang: 'en' });
+    document.querySelectorAll('[data-intro]').forEach((el) => { el.style.display = ''; });
+    const opts = { lang: 'en', onMatchStart: hideIntro };
+    if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, opts);
+    else mountOnlineChamGame(onlineRoot, opts);
   }
   mount(initialGame);
   gameSelect.addEventListener('change', () => mount(gameSelect.value));

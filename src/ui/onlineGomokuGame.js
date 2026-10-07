@@ -1,5 +1,6 @@
 import { legalPlacements, forbiddenPoints, toIndex, toCoords, BOARD_SIZE, PLAYERS, RULESETS } from '../engine/gomoku.js';
 import { mountOnlineLobby } from './onlineLobby.js';
+import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el } from './svg.js';
 import { playPlaceSound } from './sound.js';
@@ -21,11 +22,33 @@ function pointPixel(index) {
 }
 
 const T = {
-  en: { youAre: (c) => `You are ${PLAYER_NAME.en[c]}`, oppLeft: 'Your opponent left the game.', waitTurn: (n) => `${n}'s turn`, yourTurn: 'Your turn', spectating: 'Spectating', draw: "It's a draw!" },
-  ko: { youAre: (c) => `당신은 ${PLAYER_NAME.ko[c]}입니다`, oppLeft: '상대방이 나갔습니다.', waitTurn: (n) => `${n} 차례`, yourTurn: '당신 차례', spectating: '관전 중', draw: '무승부!' },
+  en: {
+    youAre: (c) => `You are ${PLAYER_NAME.en[c]}`,
+    oppLeft: 'Your opponent left the game.',
+    waitTurn: (n) => `${n}'s turn`,
+    yourTurn: 'Your turn',
+    spectating: 'Spectating',
+    draw: "It's a draw!",
+    gameStarted: (c) => `The game has started — you are ${PLAYER_NAME.en[c]}. Good luck!`,
+    youWin: 'You win! 🎉',
+    youLose: 'You lost — good game.',
+    drawMsg: "It's a draw!",
+  },
+  ko: {
+    youAre: (c) => `당신은 ${PLAYER_NAME.ko[c]}입니다`,
+    oppLeft: '상대방이 나갔습니다.',
+    waitTurn: (n) => `${n} 차례`,
+    yourTurn: '당신 차례',
+    spectating: '관전 중',
+    draw: '무승부!',
+    gameStarted: (c) => `게임이 시작되었습니다 — 당신은 ${PLAYER_NAME.ko[c]}입니다. 화이팅!`,
+    youWin: '승리했습니다! 🎉',
+    youLose: '패배했습니다 — 다음엔 이길 거예요.',
+    drawMsg: '무승부입니다.',
+  },
 };
 
-export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FREESTYLE } = {}) {
+export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FREESTYLE, onMatchStart } = {}) {
   const t = T[lang] || T.en;
   root.innerHTML = `
     <div data-lobby-root></div>
@@ -45,6 +68,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       <div class="board-frame" data-board-frame style="margin-top:20px;">
         <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
       </div>
+      <div data-match-panel></div>
     </div>
   `;
 
@@ -56,12 +80,15 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   const turnLabel = root.querySelector('[data-turn-label]');
   const youLabel = root.querySelector('[data-you-label]');
   const swatchRow = root.querySelector('[data-theme-row]');
+  const matchPanelRoot = root.querySelector('[data-match-panel]');
 
   let roomClient = null;
   let myColor = null;
   let role = 'player';
   let game = null;
   let mounted = false;
+  let panel = null;
+  let resultRecorded = false;
 
   function isMyTurn() {
     return role === 'player' && game && game.turn === myColor && !game.winner;
@@ -140,6 +167,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       turnLabel.textContent = isMyTurn() ? t.yourTurn : t.waitTurn(PLAYER_NAME[lang][game.turn]);
     }
     if (role === 'player') youLabel.textContent = t.youAre(myColor);
+    if (panel) panel.setTurnCaption(turnLabel.textContent);
   }
 
   function handlePointClick(index, legalSet) {
@@ -167,22 +195,60 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       myColor = info.color;
       role = info.role;
       mounted = true;
+      resultRecorded = false;
       lobbyRoot.style.display = 'none';
       gameRoot.style.display = 'block';
       renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });
       applyTheme(getStoredTheme());
+      if (role === 'player') {
+        const opponentColor = myColor === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
+        panel = mountMatchPanel(matchPanelRoot, {
+          lang,
+          gameType: 'gomoku',
+          youName: info.name,
+          opponentName: info.opponentName || (lang === 'ko' ? '상대' : 'Opponent'),
+          youColorHex: PLAYER_COLOR[myColor].fill,
+          opponentColorHex: PLAYER_COLOR[opponentColor].fill,
+        });
+        panel.onSendChat((text) => roomClient.sendChat(text));
+        panel.addSystemMessage(t.gameStarted(myColor));
+        panel.startTimer();
+      }
+      onMatchStart?.();
     },
     onState(engineState) {
       const prevCount = game ? game.cells.filter(Boolean).length : 0;
+      const wasWinner = game ? game.winner : null;
       game = engineState;
       if (!mounted) return;
       const newCount = game.cells.filter(Boolean).length;
       if (newCount > prevCount) playPlaceSound();
       renderBoard();
       renderToolbar();
+      if (panel && !resultRecorded && !wasWinner && game.winner) {
+        resultRecorded = true;
+        panel.stopTimer();
+        if (game.winner === 'draw') {
+          panel.recordResult('draw');
+          panel.addSystemMessage(t.drawMsg);
+        } else if (game.winner === myColor) {
+          panel.recordResult('win');
+          panel.addSystemMessage(t.youWin);
+        } else {
+          panel.recordResult('loss');
+          panel.addSystemMessage(t.youLose);
+        }
+      }
+    },
+    onChat(msg) {
+      panel?.addChatMessage(msg.from, msg.text);
     },
     onOpponentLeft() {
       if (turnLabel) turnLabel.textContent = t.oppLeft;
+      if (panel) {
+        panel.stopTimer();
+        panel.addSystemMessage(t.oppLeft);
+      }
     },
   });
 }

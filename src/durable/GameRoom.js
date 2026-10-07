@@ -6,16 +6,23 @@
 // project, so this adapter needs no per-game special-casing.
 import * as chamgonu from '../engine/chamgonu.js';
 import * as gomoku from '../engine/gomoku.js';
+import * as chamgonuAI from '../engine/chamgonuAI.js';
+import * as gomokuAI from '../engine/gomokuAI.js';
+import { getVirtualPlayer } from './virtualPlayers.js';
 
 const ENGINES = { cham: chamgonu, gomoku };
+const AI = { cham: chamgonuAI, gomoku: gomokuAI };
 const MAX_PLAYERS = 2;
+const BOT_MOVE_DELAY_MS = [450, 950]; // feels like a person thinking, not an instant server reply
 const ROOM_IDLE_LIMIT_MS = 30 * 60 * 1000; // storage alarm cleans up long-abandoned rooms
+const CHAT_MAX_LEN = 200;
+const BOT_GREETINGS = ['안녕하세요 :)', '화이팅!', 'Hi, good luck!', 'gl hf', '좋은 게임 되세요'];
 
 export class GameRoom {
   constructor(state, env) {
     this.state = state;
     this.env = env;
-    this.sockets = new Map(); // ws -> { id, role: 'player' | 'spectator', color? }
+    this.sockets = new Map(); // ws -> { id, role: 'player' | 'spectator', color?, name }
     this.room = null;
   }
 
@@ -69,7 +76,8 @@ export class GameRoom {
     }
     const conn = this.sockets.get(ws);
     if (!conn) return;
-    if (msg.type === 'move') this.handleMove(ws, conn, msg);
+    if (msg.type === 'move') await this.handleMove(ws, conn, msg);
+    else if (msg.type === 'chat') this.handleChat(conn, msg);
     else if (msg.type === 'leave') ws.close(1000, 'left');
   }
 
@@ -84,21 +92,27 @@ export class GameRoom {
       const engineState = gameType === 'gomoku'
         ? engine.createInitialState({ ruleset: msg.ruleset === 'renju' ? 'renju' : 'freestyle' })
         : engine.createInitialState();
+      // A room id like "vp-v037-K3PQ9X2A" is a one-shot challenge against a
+      // virtual (bot) opponent — look it up by the vNNN segment only;
+      // nothing about its strength or name is trusted from the client.
+      const vpId = roomId.startsWith('vp-') ? roomId.split('-')[1] : null;
+      const vp = vpId ? getVirtualPlayer(vpId) : null;
       this.room = {
         roomId,
         gameType,
         ruleset: msg.ruleset === 'renju' ? 'renju' : 'freestyle',
-        isPublic: !!msg.isPublic,
+        isPublic: vp ? false : !!msg.isPublic,
         hostName: name,
         players: [],
         spectatorCount: 0,
         engineState,
         status: 'waiting',
+        vsBot: vp ? { name: vp.name, difficulty: vp.difficulty } : null,
       };
     }
 
     if (this.room.players.length >= MAX_PLAYERS) {
-      this.sockets.set(ws, { id: connId, role: 'spectator' });
+      this.sockets.set(ws, { id: connId, role: 'spectator', name });
       this.room.spectatorCount++;
       this.send(ws, { type: 'joined', role: 'spectator', room: this.publicRoomView(), engineState: this.room.engineState });
       return;
@@ -107,21 +121,58 @@ export class GameRoom {
     const PLAYERS = ENGINES[this.room.gameType].PLAYERS;
     const color = this.room.players.length === 0 ? PLAYERS.A : PLAYERS.B;
     this.room.players.push({ id: connId, name, color });
-    this.sockets.set(ws, { id: connId, role: 'player', color });
+    this.sockets.set(ws, { id: connId, role: 'player', color, name });
 
-    this.send(ws, { type: 'joined', role: 'player', color, room: this.publicRoomView(), engineState: this.room.engineState });
-    this.broadcast({ type: 'opponent-joined', name, room: this.publicRoomView() }, ws);
+    if (this.room.vsBot && this.room.players.length === 1) {
+      this.room.players.push({ id: 'bot', name: this.room.vsBot.name, color: PLAYERS.B, isBot: true });
+    }
+
+    // Include the opponent's name directly when one is already seated (the
+    // vsBot case: the bot is seated above before this message goes out, in
+    // the same synchronous handler, so there's no later 'opponent-joined'
+    // the client could rely on instead — it'd be read after this 'joined'
+    // message already triggered the match).
+    const other = this.room.players.find((p) => p.id !== connId);
+    this.send(ws, { type: 'joined', role: 'player', color, room: this.publicRoomView(), engineState: this.room.engineState, opponentName: other ? other.name : null });
+    if (this.room.vsBot) {
+      // The human is the only real socket in the room — send them the
+      // "opponent joined" notice directly instead of broadcast-excluding
+      // themselves, which would deliver it to no one.
+      this.send(ws, { type: 'opponent-joined', name: this.room.vsBot.name, room: this.publicRoomView() });
+    } else {
+      this.broadcast({ type: 'opponent-joined', name, room: this.publicRoomView() }, ws);
+    }
 
     if (this.room.players.length === MAX_PLAYERS) {
       this.room.status = 'playing';
       await this.setLobbyListing(false);
       this.broadcast({ type: 'state', engineState: this.room.engineState, status: this.room.status });
+      if (this.room.vsBot) {
+        this.sendBotGreeting();
+        await this.triggerBotMoves();
+      }
     } else if (this.room.isPublic) {
       await this.setLobbyListing(true);
     }
   }
 
-  handleMove(ws, conn, msg) {
+  handleChat(conn, msg) {
+    if (!this.room) return;
+    const text = String(msg.text || '').trim().slice(0, CHAT_MAX_LEN);
+    if (!text) return;
+    this.broadcast({ type: 'chat', from: conn.name || 'Player', text, ts: Date.now() });
+  }
+
+  sendBotGreeting() {
+    const line = BOT_GREETINGS[Math.floor(Math.random() * BOT_GREETINGS.length)];
+    setTimeout(() => {
+      if (this.room && this.room.vsBot) {
+        this.broadcast({ type: 'chat', from: this.room.vsBot.name, text: line, ts: Date.now() });
+      }
+    }, 900 + Math.random() * 700);
+  }
+
+  async handleMove(ws, conn, msg) {
     if (conn.role !== 'player' || !this.room || this.room.status !== 'playing') return;
     const player = this.room.players.find((p) => p.id === conn.id);
     if (!player || this.room.engineState.turn !== player.color) return;
@@ -136,6 +187,33 @@ export class GameRoom {
     this.room.engineState = next;
     if (next.winner) this.room.status = 'finished';
     this.broadcast({ type: 'state', engineState: next, status: this.room.status });
+    if (this.room.vsBot && this.room.status === 'playing') await this.triggerBotMoves();
+  }
+
+  // Plays the bot's side forward until it's the human's turn again (a
+  // single human move can hand the turn to the bot more than once in a
+  // row — e.g. Cham-gonu keeps the same player on the move after a mill
+  // capture — so this loops rather than making just one bot move).
+  async triggerBotMoves() {
+    const ai = AI[this.room.gameType];
+    const engine = ENGINES[this.room.gameType];
+    const bot = this.room.players.find((p) => p.isBot);
+    if (!ai || !bot) return;
+    while (this.room.status === 'playing' && !this.room.engineState.winner && this.room.engineState.turn === bot.color) {
+      const [min, max] = BOT_MOVE_DELAY_MS;
+      await new Promise((resolve) => setTimeout(resolve, min + Math.random() * (max - min)));
+      const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: this.room.vsBot.difficulty });
+      if (!aiMove) break;
+      let next;
+      try {
+        next = engine.move(this.room.engineState, aiMove.from ?? null, aiMove.to);
+      } catch {
+        break;
+      }
+      this.room.engineState = next;
+      if (next.winner) this.room.status = 'finished';
+      this.broadcast({ type: 'state', engineState: next, status: this.room.status });
+    }
   }
 
   onClose(ws) {
