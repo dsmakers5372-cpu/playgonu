@@ -1,7 +1,12 @@
-import { move, allLegalMoves, opponent, toIndex, toCoords, BOARD_SIZE, PLAYERS } from './gomoku.js';
+import { move, allLegalMoves, analyzeMove, opponent, toIndex, toCoords, BOARD_SIZE, PLAYERS } from './gomoku.js';
 import { createMinimaxAI } from './minimaxAI.js';
 
-export const DIFFICULTY_DEPTH = { easy: 1, normal: 2, hard: 2, master: 3 };
+// hard used to be depth 2, same as normal — identical search depth meant
+// they played at basically the same strength, with any win/loss split just
+// coming down to move-order shuffling rather than hard actually searching
+// deeper. Self-play testing confirmed it (roughly 50/50 instead of hard
+// dominating) before this got bumped.
+export const DIFFICULTY_DEPTH = { easy: 1, normal: 2, hard: 3, master: 4 };
 
 const DIRS4 = [
   { dr: 0, dc: 1 },
@@ -15,10 +20,16 @@ function inBounds(row, col) {
 }
 
 // Full-width minimax over all 225 points is far too slow — restrict the
-// search to empty, legal points within 2 cells of an existing stone (plus
-// the center on an empty board). Branching factor stays in the dozens
-// instead of the hundreds, which is what makes a few plies of lookahead
-// affordable in the browser.
+// search to empty, legal points near existing stones, ranked by how many
+// stones surround them (a cheap proxy for "this is where the action is")
+// and capped to a fixed count. The cap matters more than it might look:
+// at depth 4, an uncapped candidate list (which can easily reach 60-80
+// cells by midgame) pushes worst-case node counts into the hundreds of
+// millions and a single "master" move past 6 seconds — capping to the
+// most contested cells, searched first, keeps it fast and also gives
+// alpha-beta better cutoffs since the strongest-looking moves go first.
+const MAX_CANDIDATES = 20;
+
 function candidateMoves(state, player) {
   const legal = allLegalMoves(state, player);
   if (legal.length === 0) return [];
@@ -30,7 +41,7 @@ function candidateMoves(state, player) {
     return legalSet.has(center) ? [{ from: null, to: center }] : legal;
   }
 
-  const near = new Set();
+  const density = new Map(); // candidate index -> nearby-stone count
   for (let i = 0; i < state.cells.length; i++) {
     if (!state.cells[i]) continue;
     const { row, col } = toCoords(i);
@@ -40,11 +51,34 @@ function candidateMoves(state, player) {
         const c = col + dc;
         if (!inBounds(r, c)) continue;
         const idx = toIndex(r, c);
-        if (legalSet.has(idx)) near.add(idx);
+        if (!legalSet.has(idx)) continue;
+        density.set(idx, (density.get(idx) || 0) + 1);
       }
     }
   }
-  return near.size > 0 ? [...near].map((to) => ({ from: null, to })) : legal;
+  if (density.size === 0) return legal;
+
+  // The density cap alone can prune away a move that actually wins right
+  // now, or one that stops the opponent from winning next turn — a few
+  // such "critical" cells can easily have low density (e.g. the open end
+  // of a long, thin line of stones) and get crowded out by busier-looking
+  // but tactically irrelevant intersections. Both are cheap to check
+  // within this already-small near-stones pool, so they're always kept.
+  const opp = opponent(player);
+  const critical = [];
+  for (const idx of density.keys()) {
+    const trial = state.cells.slice();
+    trial[idx] = player;
+    if (analyzeMove(trial, idx, player, state.ruleset).win) { critical.push(idx); continue; }
+    trial[idx] = opp;
+    if (analyzeMove(trial, idx, opp, state.ruleset).win) critical.push(idx);
+  }
+
+  const ranked = [...density.entries()].sort((a, b) => b[1] - a[1]).map(([idx]) => idx);
+  const criticalSet = new Set(critical);
+  const rest = ranked.filter((idx) => !criticalSet.has(idx));
+  const combined = [...critical, ...rest].slice(0, Math.max(MAX_CANDIDATES, critical.length));
+  return combined.map((to) => ({ from: null, to }));
 }
 
 // Simple pattern-table heuristic: for every run of a player's stones, score
