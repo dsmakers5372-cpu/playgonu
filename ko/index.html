@@ -76,7 +76,7 @@
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
         <div class="serif" style="font-size:18px;font-weight:700;">참고누 규칙</div>
         <ul>
-          <li>각자 말 12개를 가지고, 24점판의 빈 점에 번갈아 하나씩 놓습니다 — 이게 전반(배치 단계)입니다. 게임의 첫 수는 중간 사각형의 꼭짓점 4곳(모서리) 중 한 곳에만 놓을 수 있습니다.</li>
+          <li>각자 말 12개를 가지고, 24점판의 빈 점에 번갈아 하나씩 놓습니다 — 이게 전반(배치 단계)입니다. 게임의 첫 수는 맨 안쪽 사각형의 꼭짓점 4곳(모서리) 중 한 곳에만 놓을 수 있습니다.</li>
           <li>내 말 3개를 선을 따라 일직선으로 놓으면 "꼰" — 상대 말 하나를 잡습니다. 잡는 데 쓰인 자리는 말뚝으로 표시되어 배치 단계 동안 다시 못 씁니다.</li>
           <li>24개를 다 놓으면 후반(이동 단계)으로 전환 — 한 턴에 말 하나를 선을 따라 빈 자리로 한 칸 옮기며, 계속 3개를 맞춰 잡을 수 있습니다.</li>
           <li>상대 말을 2개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
@@ -114,6 +114,16 @@
       <div class="serif" style="font-size:22px;font-weight:700;">전반 끝!</div>
       <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">24개 말을 전부 놓았습니다. 후반부터는 놓는 대신 말 하나를 선을 따라 빈 자리로 한 칸씩 옮기세요.</p>
       <button class="btn-primary" data-phase-banner-ok>확인</button>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">2인 대전</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">같은 기기에서 둘이 할까요, 아니면 다른 사람을 온라인으로 초대할까요?</p>
+      <button class="btn-primary" data-mode-local>같은 기기</button>
+      <button class="btn" data-mode-online>온라인으로 →</button>
+      <a href="#" data-mode-cancel style="font-size:13px;color:var(--muted);">취소</a>
     </div>
   </div>
 

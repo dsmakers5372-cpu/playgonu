@@ -61,6 +61,10 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
   const timerLabel = root.querySelector('[data-timer]');
   const swatchRow = root.querySelector('[data-theme-row]');
   const opponentModeSelect = root.querySelector('[data-opponent-mode]');
+  const modeBanner = root.querySelector('[data-mode-banner]');
+  const modeBannerLocal = root.querySelector('[data-mode-local]');
+  const modeBannerOnline = root.querySelector('[data-mode-online]');
+  const modeBannerCancel = root.querySelector('[data-mode-cancel]');
   const aiDifficultySelect = root.querySelector('[data-ai-difficulty]');
   const sideSelect = root.querySelector('[data-side-select]');
   const rulesetSelect = root.querySelector('[data-ruleset]');
@@ -274,9 +278,31 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
   undoBtn.addEventListener('click', undo);
   winPlayAgain.addEventListener('click', newGame);
   opponentModeSelect.addEventListener('change', () => {
+    if (opponentModeSelect.value === 'local') {
+      if (modeBanner) modeBanner.classList.add('is-visible');
+      return;
+    }
     aiEnabled = opponentModeSelect.value === 'ai';
     maybeTriggerAI();
   });
+  if (modeBannerLocal) {
+    modeBannerLocal.addEventListener('click', () => {
+      aiEnabled = false;
+      modeBanner.classList.remove('is-visible');
+    });
+  }
+  if (modeBannerOnline) {
+    modeBannerOnline.addEventListener('click', () => {
+      location.href = `online.html?game=gomoku`;
+    });
+  }
+  if (modeBannerCancel) {
+    modeBannerCancel.addEventListener('click', (e) => {
+      e.preventDefault();
+      opponentModeSelect.value = aiEnabled ? 'ai' : 'local';
+      modeBanner.classList.remove('is-visible');
+    });
+  }
   if (sideSelect) {
     sideSelect.addEventListener('change', () => {
       updateAiPlayer();

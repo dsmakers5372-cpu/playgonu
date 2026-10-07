@@ -30,7 +30,7 @@
     </div>
   </header>
 
-  <div class="toolbar">
+  <div class="toolbar" id="board-top">
     <div class="toolbar__inner">
       <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
         <div class="turn-indicator">
@@ -77,7 +77,7 @@
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
         <div class="serif" style="font-size:18px;font-weight:700;">How Cham-gonu works</div>
         <ul>
-          <li>Each player has 12 pieces. Take turns placing one at a time on any empty point of the 24-point board — placement is the first half of the game. The very first placement of the game is restricted to one of the middle square's 4 corners.</li>
+          <li>Each player has 12 pieces. Take turns placing one at a time on any empty point of the 24-point board — placement is the first half of the game. The very first placement of the game is restricted to one of the innermost square's 4 corners.</li>
           <li>Line up 3 of your pieces in a row (straight, along the drawn lines) to form a "mill" — then remove one enemy piece. A point used in a capture is marked and locked for the rest of placement.</li>
           <li>Once all 24 pieces are placed, the second half begins: slide one piece per turn to an adjacent empty point, still forming mills to capture.</li>
           <li>Win by reducing your opponent to 2 pieces, or leaving them with no legal move.</li>
@@ -87,6 +87,63 @@
       <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
         <div style="font-size:13px;font-weight:600;color:var(--muted);">What is Gonu?</div>
         <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">A family of Korean folk board games, centuries old — Cham-gonu is the deep one, same family as the Western "Nine Men's Morris." New to Gonu? <a href="jul.html">Try Jul-gonu</a> first to learn the basics.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="max-width:1280px;margin:0 auto;padding:0 40px 48px;display:flex;flex-direction:column;gap:40px;">
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 280px;padding:28px;display:flex;flex-direction:column;gap:10px;">
+        <div class="tag" style="color:var(--teal, #2F6E6A);">Single Play</div>
+        <div class="serif" style="font-size:20px;font-weight:700;">Practice against the AI</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">Four difficulty levels, from a quick warm-up to a genuinely tough opponent — already set up above, just pick "vs AI" and go.</p>
+        <a href="#board-top" style="font-size:14px;font-weight:600;">Play now ↑</a>
+      </div>
+      <a href="online.html" class="card" style="flex:1 1 280px;padding:28px;display:flex;flex-direction:column;gap:10px;">
+        <div class="tag" style="color:var(--red);">Online Battle</div>
+        <div class="serif" style="font-size:20px;font-weight:700;">Play another person, live</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">No account needed. Share a room link with a friend, or join an open public room right now.</p>
+        <span style="font-size:14px;font-weight:600;color:var(--red);">Go online →</span>
+      </a>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="tag">Practice Gonu</div>
+        <h2 class="serif" style="margin:0;font-size:22px;">Learn the basics in a couple of minutes</h2>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="jul.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:18px;font-weight:700;">Jul-gonu 줄고누</div>
+          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">4 pieces each on a simple line board. Step one square, sandwich to capture — the easiest way to learn how Gonu works.</p>
+        </a>
+        <a href="pat.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:18px;font-weight:700;">Pat-gonu 밭고누</div>
+          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">Same sandwich capture, a bigger 5×5 board, pieces slide like a rook — a bit more room to plan.</p>
+        </a>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag" style="color:var(--red);">The main game</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">Cham-gonu 참고누</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">12 pieces each on a 24-point board, same family as Nine Men's Morris. Place pieces to form "mills" and capture, then slide once the board fills — genuinely deep, worth the extra few minutes to learn.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="#board-top" class="btn-primary">Play solo</a>
+          <a href="online.html?game=cham" class="btn">Invite a friend</a>
+        </div>
+      </div>
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag">Not a Gonu variant</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">Gomoku 오목</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">Five in a row, any direction, on a 15×15 board — Freestyle or Standard (Renju) rules. No captures, just pure positioning.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="gomoku.html" class="btn-primary">Play solo</a>
+          <a href="online.html?game=gomoku" class="btn">Invite a friend</a>
+        </div>
       </div>
     </div>
 
@@ -115,6 +172,16 @@
       <div class="serif" style="font-size:22px;font-weight:700;">First half over!</div>
       <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">All 24 pieces are placed. For the second half, slide one piece per turn to an adjacent point instead of placing.</p>
       <button class="btn-primary" data-phase-banner-ok>Got it</button>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">2 Players</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">Playing on this device together, or inviting someone online?</p>
+      <button class="btn-primary" data-mode-local>Same device</button>
+      <button class="btn" data-mode-online>Play online →</button>
+      <a href="#" data-mode-cancel style="font-size:13px;color:var(--muted);">Cancel</a>
     </div>
   </div>
 
