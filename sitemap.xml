@@ -9,12 +9,6 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
   </url>
   <url>
-    <loc>https://playgonu.com/hobak.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/hobak.html" />
-    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/hobak.html" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/hobak.html" />
-  </url>
-  <url>
     <loc>https://playgonu.com/pat.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/pat.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/pat.html" />
@@ -32,12 +26,6 @@
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
-  </url>
-  <url>
-    <loc>https://playgonu.com/ko/hobak.html</loc>
-    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/hobak.html" />
-    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/hobak.html" />
-    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/hobak.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/pat.html</loc>
