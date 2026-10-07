@@ -29,7 +29,7 @@
     </div>
   </header>
 
-  <div class="toolbar">
+  <div class="toolbar" id="board-top">
     <div class="toolbar__inner">
       <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
         <div class="turn-indicator">
@@ -76,7 +76,7 @@
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
         <div class="serif" style="font-size:18px;font-weight:700;">참고누 규칙</div>
         <ul>
-          <li>각자 말 12개를 가지고, 24점판의 빈 점에 번갈아 하나씩 놓습니다 — 이게 전반(배치 단계)입니다. 게임의 첫 수는 맨 안쪽 사각형의 꼭짓점 4곳(모서리) 중 한 곳에만 놓을 수 있습니다.</li>
+          <li>각자 말 12개를 가지고, 24점판의 빈 점에 번갈아 하나씩 놓습니다 — 이게 전반(배치 단계)입니다. 게임의 첫 수는 가장 바깥쪽 사각형의 꼭짓점 4곳(모서리) 중 한 곳에만 놓을 수 있습니다.</li>
           <li>내 말 3개를 선을 따라 일직선으로 놓으면 "꼰" — 상대 말 하나를 잡습니다. 잡는 데 쓰인 자리는 말뚝으로 표시되어 배치 단계 동안 다시 못 씁니다.</li>
           <li>24개를 다 놓으면 후반(이동 단계)으로 전환 — 한 턴에 말 하나를 선을 따라 빈 자리로 한 칸 옮기며, 계속 3개를 맞춰 잡을 수 있습니다.</li>
           <li>상대 말을 2개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
@@ -86,6 +86,63 @@
       <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
         <div style="font-size:13px;font-weight:600;color:var(--muted);">고누란?</div>
         <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">한국의 전통 민속 보드게임 가족입니다. 참고누는 그중 가장 묵직한 변형 — 서양의 "나인 멘즈 모리스"와 같은 계열이에요. 처음이라면 <a href="jul.html">줄고누부터</a> 익혀보세요.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="max-width:1280px;margin:0 auto;padding:0 40px 48px;display:flex;flex-direction:column;gap:40px;">
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 280px;padding:28px;display:flex;flex-direction:column;gap:10px;">
+        <div class="tag" style="color:var(--teal, #2F6E6A);">싱글플레이</div>
+        <div class="serif" style="font-size:20px;font-weight:700;">AI와 연습하기</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">난이도 4단계, 가볍게 몸 푸는 것부터 진짜 강한 상대까지 — 위에서 "AI와 대전"만 고르면 바로 시작됩니다.</p>
+        <a href="#board-top" style="font-size:14px;font-weight:600;">바로 하기 ↑</a>
+      </div>
+      <a href="online.html" class="card" style="flex:1 1 280px;padding:28px;display:flex;flex-direction:column;gap:10px;">
+        <div class="tag" style="color:var(--red);">온라인 대전</div>
+        <div class="serif" style="font-size:20px;font-weight:700;">실시간으로 다른 사람과 대전</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">계정 필요 없습니다. 방 링크를 친구와 공유하거나, 지금 바로 열려있는 공개 방에 참가하세요.</p>
+        <span style="font-size:14px;font-weight:600;color:var(--red);">온라인으로 가기 →</span>
+      </a>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="tag">간단한 고누 연습하기</div>
+        <h2 class="serif" style="margin:0;font-size:22px;">몇 분이면 기본기를 익힐 수 있어요</h2>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="jul.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:18px;font-weight:700;">줄고누 Jul-gonu</div>
+          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">각자 말 4개, 단순한 선판. 한 칸씩 움직이고 양옆으로 끼우면 포획 — 고누의 기본을 익히기 가장 쉬운 방법입니다.</p>
+        </a>
+        <a href="pat.html" class="card" style="flex:1 1 280px;padding:24px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:18px;font-weight:700;">밭고누 Pat-gonu</div>
+          <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">같은 끼워잡기 방식에 5×5 큰 판, 말은 룩처럼 여러 칸 슬라이딩 — 생각할 여지가 조금 더 있어요.</p>
+        </a>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag" style="color:var(--red);">메인 게임</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">참고누 Cham-gonu</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">각자 말 12개, 24점판. 나인 멘즈 모리스와 같은 계열입니다. 말을 놓아 "꼰"을 만들어 포획하고, 판이 다 차면 이동 단계로 전환 — 배울 가치가 있는 진짜 깊이 있는 게임입니다.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="#board-top" class="btn-primary">혼자 하기</a>
+          <a href="online.html?game=cham" class="btn">친구 초대하기</a>
+        </div>
+      </div>
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag">고누 변형이 아닙니다</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">오목 Gomoku</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">15×15판에 가로·세로·대각선 5목을 완성하면 승리 — 자유룰 또는 표준(렌주룰). 포획 없이 순수하게 자리 싸움만 합니다.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="gomoku.html" class="btn-primary">혼자 하기</a>
+          <a href="online.html?game=gomoku" class="btn">친구 초대하기</a>
+        </div>
       </div>
     </div>
 
