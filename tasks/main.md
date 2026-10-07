@@ -46,8 +46,10 @@ npm test
   - **결론: 지금 범위(로컬+AI+친구초대, 무가입)는 유지하되, 난이도 4단계·게임방법 페이지에 전략팁 추가는 작은 비용으로 따라할 만함. 공개 로비·ELO 리더보드·계정 시스템은 트래픽 검증 후 2단계로 미루는 걸 권장**
 - [x] **난이도 4단계로 확장(Master 추가)** (2026-10-07, gomoku.com 벤치마킹 반영) — [src/engine/minimaxAI.js](src/engine/minimaxAI.js) `DEFAULT_DIFFICULTY_DEPTH`에 `master: 6`(탐색 깊이) 추가. 깊이 7은 밭고누 기준 초반 포지션에서 약 4.9초로 너무 느려서 6으로 확정(약 0.3~0.4초). `npm test` 51개(마스터 난이도 합법성·성능 테스트 추가 포함) 전부 통과. EN/KO 8개 페이지 드롭다운에 옵션 추가
 - [x] **하는 법 페이지에 전략 팁 추가** (2026-10-07) — [howto.html](howto.html)/[ko/howto.html](ko/howto.html)에 "Strategy tips"/"전략 팁" 카드 추가(중앙 장악, 끼워잡기 주의, 가두기 변형은 이동성으로 사고, 무작정 교환 금지). gomoku.com처럼 패턴 예시 이미지는 아직 없음(범위상 보류)
-- [x] **git 저장소 초기화** (2026-10-07) — `git init` 완료, `.gitignore` 추가. **아직 커밋은 안 했음**(사용자 요청 시 진행)
-- [ ] **클라우드플레어 Pages 실제 배포 + 도메인 연결** (2026-10-07, 도메인 playgonu.com 구매 완료) — git 저장소는 준비됨, **배포 방법(GitHub 연동 vs wrangler 직접 업로드) 사용자 확답 대기 중**. wrangler는 미인증 상태 확인함(로그인은 사용자가 직접 해야 함)
+- [x] **GitHub 저장소 생성 + 푸시** (2026-10-07) — `gh` CLI 기기코드 로그인(비밀번호 없이 승인만, `dsmakers5372-cpu` 계정)으로 [github.com/dsmakers5372-cpu/playgonu](https://github.com/dsmakers5372-cpu/playgonu) 생성, 초기 커밋 푸시 완료
+- [x] **클라우드플레어 Workers 배포 완료** (2026-10-07) — 사용자가 대시보드에서 "Workers & Pages → Create → Connect to Git"로 진행. 이 경로가 **클래식 Pages가 아니라 "Workers(정적 애셋)" 방식**이라 `npx wrangler deploy` 기준 설정이 필요했음 — [wrangler.jsonc](wrangler.jsonc) + [src/worker.js](src/worker.js) 추가(country-기반 언어 리다이렉트를 Pages Functions에서 Worker로 이식), `functions/_middleware.js`는 제거. `.assetsignore`로 tests/tasks/.claude 등 비공개 파일 배포 제외. **실배포 확인: https://playgonu.dsmakers.workers.dev — 브라우저로 직접 접속해서 보드 클릭·선택까지 정상 작동 확인함**
+  - wrangler CLI 로그인은 이 환경(샌드박스+Windows)에서 포트 바인딩 버그로 실패 반복 → 대시보드 방식으로 전환해서 해결
+- [ ] **커스텀 도메인(playgonu.com) 연결** — 지금은 `*.workers.dev` 임시 주소에만 떠 있음. Cloudflare 대시보드 → Workers 프로젝트 → Settings → Domains & Routes → Add Custom Domain에서 playgonu.com 연결 필요. 네임서버는 사용자가 이미 등록대행사에서 변경함(전파 완료 여부 미확인)
 - [ ] 구글 서치콘솔·네이버 서치어드바이저 등록 — sitemap.xml/robots.txt는 준비됨, **실제 배포 후에나 의미 있음**(소유권 확인에 도메인 접근 필요)
 
 ## 인프라 결정 (2026-10-07, 사용자 확정)
