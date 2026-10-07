@@ -1,0 +1,8 @@
+tests/
+tasks/
+.claude/
+functions/
+package.json
+CLAUDE.md
+wrangler.jsonc
+src/worker.js
