@@ -305,7 +305,16 @@ a:hover {
   }
 
   .board-frame {
-    padding: 16px;
+    /* Break out of .main-layout's side padding so the board goes edge to
+       edge on phones — on a dense board (Gomoku's 15x15) every extra pixel
+       of width matters for how comfortably it can be tapped. */
+    max-width: none;
+    width: calc(100% + 32px);
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 12px;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   .ad-slot {

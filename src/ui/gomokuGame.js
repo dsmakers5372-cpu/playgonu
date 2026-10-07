@@ -13,6 +13,7 @@ import { chooseAIMove } from '../engine/gomokuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el } from './svg.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
+import { playPlaceSound } from './sound.js';
 
 const AI_MOVE_DELAY_MS = 450;
 
@@ -67,6 +68,10 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
 
   let game = createInitialState({ ruleset: rulesetSelect ? rulesetSelect.value : RULESETS.FREESTYLE });
   let history = [];
+  // On a dense 15x15 board, a mis-tap is easy on mobile — the first tap on
+  // a point just previews a faint stone there; tapping that same point
+  // again is what actually commits the move.
+  let previewIndex = null;
   let aiEnabled = opponentModeSelect.value === 'ai';
   let aiPlayer = sideSelect && sideSelect.value === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
   const stats = createGameStats({ onTick: (ms) => { if (timerLabel) timerLabel.textContent = formatElapsed(ms); } });
@@ -94,6 +99,7 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
     history.push(game);
     game = move(game, null, to);
     stats.recordMove();
+    playPlaceSound();
     renderBoard();
     renderToolbar();
     showWinBanner();
@@ -108,6 +114,7 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
       history.push(game);
       game = move(game, null, aiMove.to);
       stats.recordMove();
+      playPlaceSound();
       renderBoard();
       renderToolbar();
       showWinBanner();
@@ -175,6 +182,12 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
       }
     });
 
+    if (previewIndex !== null && game.cells[previewIndex] === null) {
+      const { x, y } = pointPixel(previewIndex);
+      const colors = PLAYER_COLOR[game.turn];
+      svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '1.4', opacity: '.4' }));
+    }
+
     const legal = isHumanTurn() ? new Set(legalPlacements(game)) : null;
     game.cells.forEach((_, index) => {
       const { x, y } = pointPixel(index);
@@ -220,12 +233,19 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
       showFoulNote();
       return;
     }
-    applyAction(index);
+    if (previewIndex === index) {
+      previewIndex = null;
+      applyAction(index);
+      return;
+    }
+    previewIndex = index;
+    renderBoard();
   }
 
   function newGame() {
     game = createInitialState({ ruleset: rulesetSelect ? rulesetSelect.value : RULESETS.FREESTYLE });
     history = [];
+    previewIndex = null;
     stats.reset();
     stats.start();
     hideWinBanner();
@@ -236,6 +256,7 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
 
   function undo() {
     if (history.length === 0) return;
+    previewIndex = null;
     game = history.pop();
     let undone = 1;
     if (aiEnabled && history.length > 0 && game.turn === aiPlayer) {
