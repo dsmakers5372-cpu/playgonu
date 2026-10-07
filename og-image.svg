@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#F6F1E6"/>
+
+  <!-- Cham-gonu board motif, right side -->
+  <g transform="translate(760,75)" fill="none" stroke="#2A2420" stroke-width="5" stroke-linecap="round">
+    <rect x="0" y="0" width="480" height="480"/>
+    <rect x="90" y="90" width="300" height="300"/>
+    <rect x="180" y="180" width="120" height="120"/>
+    <line x1="0" y1="0" x2="90" y2="90"/>
+    <line x1="480" y1="0" x2="390" y2="90"/>
+    <line x1="0" y1="480" x2="90" y2="390"/>
+    <line x1="480" y1="480" x2="390" y2="390"/>
+  </g>
+  <circle cx="760" cy="75" r="15" fill="#AC3B2A"/>
+  <circle cx="1240" cy="75" r="15" fill="#2C5F8A"/>
+  <circle cx="760" cy="555" r="15" fill="#2C5F8A"/>
+  <circle cx="1240" cy="555" r="15" fill="#AC3B2A"/>
+  <circle cx="850" cy="165" r="15" fill="#2C5F8A"/>
+  <circle cx="1150" cy="465" r="15" fill="#AC3B2A"/>
+
+  <!-- Text -->
+  <text x="80" y="230" font-family="Georgia, 'Noto Serif KR', serif" font-size="88" font-weight="700" fill="#2A2420">PlayGonu</text>
+  <text x="80" y="300" font-family="Georgia, 'Noto Serif KR', serif" font-size="40" fill="#AC3B2A">고누 &amp; Gomoku, free in your browser</text>
+  <text x="80" y="380" font-family="Arial, sans-serif" font-size="28" fill="#4A4038">Korean traditional board games — play solo vs AI,</text>
+  <text x="80" y="420" font-family="Arial, sans-serif" font-size="28" fill="#4A4038">or online against a real person. No install, no account.</text>
+
+  <rect x="80" y="470" width="190" height="56" rx="10" fill="#AC3B2A"/>
+  <text x="175" y="506" font-family="Arial, sans-serif" font-size="26" font-weight="700" fill="#F6F1E6" text-anchor="middle">playgonu.com</text>
+</svg>
