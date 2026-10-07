@@ -26,7 +26,7 @@ const PLAYER_COLOR = {
 const PLAYER_NAME = { en: { A: 'Black', B: 'White' }, ko: { A: '검정', B: '흰돌' } };
 
 const VIEWPORT = 420;
-const MARGIN = 24;
+const MARGIN = 14; // just enough room for a stone/hit-circle at the edge rows/cols not to clip
 const STEP = (VIEWPORT - MARGIN * 2) / (BOARD_SIZE - 1);
 const STAR_POINTS = [3, 7, 11].flatMap((row) => [3, 7, 11].map((col) => toIndex(row, col)));
 

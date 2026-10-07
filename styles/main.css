@@ -312,7 +312,7 @@ a:hover {
     width: calc(100% + 32px);
     margin-left: -16px;
     margin-right: -16px;
-    padding: 12px;
+    padding: 6px;
     border-radius: 0;
     box-shadow: none;
   }
