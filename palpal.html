@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — Play Palpal-gonu (Eight-Eight Gonu)</title>
+<meta name="description" content="Palpal-gonu, the widest Jul-gonu-family board — 8 pieces a side on an 8x8-point grid. Free in your browser.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
+        <a href="jul.html" class="variant-tab">Jul-gonu</a>
+        <a href="daseotjul.html" class="variant-tab">Daseotjul-gonu</a>
+        <a href="palpal.html" class="variant-tab is-active">Palpal-gonu</a>
+        <a href="munsal.html" class="variant-tab">Munsal-gonu</a>
+        <a href="bakwi.html" class="variant-tab">Bakwi-gonu</a>
+        <a href="naholo.html" class="variant-tab">Naholo-gonu</a>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="howto.html" class="variant-tab">How to Play</a>
+        <a href="online.html" class="variant-tab">Online</a>
+        <a href="blog/index.html" class="variant-tab">Blog</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>Red to move</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>Captured — Red: 0 · Black: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">Play Red · First</option>
+          <option value="B">Play Black · Second</option>
+        </select>
+        <select class="pill" data-opponent-mode style="cursor:pointer;">
+          <option value="local">2 Players (local)</option>
+          <option value="ai" selected>vs AI</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+          <option value="master">Master</option>
+        </select>
+        <button class="btn" data-undo>Undo</button>
+        <button class="btn-primary" data-new-game>New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">Board color</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div class="serif" style="font-size:18px;font-weight:700;">How Palpal-gonu works</div>
+        <ul>
+          <li>Each player starts with 8 pieces lined up on their own edge of an 8x8-point board.</li>
+          <li>Move one piece per turn, one step along a line.</li>
+          <li>Trap an enemy piece between two of yours in a straight line to capture it.</li>
+          <li>Win by reducing your opponent to one piece, or leaving them with no legal move.</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">Part of the Jul-gonu family</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">The widest of Korean Gonu's "line" variants — "팔팔" means "eight eight," for 8 pieces a side. Same sandwich-capture rules as Jul-gonu and Daseotjul-gonu, just with much more room to maneuver.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>Red wins!</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">Moves</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">Time</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>Play again</button>
+      <a href="index.html" class="btn" style="text-align:center;">Back to Home</a>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="privacy.html" style="color:var(--muted);text-decoration:underline;">Privacy Policy</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountPalpalgonuGame } from './src/ui/palpalgonuGame.js';
+  import { mountLanguageSwitcher } from './src/ui/languageSwitcher.js';
+  mountPalpalgonuGame(document.querySelector('[data-root]'), { lang: 'en' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'palpal.html' });
+</script>
+</body>
+</html>
