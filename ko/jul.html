@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>플레이고누 — 밭고누 플레이</title>
+<title>플레이고누 — 줄고누 연습 라운드</title>
+<meta name="description" content="가장 단순한 고누 변형 줄고누 — 2분이면 익히는 입문 게임. 기본을 배우고 나면 참고누로 진짜 승부를 보세요.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
@@ -18,8 +19,8 @@
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
         <a href="index.html" class="variant-tab">참고누</a>
-        <a href="pat.html" class="variant-tab is-active">밭고누</a>
-        <a href="jul.html" class="variant-tab">줄고누</a>
+        <a href="pat.html" class="variant-tab">밭고누</a>
+        <a href="jul.html" class="variant-tab is-active">줄고누</a>
         <a href="howto.html" class="variant-tab">하는 법</a>
         <span data-lang-switcher></span>
       </nav>
@@ -71,13 +72,17 @@
 
     <div class="rules-panel">
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
-        <div class="serif" style="font-size:18px;font-weight:700;">밭고누 규칙</div>
+        <div class="serif" style="font-size:18px;font-weight:700;">줄고누 규칙 <span class="tag">연습 라운드</span></div>
         <ul>
-          <li>각자 말 5개로 5×5 판의 자기 쪽 끝줄에 나란히 놓고 시작합니다.</li>
-          <li>말은 체스의 룩처럼 — 길이 막히기 전까지 — 선을 따라 원하는 만큼 미끄러지듯 이동합니다.</li>
+          <li>각자 말 4개를 자기 쪽 첫 줄에 나란히 놓고 시작합니다.</li>
+          <li>한 턴에 말 하나를 선을 따라 한 칸 움직입니다.</li>
           <li>상대 말을 내 말 두 개 사이에 일직선으로 가두면 잡습니다.</li>
-          <li>상대 말을 전부 잡거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
+          <li>상대 말을 1개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
         </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">고누란?</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">한국의 전통 민속 보드게임 가족입니다. 줄고누는 게임을 익히기 위한 가장 단순한 버전이에요. 감을 잡았다면 <a href="index.html">참고누</a>로 진짜 승부를 보세요.</p>
       </div>
     </div>
 
@@ -103,10 +108,10 @@
 
 </div>
 <script type="module">
-  import { mountPatgonuGame } from '../src/ui/patgonuGame.js';
+  import { mountJulgonuGame } from '../src/ui/julgonuGame.js';
   import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
-  mountPatgonuGame(document.querySelector('[data-root]'), { lang: 'ko' });
-  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'pat.html' });
+  mountJulgonuGame(document.querySelector('[data-root]'), { lang: 'ko' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'jul.html' });
 </script>
 </body>
 </html>

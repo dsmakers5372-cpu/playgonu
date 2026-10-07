@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>플레이고누 — 한국 전통 보드게임 고누 온라인으로 즐기기</title>
+<title>플레이고누 — 참고누 온라인으로 즐기기</title>
+<meta name="description" content="한국 전통 고누 중 가장 묵직한 참고누를 브라우저에서 바로 — 2인 로컬 대전·AI 대전 모두 지원. 처음이라면 줄고누·밭고누로 먼저 몸을 풀어보세요.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
@@ -17,8 +18,9 @@
         <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <a href="index.html" class="variant-tab is-active">줄고누</a>
+        <a href="index.html" class="variant-tab is-active">참고누</a>
         <a href="pat.html" class="variant-tab">밭고누</a>
+        <a href="jul.html" class="variant-tab">줄고누</a>
         <a href="howto.html" class="variant-tab">하는 법</a>
         <span data-lang-switcher></span>
       </nav>
@@ -30,10 +32,10 @@
       <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
         <div class="turn-indicator">
           <span class="turn-dot" data-turn-dot></span>
-          <span data-turn-label>빨강 차례</span>
+          <span data-turn-label>빨강 차례 — 놓기 (0/12)</span>
         </div>
         <span class="tag" data-timer>0:00</span>
-        <div style="font-size:13px;color:var(--muted);" data-captured-label>잡은 말 — 빨강: 0 · 검정: 0</div>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>남은 말 — 빨강: 0 · 검정: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <select class="pill" data-side-select style="cursor:pointer;">
@@ -70,17 +72,17 @@
 
     <div class="rules-panel">
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
-        <div class="serif" style="font-size:18px;font-weight:700;">줄고누 규칙</div>
+        <div class="serif" style="font-size:18px;font-weight:700;">참고누 규칙</div>
         <ul>
-          <li>각자 말 4개를 자기 쪽 첫 줄에 나란히 놓고 시작합니다.</li>
-          <li>한 턴에 말 하나를 선을 따라 한 칸 움직입니다.</li>
-          <li>상대 말을 내 말 두 개 사이에 일직선으로 가두면 잡습니다.</li>
-          <li>상대 말을 1개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
+          <li>각자 말 12개를 가지고, 24점판의 빈 점에 번갈아 하나씩 놓습니다 — 이게 전반(배치 단계)입니다.</li>
+          <li>내 말 3개를 선을 따라 일직선으로 놓으면 "꼰" — 상대 말 하나를 잡습니다. 잡는 데 쓰인 자리는 말뚝으로 표시되어 배치 단계 동안 다시 못 씁니다.</li>
+          <li>24개를 다 놓으면 후반(이동 단계)으로 전환 — 한 턴에 말 하나를 선을 따라 빈 자리로 한 칸 옮기며, 계속 3개를 맞춰 잡을 수 있습니다.</li>
+          <li>상대 말을 2개로 줄이거나, 상대가 더 이상 둘 곳이 없게 만들면 승리합니다.</li>
         </ul>
       </div>
       <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
         <div style="font-size:13px;font-weight:600;color:var(--muted);">고누란?</div>
-        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">한국의 전통 민속 보드게임 가족입니다. 이건 그중 가장 단순한 줄고누예요. 위 탭에서 다른 변형도 바로 골라보세요.</p>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">한국의 전통 민속 보드게임 가족입니다. 참고누는 그중 가장 묵직한 변형 — 서양의 "나인 멘즈 모리스"와 같은 계열이에요. 처음이라면 <a href="jul.html">줄고누부터</a> 익혀보세요.</p>
       </div>
     </div>
 
@@ -106,9 +108,9 @@
 
 </div>
 <script type="module">
-  import { mountJulgonuGame } from '../src/ui/julgonuGame.js';
+  import { mountChamgonuGame } from '../src/ui/chamgonuGame.js';
   import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
-  mountJulgonuGame(document.querySelector('[data-root]'), { lang: 'ko' });
+  mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'ko' });
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'index.html' });
 </script>
 </body>

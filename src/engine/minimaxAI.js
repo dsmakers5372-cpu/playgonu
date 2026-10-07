@@ -22,7 +22,10 @@ export function createMinimaxAI({ move, allLegalMoves, opponent, evaluate, depth
     let best = null;
     for (const candidate of shuffled(allLegalMoves(state, player))) {
       const nextState = move(state, candidate.from, candidate.to);
-      const { score } = minimax(nextState, depth - 1, opponent(player), perspective, alpha, beta);
+      // Use the resulting state's own turn rather than always flipping to
+      // opponent(player): some games (e.g. Cham-gonu's mill capture) keep
+      // the same player on the move for a follow-up action.
+      const { score } = minimax(nextState, depth - 1, nextState.turn, perspective, alpha, beta);
       if (best === null || (maximizing ? score > best.score : score < best.score)) {
         best = { score, move: candidate };
       }

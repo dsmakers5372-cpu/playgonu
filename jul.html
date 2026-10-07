@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PlayGonu — Play Cham-gonu, a Korean Nine Men's Morris, Online</title>
-<meta name="description" content="Play Cham-gonu, the deepest variant of Korean traditional Gonu, free in your browser — 2-player local or vs AI. Warm up first on the simpler Jul-gonu and Pat-gonu.">
+<title>PlayGonu — Play Jul-gonu (Practice Round)</title>
+<meta name="description" content="Jul-gonu, the simplest Korean Gonu variant — a 2-minute starter game. Learn the basics, then try Cham-gonu for the real thing.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles/main.css">
@@ -18,9 +18,9 @@
         <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <a href="index.html" class="variant-tab is-active">Cham-gonu</a>
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
         <a href="pat.html" class="variant-tab">Pat-gonu</a>
-        <a href="jul.html" class="variant-tab">Jul-gonu</a>
+        <a href="jul.html" class="variant-tab is-active">Jul-gonu</a>
         <a href="howto.html" class="variant-tab">How to Play</a>
         <span data-lang-switcher></span>
       </nav>
@@ -32,10 +32,10 @@
       <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
         <div class="turn-indicator">
           <span class="turn-dot" data-turn-dot></span>
-          <span data-turn-label>Red to place (0/12)</span>
+          <span data-turn-label>Red to move</span>
         </div>
         <span class="tag" data-timer>0:00</span>
-        <div style="font-size:13px;color:var(--muted);" data-captured-label>On board — Red: 0 · Black: 0</div>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>Captured — Red: 0 · Black: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
         <select class="pill" data-side-select style="cursor:pointer;">
@@ -72,17 +72,17 @@
 
     <div class="rules-panel">
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
-        <div class="serif" style="font-size:18px;font-weight:700;">How Cham-gonu works</div>
+        <div class="serif" style="font-size:18px;font-weight:700;">How Jul-gonu works <span class="tag">Warm-up round</span></div>
         <ul>
-          <li>Each player has 12 pieces. Take turns placing one at a time on any empty point of the 24-point board — placement is the first half of the game.</li>
-          <li>Line up 3 of your pieces in a row (straight, along the drawn lines) to form a "mill" — then remove one enemy piece. A point used in a capture is marked and locked for the rest of placement.</li>
-          <li>Once all 24 pieces are placed, the second half begins: slide one piece per turn to an adjacent empty point, still forming mills to capture.</li>
-          <li>Win by reducing your opponent to 2 pieces, or leaving them with no legal move.</li>
+          <li>Each player starts with 4 pieces lined up on their own edge of the board.</li>
+          <li>Move one piece per turn, one step along a line.</li>
+          <li>Trap an enemy piece between two of yours in a straight line to capture it.</li>
+          <li>Win by reducing your opponent to one piece, or leaving them with no legal move.</li>
         </ul>
       </div>
       <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
         <div style="font-size:13px;font-weight:600;color:var(--muted);">What is Gonu?</div>
-        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">A family of Korean folk board games, centuries old — Cham-gonu is the deep one, same family as the Western "Nine Men's Morris." New to Gonu? <a href="jul.html">Try Jul-gonu</a> first to learn the basics.</p>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">A family of Korean folk board games, centuries old. Jul-gonu is the simplest — just for learning the basics. Once it clicks, <a href="index.html">play Cham-gonu</a> for the real game.</p>
       </div>
     </div>
 
@@ -108,10 +108,10 @@
 
 </div>
 <script type="module">
-  import { mountChamgonuGame } from './src/ui/chamgonuGame.js';
+  import { mountJulgonuGame } from './src/ui/julgonuGame.js';
   import { mountLanguageSwitcher } from './src/ui/languageSwitcher.js';
-  mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'en' });
-  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'index.html' });
+  mountJulgonuGame(document.querySelector('[data-root]'), { lang: 'en' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'jul.html' });
 </script>
 </body>
 </html>
