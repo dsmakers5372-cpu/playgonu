@@ -140,11 +140,14 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     }
     svg.appendChild(lineGroup);
 
-    for (const target of currentTargets()) {
+    // Targets on EMPTY points (placing/moving) render as a small dot — safe
+    // to draw before the pieces since nothing else occupies that point yet.
+    const targets = currentTargets();
+    for (const target of targets) {
+      if (game.pieces[target] !== null) continue; // occupied (capture) targets render after the pieces, below
       const { x, y } = POINT_PIXELS[target];
-      const color = game.pendingCapture ? '#AC3B2A' : '#2F6E6A';
       svg.appendChild(el('circle', { cx: x, cy: y, r: 11, fill: '#F6F1E6', opacity: '.9' }));
-      svg.appendChild(el('circle', { cx: x, cy: y, r: 7, fill: color }));
+      svg.appendChild(el('circle', { cx: x, cy: y, r: 7, fill: '#2F6E6A' }));
     }
 
     if (selected !== null) {
@@ -162,6 +165,17 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       const colors = PLAYER_COLOR[player];
       svg.appendChild(el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' }));
     });
+
+    // Capture targets sit on an opponent's stone — a filled dot drawn before
+    // the piece would just get painted over, so this draws a bright ring
+    // around the stone instead, on top of everything, so it's actually
+    // visible (this was the bug: previously these were invisible).
+    for (const target of targets) {
+      if (game.pieces[target] === null) continue;
+      const { x, y } = POINT_PIXELS[target];
+      svg.appendChild(el('circle', { cx: x, cy: y, r: 19, fill: 'none', stroke: '#F6F1E6', 'stroke-width': '4', opacity: '.95' }));
+      svg.appendChild(el('circle', { cx: x, cy: y, r: 17, fill: 'none', stroke: '#AC3B2A', 'stroke-width': '3' }));
+    }
 
     POINT_PIXELS.forEach((_, index) => {
       const { x, y } = POINT_PIXELS[index];
