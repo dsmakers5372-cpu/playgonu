@@ -7,9 +7,7 @@ const VARIANTS = [
   { href: 'jul.html', en: 'Jul-gonu', ko: '줄고누' },
   { href: 'daseotjul.html', en: 'Daseotjul-gonu', ko: '다섯줄고누' },
   { href: 'palpal.html', en: 'Palpal-gonu', ko: '팔팔고누' },
-  { href: 'munsal.html', en: 'Munsal-gonu', ko: '문살고누' },
   { href: 'bakwi.html', en: 'Bakwi-gonu', ko: '바퀴고누' },
-  { href: 'naholo.html', en: 'Naholo-gonu', ko: '나홀로고누' },
 ];
 
 export function mountVariantMenu(container, { lang = 'en', currentPage } = {}) {
