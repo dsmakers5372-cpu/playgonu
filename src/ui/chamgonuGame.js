@@ -193,11 +193,17 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     // source rule: "말을 따낸 교차점에는 말뚝말을 놓아 표시한다") so it's
     // visually obvious why clicking there during placement does nothing —
     // only relevant during placement; these open back up once moving starts.
+    // Fixed colors (not theme.line) so the mark stays legible against every
+    // board color, not just the ones it happens to contrast with.
     if (game.phase === 'placing') {
       game.deadForPlacement.forEach((dead, index) => {
         if (!dead || game.pieces[index] !== null) return;
         const { x, y } = POINT_PIXELS[index];
-        svg.appendChild(el('rect', { x: x - 6, y: y - 6, width: 12, height: 12, fill: theme.line, opacity: '.55', transform: `rotate(45 ${x} ${y})` }));
+        svg.appendChild(el('circle', { cx: x, cy: y, r: 9, fill: '#F6F1E6', opacity: '.9' }));
+        const r = 6;
+        const xAttrs = { stroke: '#8B2E21', 'stroke-width': '2.4', 'stroke-linecap': 'round' };
+        svg.appendChild(el('line', { x1: x - r, y1: y - r, x2: x + r, y2: y + r, ...xAttrs }));
+        svg.appendChild(el('line', { x1: x - r, y1: y + r, x2: x + r, y2: y - r, ...xAttrs }));
       });
     }
 
