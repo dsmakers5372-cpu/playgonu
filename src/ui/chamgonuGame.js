@@ -17,9 +17,9 @@ const AI_MOVE_DELAY_MS = 450;
 
 const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#AC3B2A', stroke: '#7A2A1E' },
-  [PLAYERS.B]: { fill: '#2A2420', stroke: '#000000' },
+  [PLAYERS.B]: { fill: '#2C5F8A', stroke: '#1D4360' },
 };
-const PLAYER_NAME = { en: { A: 'Red', B: 'Black' }, ko: { A: '빨강', B: '검정' } };
+const PLAYER_NAME = { en: { A: 'Red', B: 'Blue' }, ko: { A: '빨강', B: '파랑' } };
 
 // Three concentric squares (outer/middle/inner), each an 8-point ring, with
 // the midpoint of each side connected across all three rings — matching
@@ -293,10 +293,10 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     turnLabel.textContent = statusText(lang, game);
     if (capturedLabel) {
       const redOnBoard = game.pieces.filter((p) => p === PLAYERS.A).length;
-      const blackOnBoard = game.pieces.filter((p) => p === PLAYERS.B).length;
+      const blueOnBoard = game.pieces.filter((p) => p === PLAYERS.B).length;
       capturedLabel.textContent = lang === 'ko'
-        ? `남은 말 — 빨강: ${redOnBoard} · 검정: ${blackOnBoard}`
-        : `On board — Red: ${redOnBoard} · Black: ${blackOnBoard}`;
+        ? `남은 말 — 빨강: ${redOnBoard} · 파랑: ${blueOnBoard}`
+        : `On board — Red: ${redOnBoard} · Blue: ${blueOnBoard}`;
     }
     undoBtn.disabled = history.length === 0;
   }
