@@ -2,8 +2,17 @@ import { legalPlacements, forbiddenPoints, toIndex, toCoords, BOARD_SIZE, PLAYER
 import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el } from './svg.js';
+import { el, SVG_NS } from './svg.js';
 import { playPlaceSound } from './sound.js';
+
+function animate(node, attrs) {
+  const anim = document.createElementNS(SVG_NS, 'animate');
+  for (const [key, value] of Object.entries(attrs)) anim.setAttribute(key, value);
+  node.appendChild(anim);
+  return node;
+}
+
+const MOVE_EFFECT_MS = 500;
 
 const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#242019', stroke: '#000000' },
@@ -33,6 +42,11 @@ const T = {
     youWin: 'You win! 🎉',
     youLose: 'You lost — good game.',
     drawMsg: "It's a draw!",
+    resultWinTitle: 'You win! 🎉',
+    resultLoseTitle: 'You lost',
+    resultDrawTitle: "It's a draw",
+    playAgain: 'Play again',
+    leave: 'Leave',
   },
   ko: {
     youAre: (c) => `당신은 ${PLAYER_NAME.ko[c]}입니다`,
@@ -45,6 +59,11 @@ const T = {
     youWin: '승리했습니다! 🎉',
     youLose: '패배했습니다 — 다음엔 이길 거예요.',
     drawMsg: '무승부입니다.',
+    resultWinTitle: '승리했습니다! 🎉',
+    resultLoseTitle: '패배했습니다',
+    resultDrawTitle: '무승부입니다',
+    playAgain: '한번더',
+    leave: '나가기',
   },
 };
 
@@ -70,6 +89,13 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       </div>
       <div data-match-panel></div>
     </div>
+    <div class="win-banner" data-result-banner>
+      <div class="win-banner__card">
+        <div class="serif" style="font-size:22px;font-weight:700;" data-result-title></div>
+        <button class="btn-primary" data-result-play-again>${t.playAgain}</button>
+        <button class="btn" data-result-leave>${t.leave}</button>
+      </div>
+    </div>
   `;
 
   const lobbyRoot = root.querySelector('[data-lobby-root]');
@@ -81,6 +107,18 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   const youLabel = root.querySelector('[data-you-label]');
   const swatchRow = root.querySelector('[data-theme-row]');
   const matchPanelRoot = root.querySelector('[data-match-panel]');
+  const resultBanner = root.querySelector('[data-result-banner]');
+  const resultTitle = root.querySelector('[data-result-title]');
+  const resultPlayAgain = root.querySelector('[data-result-play-again]');
+  const resultLeave = root.querySelector('[data-result-leave]');
+  if (resultPlayAgain) {
+    resultPlayAgain.addEventListener('click', () => {
+      const url = new URL(location.href);
+      url.searchParams.delete('room');
+      location.href = url.toString();
+    });
+  }
+  if (resultLeave) resultLeave.addEventListener('click', () => { location.href = 'index.html'; });
 
   let roomClient = null;
   let myColor = null;
@@ -89,6 +127,8 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   let mounted = false;
   let panel = null;
   let resultRecorded = false;
+  let pulseIndex = null; // the last-placed stone, briefly highlighted
+  let pulseTimer = null;
 
   function isMyTurn() {
     return role === 'player' && game && game.turn === myColor && !game.winner;
@@ -138,9 +178,17 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       if (player === PLAYERS.A) {
         svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.4, fill: 'none', stroke: '#F6F1E6', 'stroke-width': '1.4', opacity: '.8' }));
       }
-      svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '1.4' }));
+      const piece = el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '1.4' });
+      if (index === pulseIndex) animate(piece, { attributeName: 'r', values: `${STEP * 0.38};${STEP * 0.52};${STEP * 0.38}`, dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+      svg.appendChild(piece);
       if (index === game.lastMove) {
         svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.12, fill: player === PLAYERS.B ? '#3A332C' : '#F6F1E6' }));
+      }
+      if (index === pulseIndex) {
+        const ring = el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: 'none', stroke: colors.fill, 'stroke-width': '2.5' });
+        animate(ring, { attributeName: 'r', from: String(STEP * 0.38), to: String(STEP * 0.75), dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+        animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+        svg.appendChild(ring);
       }
     });
 
@@ -196,6 +244,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       role = info.role;
       mounted = true;
       resultRecorded = false;
+      resultBanner?.classList.remove('is-visible');
       lobbyRoot.style.display = 'none';
       gameRoot.style.display = 'block';
       renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });
@@ -219,25 +268,29 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     onState(engineState) {
       const prevCount = game ? game.cells.filter(Boolean).length : 0;
       const wasWinner = game ? game.winner : null;
+      const prevLastMove = game ? game.lastMove : null;
       game = engineState;
       if (!mounted) return;
       const newCount = game.cells.filter(Boolean).length;
       if (newCount > prevCount) playPlaceSound();
+      if (game.lastMove !== null && game.lastMove !== prevLastMove) {
+        pulseIndex = game.lastMove;
+        clearTimeout(pulseTimer);
+        pulseTimer = setTimeout(() => { pulseIndex = null; renderBoard(); }, MOVE_EFFECT_MS);
+      }
       renderBoard();
       renderToolbar();
-      if (panel && !resultRecorded && !wasWinner && game.winner) {
+      if (role === 'player' && !resultRecorded && !wasWinner && game.winner) {
         resultRecorded = true;
-        panel.stopTimer();
-        if (game.winner === 'draw') {
-          panel.recordResult('draw');
-          panel.addSystemMessage(t.drawMsg);
-        } else if (game.winner === myColor) {
-          panel.recordResult('win');
-          panel.addSystemMessage(t.youWin);
-        } else {
-          panel.recordResult('loss');
-          panel.addSystemMessage(t.youLose);
-        }
+        panel?.stopTimer();
+        let outcome, sysMsg, title;
+        if (game.winner === 'draw') { outcome = 'draw'; sysMsg = t.drawMsg; title = t.resultDrawTitle; }
+        else if (game.winner === myColor) { outcome = 'win'; sysMsg = t.youWin; title = t.resultWinTitle; }
+        else { outcome = 'loss'; sysMsg = t.youLose; title = t.resultLoseTitle; }
+        panel?.recordResult(outcome);
+        panel?.addSystemMessage(sysMsg);
+        if (resultTitle) resultTitle.textContent = title;
+        resultBanner?.classList.add('is-visible');
       }
     },
     onChat(msg) {

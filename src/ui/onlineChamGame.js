@@ -2,8 +2,15 @@ import { legalMovesFrom, legalPlacements, legalCaptures, BOARD_EDGES, PLAYERS } 
 import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el } from './svg.js';
+import { el, SVG_NS } from './svg.js';
 import { playPlaceSound, playCaptureSound } from './sound.js';
+
+function animate(node, attrs) {
+  const anim = document.createElementNS(SVG_NS, 'animate');
+  for (const [key, value] of Object.entries(attrs)) anim.setAttribute(key, value);
+  node.appendChild(anim);
+  return node;
+}
 
 const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#AC3B2A', stroke: '#7A2A1E' },
@@ -37,6 +44,11 @@ const T = {
     phaseBannerTitle: 'First half over!',
     phaseBannerBody: 'All 24 pieces are placed. For the second half, slide one piece per turn to an adjacent point instead of placing.',
     phaseBannerOk: 'Got it',
+    resultWinTitle: 'You win! 🎉',
+    resultLoseTitle: 'You lost',
+    resultDrawTitle: "It's a draw",
+    playAgain: 'Play again',
+    leave: 'Leave',
   },
   ko: {
     youAre: (c) => `당신은 ${PLAYER_NAME.ko[c]}입니다`,
@@ -51,6 +63,11 @@ const T = {
     phaseBannerTitle: '전반 끝!',
     phaseBannerBody: '24개 말을 전부 놓았습니다. 후반부터는 놓는 대신 말 하나를 선을 따라 빈 자리로 한 칸씩 옮기세요.',
     phaseBannerOk: '확인',
+    resultWinTitle: '승리했습니다! 🎉',
+    resultLoseTitle: '패배했습니다',
+    resultDrawTitle: '무승부입니다',
+    playAgain: '한번더',
+    leave: '나가기',
   },
 };
 
@@ -83,6 +100,13 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
         <button class="btn-primary" data-phase-banner-ok>${t.phaseBannerOk}</button>
       </div>
     </div>
+    <div class="win-banner" data-result-banner>
+      <div class="win-banner__card">
+        <div class="serif" style="font-size:22px;font-weight:700;" data-result-title></div>
+        <button class="btn-primary" data-result-play-again>${t.playAgain}</button>
+        <button class="btn" data-result-leave>${t.leave}</button>
+      </div>
+    </div>
   `;
 
   const lobbyRoot = root.querySelector('[data-lobby-root]');
@@ -97,6 +121,18 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
   const phaseBanner = root.querySelector('[data-phase-banner]');
   const phaseBannerOk = root.querySelector('[data-phase-banner-ok]');
   if (phaseBannerOk) phaseBannerOk.addEventListener('click', () => phaseBanner?.classList.remove('is-visible'));
+  const resultBanner = root.querySelector('[data-result-banner]');
+  const resultTitle = root.querySelector('[data-result-title]');
+  const resultPlayAgain = root.querySelector('[data-result-play-again]');
+  const resultLeave = root.querySelector('[data-result-leave]');
+  if (resultPlayAgain) {
+    resultPlayAgain.addEventListener('click', () => {
+      const url = new URL(location.href);
+      url.searchParams.delete('room');
+      location.href = url.toString();
+    });
+  }
+  if (resultLeave) resultLeave.addEventListener('click', () => { location.href = 'index.html'; });
 
   let roomClient = null;
   let myColor = null;
@@ -106,6 +142,46 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
   let mounted = false;
   let panel = null;
   let resultRecorded = false;
+  // Visual feedback for an opponent's (or my own) action arriving via the
+  // server's 'state' broadcast — the message only carries the resulting
+  // state, not what changed, so diffing against the previous pieces array
+  // is how a slide/capture gets reconstructed into something animatable.
+  let moveEffectIndex = null; // point a piece just slid/placed onto
+  let moveEffectTimer = null;
+  let captureEffectIndex = null; // point a piece was just captured from
+  let captureEffectPlayer = null;
+  let captureEffectTimer = null;
+  const MOVE_EFFECT_MS = 650;
+  const CAPTURE_EFFECT_MS = 1300;
+
+  function flashMove(index) {
+    moveEffectIndex = index;
+    clearTimeout(moveEffectTimer);
+    moveEffectTimer = setTimeout(() => { moveEffectIndex = null; renderBoard(); }, MOVE_EFFECT_MS);
+  }
+
+  function flashCapture(index, player) {
+    captureEffectIndex = index;
+    captureEffectPlayer = player;
+    clearTimeout(captureEffectTimer);
+    captureEffectTimer = setTimeout(() => { captureEffectIndex = null; captureEffectPlayer = null; renderBoard(); }, CAPTURE_EFFECT_MS);
+  }
+
+  // Compares the pieces array just before and after a 'state' broadcast and
+  // triggers the matching visual: a piece vacating one point and filling
+  // another is a slide (or the opening placement, same shape); a point
+  // vacating with nothing newly filled is a capture.
+  function detectAndFlash(prevPieces, nextPieces) {
+    if (!prevPieces) return;
+    let vacated = -1;
+    let filled = -1;
+    for (let i = 0; i < nextPieces.length; i++) {
+      if (prevPieces[i] !== null && nextPieces[i] === null) vacated = i;
+      else if (prevPieces[i] === null && nextPieces[i] !== null) filled = i;
+    }
+    if (filled !== -1) flashMove(filled);
+    else if (vacated !== -1) flashCapture(vacated, prevPieces[vacated]);
+  }
 
   function isMyTurn() {
     return role === 'player' && game && game.turn === myColor && !game.winner;
@@ -151,8 +227,31 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
         svg.appendChild(el('circle', { cx: x, cy: y, r: 15, fill: 'none', stroke: '#F6F1E6', 'stroke-width': '2', opacity: '.85' }));
       }
       const colors = PLAYER_COLOR[player];
-      svg.appendChild(el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' }));
+      const piece = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
+      if (index === moveEffectIndex) animate(piece, { attributeName: 'r', values: '13;18;13', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+      svg.appendChild(piece);
+      if (index === moveEffectIndex) {
+        const ring = el('circle', { cx: x, cy: y, r: 13, fill: 'none', stroke: colors.fill, 'stroke-width': '3' });
+        animate(ring, { attributeName: 'r', from: '13', to: '24', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+        animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+        svg.appendChild(ring);
+      }
     });
+
+    // A piece that was just captured fades out in place while an expanding
+    // ring sweeps outward from it, instead of just vanishing the instant the
+    // state updates — same slow, deliberate effect as the local/AI board.
+    if (captureEffectIndex !== null && captureEffectPlayer) {
+      const { x, y } = POINT_PIXELS[captureEffectIndex];
+      const colors = PLAYER_COLOR[captureEffectPlayer];
+      const ghost = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
+      animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.1s', fill: 'freeze' });
+      svg.appendChild(ghost);
+      const ring = el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: colors.fill, 'stroke-width': '3' });
+      animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.2s', fill: 'freeze' });
+      animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: '1.2s', fill: 'freeze' });
+      svg.appendChild(ring);
+    }
 
     for (const target of targets) {
       if (game.pieces[target] === null) continue;
@@ -226,6 +325,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       mounted = true;
       resultRecorded = false;
       phaseBanner?.classList.remove('is-visible');
+      resultBanner?.classList.remove('is-visible');
       lobbyRoot.style.display = 'none';
       gameRoot.style.display = 'block';
       renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });
@@ -247,6 +347,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       onMatchStart?.();
     },
     onState(engineState, status) {
+      const prevPieces = game ? game.pieces : null;
       const prevCount = game ? game.pieces.filter(Boolean).length : 0;
       const wasWinner = game ? game.winner : null;
       const prevPhase = game ? game.phase : null;
@@ -256,19 +357,18 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       const newCount = game.pieces.filter(Boolean).length;
       if (newCount > prevCount) playPlaceSound();
       else if (newCount < prevCount) playCaptureSound();
+      detectAndFlash(prevPieces, game.pieces);
       renderBoard();
       renderToolbar();
       if (prevPhase === 'placing' && game.phase === 'moving') phaseBanner?.classList.add('is-visible');
-      if (panel && !resultRecorded && !wasWinner && game.winner) {
+      if (role === 'player' && !resultRecorded && !wasWinner && game.winner) {
         resultRecorded = true;
-        panel.stopTimer();
-        if (game.winner === myColor) {
-          panel.recordResult('win');
-          panel.addSystemMessage(t.youWin);
-        } else {
-          panel.recordResult('loss');
-          panel.addSystemMessage(t.youLose);
-        }
+        panel?.stopTimer();
+        const won = game.winner === myColor;
+        panel?.recordResult(won ? 'win' : 'loss');
+        panel?.addSystemMessage(won ? t.youWin : t.youLose);
+        if (resultTitle) resultTitle.textContent = won ? t.resultWinTitle : t.resultLoseTitle;
+        resultBanner?.classList.add('is-visible');
       }
     },
     onChat(msg) {
