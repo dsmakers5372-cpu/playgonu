@@ -14,6 +14,9 @@ const ENGINES = { cham: chamgonu, gomoku };
 const AI = { cham: chamgonuAI, gomoku: gomokuAI };
 const MAX_PLAYERS = 2;
 const BOT_MOVE_DELAY_MS = [450, 950]; // feels like a person thinking, not an instant server reply
+// When the bot opens a game (it moves first after colors swap on a rematch),
+// give the player a moment to see the fresh board before the first stone lands.
+const BOT_FIRST_MOVE_DELAY_MS = [2000, 3000];
 const ROOM_IDLE_LIMIT_MS = 30 * 60 * 1000; // storage alarm cleans up long-abandoned rooms
 const CHAT_MAX_LEN = 200;
 // A public room nobody joins within this long gets a master-level virtual
@@ -337,7 +340,9 @@ export class GameRoom {
         const mover = this.room.players.find((p) => p.color === this.room.engineState.turn);
         if (!mover?.isBot) break;
         if (watch && this.sockets.size === 0) break;
-        const [min, max] = watch ? WATCH_MOVE_DELAY_MS : BOT_MOVE_DELAY_MS;
+        const board = this.room.engineState.cells ?? this.room.engineState.pieces;
+        const openingMove = board.every((c) => c === null);
+        const [min, max] = watch ? WATCH_MOVE_DELAY_MS : openingMove ? BOT_FIRST_MOVE_DELAY_MS : BOT_MOVE_DELAY_MS;
         await new Promise((resolve) => setTimeout(resolve, min + Math.random() * (max - min)));
         if (watch && this.sockets.size === 0) break;
         const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: mover.difficulty, deepMidgame: !watch });
