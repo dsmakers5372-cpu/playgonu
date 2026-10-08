@@ -31,21 +31,69 @@ export function animate(node, attrs, startedAt = performance.now()) {
   } else {
     keyframes = values.map((v) => ({ [attrs.attributeName]: v }));
   }
-  pending.push({ node, keyframes, dur, startedAt });
+  pending.push({ node, keyframes, dur, delay: 0, startedAt });
+  return node;
+}
+
+// Same timing model with raw Web Animations keyframes, for multi-step
+// effects; `delay` is measured from the effect's start.
+export function animateKeyframes(node, keyframes, { duration, delay = 0 }, startedAt = performance.now()) {
+  node.style.transformBox = 'fill-box';
+  node.style.transformOrigin = 'center';
+  pending.push({ node, keyframes, dur: duration, delay, startedAt });
   return node;
 }
 
 export function startAnimations(svg) {
   const now = performance.now();
   for (let i = pending.length - 1; i >= 0; i--) {
-    const { node, keyframes, dur, startedAt } = pending[i];
+    const { node, keyframes, dur, delay, startedAt } = pending[i];
     if (!node.isConnected) {
       if (!svg.contains(node)) pending.splice(i, 1);
       continue;
     }
     if (!svg.contains(node)) continue;
-    const anim = node.animate(keyframes, { duration: dur, fill: 'forwards' });
-    anim.currentTime = Math.min(now - startedAt, dur);
+    const anim = node.animate(keyframes, { duration: dur, delay, fill: 'both' });
+    anim.currentTime = Math.min(now - startedAt, delay + dur);
     pending.splice(i, 1);
   }
+}
+
+// A capture during placement turns the point into a dead "peg" (×). The
+// captured piece flips like a coin to a silver back, a few silver glints
+// burst out, and the silver disc fades to reveal the × drawn beneath it.
+export function pegFlipEffect(x, y, colors, startedAt) {
+  const g = el('g', {});
+  const front = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
+  animateKeyframes(front, [{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 280 }, startedAt);
+  const back = el('circle', { cx: x, cy: y, r: 13, fill: '#E6E9ED', stroke: '#8E98A3', 'stroke-width': '2' });
+  const shine = el('ellipse', { cx: x - 4, cy: y - 5, rx: 5, ry: 3, fill: '#FFFFFF', opacity: '.85' });
+  for (const node of [back, shine]) {
+    animateKeyframes(node, [
+      { transform: 'scaleX(0)', opacity: 1 },
+      { transform: 'scaleX(1)', opacity: 1, offset: 0.25 },
+      { transform: 'scaleX(1)', opacity: 1, offset: 0.62 },
+      { transform: 'scaleX(1) scale(0.85)', opacity: 0 },
+    ], { duration: 1100, delay: 280 }, startedAt);
+  }
+  g.append(front, back, shine);
+  for (let k = 0; k < 6; k++) {
+    const angle = (Math.PI * 2 * k) / 6 + 0.35;
+    const dx = Math.cos(angle) * 34;
+    const dy = Math.sin(angle) * 34;
+    const s = 7.5;
+    const glint = el('path', {
+      d: `M${x} ${y - s}L${x + s * 0.3} ${y - s * 0.3}L${x + s} ${y}L${x + s * 0.3} ${y + s * 0.3}L${x} ${y + s}L${x - s * 0.3} ${y + s * 0.3}L${x - s} ${y}L${x - s * 0.3} ${y - s * 0.3}Z`,
+      fill: k % 2 ? '#FFFFFF' : '#C9D1DA',
+      stroke: '#8E98A3',
+      'stroke-width': '1.2',
+    });
+    animateKeyframes(glint, [
+      { transform: 'translate(0,0) scale(0)', opacity: 0 },
+      { transform: `translate(${dx * 0.6}px,${dy * 0.6}px) scale(1.2)`, opacity: 1, offset: 0.45 },
+      { transform: `translate(${dx}px,${dy}px) scale(0.4)`, opacity: 0 },
+    ], { duration: 850, delay: 400 + k * 40 }, startedAt);
+    g.appendChild(glint);
+  }
+  return g;
 }
