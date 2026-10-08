@@ -52,6 +52,7 @@ for (const [id, g] of Object.entries(GAMES)) {
       ko ? 'playgonu.com 실제 화면에서 AI끼리 둔 한 판을 직접 클릭하며 규칙을 하나씩 설명해요.' : 'Every move is clicked on the real playgonu.com board, with each rule explained as it comes up in a real AI-vs-AI game.',
       '',
       `${ko ? '▶ 직접 해보기' : '▶ Play it'}: ${url}`,
+      ko ? '🔊 해설 음성은 AI 음성(OpenAI)으로 만들었어요.' : '🔊 Narration is an AI-generated voice (OpenAI).',
       '',
       ko ? '챕터' : 'Chapters',
       ...chapters.map((c) => `${mmss(c.start)} ${c.title}`),
