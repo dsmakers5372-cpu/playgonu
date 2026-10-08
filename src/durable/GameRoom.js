@@ -17,6 +17,13 @@ const BOT_MOVE_DELAY_MS = [450, 950]; // feels like a person thinking, not an in
 const ROOM_IDLE_LIMIT_MS = 30 * 60 * 1000; // storage alarm cleans up long-abandoned rooms
 const CHAT_MAX_LEN = 200;
 
+function freshEngineState(gameType, ruleset) {
+  const engine = ENGINES[gameType];
+  return gameType === 'gomoku'
+    ? engine.createInitialState({ ruleset: ruleset === 'renju' ? 'renju' : 'freestyle' })
+    : engine.createInitialState();
+}
+
 export class GameRoom {
   constructor(state, env) {
     this.state = state;
@@ -77,6 +84,7 @@ export class GameRoom {
     if (!conn) return;
     if (msg.type === 'move') await this.handleMove(ws, conn, msg);
     else if (msg.type === 'chat') this.handleChat(conn, msg);
+    else if (msg.type === 'rematch') await this.handleRematch(ws, conn);
     else if (msg.type === 'leave') ws.close(1000, 'left');
   }
 
@@ -87,10 +95,7 @@ export class GameRoom {
 
     if (!this.room) {
       const gameType = ENGINES[msg.gameType] ? msg.gameType : 'cham';
-      const engine = ENGINES[gameType];
-      const engineState = gameType === 'gomoku'
-        ? engine.createInitialState({ ruleset: msg.ruleset === 'renju' ? 'renju' : 'freestyle' })
-        : engine.createInitialState();
+      const engineState = freshEngineState(gameType, msg.ruleset);
       // A room id like "vp-v037-K3PQ9X2A" is a one-shot challenge against a
       // virtual (bot) opponent — look it up by the vNNN segment only;
       // nothing about its strength or name is trusted from the client.
@@ -150,6 +155,37 @@ export class GameRoom {
     } else if (this.room.isPublic) {
       await this.setLobbyListing(true);
     }
+  }
+
+  // "Play again" restarts the game in this same room with the same opponent.
+  // Against a bot it starts at once; between two people it waits until both
+  // have asked. Colors swap each game so the first-move advantage alternates.
+  async handleRematch(ws, conn) {
+    if (conn.role !== 'player' || !this.room || this.room.status !== 'finished') return;
+    if (this.room.players.length < MAX_PLAYERS) return;
+    this.room.rematchVotes ??= [];
+    if (!this.room.rematchVotes.includes(conn.id)) this.room.rematchVotes.push(conn.id);
+    const humans = this.room.players.filter((p) => !p.isBot);
+    if (!humans.every((p) => this.room.rematchVotes.includes(p.id))) {
+      this.broadcast({ type: 'rematch-requested', name: conn.name }, ws);
+      return;
+    }
+
+    this.room.rematchVotes = null;
+    const { opponent } = ENGINES[this.room.gameType];
+    for (const p of this.room.players) p.color = opponent(p.color);
+    for (const [, c] of this.sockets) {
+      if (c.role !== 'player') continue;
+      const p = this.room.players.find((pl) => pl.id === c.id);
+      if (p) c.color = p.color;
+    }
+    this.room.engineState = freshEngineState(this.room.gameType, this.room.ruleset);
+    this.room.status = 'playing';
+    await this.state.storage.setAlarm(Date.now() + ROOM_IDLE_LIMIT_MS);
+    for (const [sock, c] of this.sockets) {
+      this.send(sock, { type: 'rematch-start', color: c.role === 'player' ? c.color : null, engineState: this.room.engineState, status: this.room.status });
+    }
+    if (this.room.vsBot) await this.triggerBotMoves();
   }
 
   handleChat(conn, msg) {

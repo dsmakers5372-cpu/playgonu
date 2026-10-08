@@ -222,6 +222,10 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
 
   return {
     setTurnCaption(text) { turnCaption.textContent = text; },
+    setColors(youHex, opponentHex) {
+      youSide.firstChild.style.background = youHex;
+      oppSide.firstChild.style.background = opponentHex;
+    },
     startTimer,
     stopTimer,
     addSystemMessage(text) { appendChatLine({ system: true, text }); },

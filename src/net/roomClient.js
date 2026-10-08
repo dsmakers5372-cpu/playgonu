@@ -21,6 +21,8 @@ export function connectToRoom({ roomId, name, isPublic, gameType, ruleset, handl
       case 'opponent-left': handlers.onOpponentLeft?.(msg); break;
       case 'state': handlers.onState?.(msg); break;
       case 'chat': handlers.onChat?.(msg); break;
+      case 'rematch-requested': handlers.onRematchRequested?.(msg); break;
+      case 'rematch-start': handlers.onRematchStart?.(msg); break;
       case 'error': handlers.onError?.(msg); break;
       default: break;
     }
@@ -38,6 +40,11 @@ export function connectToRoom({ roomId, name, isPublic, gameType, ruleset, handl
     },
     sendChat(text) {
       if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'chat', text }));
+    },
+    sendRematch() {
+      if (ws.readyState !== WebSocket.OPEN) return false;
+      ws.send(JSON.stringify({ type: 'rematch' }));
+      return true;
     },
     close() {
       closedByUs = true;

@@ -47,6 +47,9 @@ const T = {
     resultDrawTitle: "It's a draw",
     playAgain: 'Play again',
     leave: 'Leave',
+    rematchWaiting: 'Waiting for your opponent…',
+    rematchAsked: (n) => `${n} wants a rematch — press Play again.`,
+    rematchStarted: (c) => `New game — this time you are ${PLAYER_NAME.en[c]}.`,
   },
   ko: {
     youAre: (c) => `당신은 ${PLAYER_NAME.ko[c]}입니다`,
@@ -64,6 +67,9 @@ const T = {
     resultDrawTitle: '무승부입니다',
     playAgain: '한번더',
     leave: '나가기',
+    rematchWaiting: '상대방을 기다리는 중…',
+    rematchAsked: (n) => `${n}님이 한 판 더 원해요 — '한번더'를 누르세요.`,
+    rematchStarted: (c) => `새 판 시작 — 이번엔 ${PLAYER_NAME.ko[c]}입니다.`,
   },
 };
 
@@ -113,8 +119,19 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   const resultLeave = root.querySelector('[data-result-leave]');
   if (resultPlayAgain) {
     resultPlayAgain.addEventListener('click', () => {
+      // Same room, same opponent: the server restarts the game once both
+      // players have asked (immediately against a bot).
+      if (roomClient && role === 'player' && !opponentGone && roomClient.sendRematch()) {
+        if (!wasVsBot) {
+          resultPlayAgain.disabled = true;
+          if (resultTitle) resultTitle.textContent = t.rematchWaiting;
+        }
+        return;
+      }
+      // Opponent gone (or connection lost): fall back to a fresh match.
       const url = new URL(location.href);
       url.searchParams.delete('room');
+      url.searchParams.set('game', 'gomoku');
       // A bot match can jump straight back into a fresh bot challenge
       // instead of dropping the player back at the lobby screen — there's
       // no real opponent to lose by skipping it.
@@ -136,6 +153,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   let panel = null;
   let resultRecorded = false;
   let wasVsBot = false;
+  let opponentGone = false;
   let pulseIndex = null; // the last-placed stone, briefly highlighted
   let pulseTimer = null;
 
@@ -306,7 +324,28 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     onChat(msg) {
       panel?.addChatMessage(msg.from, msg.text);
     },
+    onRematchRequested(msg) {
+      panel?.addSystemMessage(t.rematchAsked(msg.name));
+    },
+    onRematchStart(msg) {
+      if (msg.color) myColor = msg.color;
+      game = msg.engineState;
+      resultRecorded = false;
+      pulseIndex = null;
+      resultBanner?.classList.remove('is-visible');
+      if (resultPlayAgain) resultPlayAgain.disabled = false;
+      if (panel) {
+        const opponentColor = myColor === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
+        panel.setColors(PLAYER_COLOR[myColor].fill, PLAYER_COLOR[opponentColor].fill);
+        panel.addSystemMessage(t.rematchStarted(myColor));
+        panel.startTimer();
+      }
+      renderBoard();
+      renderToolbar();
+    },
     onOpponentLeft() {
+      opponentGone = true;
+      if (resultPlayAgain) resultPlayAgain.disabled = false;
       if (turnLabel) turnLabel.textContent = t.oppLeft;
       if (panel) {
         panel.stopTimer();

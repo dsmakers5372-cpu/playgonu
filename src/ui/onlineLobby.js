@@ -34,7 +34,7 @@ const STRINGS = {
 // `onMatched({ roomClient, color, name, engineState, gameType, ruleset })`
 // once two players are connected — from that point on, the caller owns the
 // actual board UI.
-export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatched, onState, onOpponentLeft, onChat }) {
+export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatched, onState, onOpponentLeft, onChat, onRematchRequested, onRematchStart }) {
   const t = STRINGS[lang] || STRINGS.en;
   root.innerHTML = '';
 
@@ -209,6 +209,12 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
         },
         onChat(msg) {
           onChat?.(msg);
+        },
+        onRematchRequested(msg) {
+          onRematchRequested?.(msg);
+        },
+        onRematchStart(msg) {
+          onRematchStart?.(msg);
         },
         onError(msg) {
           console.error('[online]', msg.message);
