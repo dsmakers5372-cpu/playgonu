@@ -153,12 +153,12 @@ export default {
    "from": 33,
    "cut": {
     "ko": {
-     "title": "왕복 꼰 막는 법",
-     "body": "빈칸을 먼저 차지하기"
+     "title": "예시 1",
+     "body": "실제 대국에서"
     },
     "en": {
-     "title": "How to stop a running mill",
-     "body": "Take the empty point first"
+     "title": "Example 1",
+     "body": "From a real game"
     }
    }
   },
@@ -288,11 +288,11 @@ export default {
    "from": 29,
    "cut": {
     "ko": {
-     "title": "한 번 더",
+     "title": "예시 2",
      "body": "다른 판, 같은 방법"
     },
     "en": {
-     "title": "Once more",
+     "title": "Example 2",
      "body": "Another game, same idea"
     }
    }

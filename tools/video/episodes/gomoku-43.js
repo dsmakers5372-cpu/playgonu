@@ -81,12 +81,12 @@ export default {
    "from": 10,
    "cut": {
     "ko": {
-     "title": "오목 필승법, 4-3",
-     "body": "4와 열린 3을 한 번에"
+     "title": "예시 1",
+     "body": "가로 4 + 세로 3"
     },
     "en": {
-     "title": "The winning shape: four-three",
-     "body": "A four and an open three in one move"
+     "title": "Example 1",
+     "body": "Straight four + straight three"
     }
    }
   },
