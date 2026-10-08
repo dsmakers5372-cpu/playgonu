@@ -1,6 +1,6 @@
 # PlayGonu
 
-> PlayGonu is a free, browser-based collection of traditional Korean Gonu (고누) board games, plus Gomoku. Every game is playable solo against a built-in AI (four difficulty levels) or online against another real person in real time — no install, no account, no download. Available in English and Korean.
+> PlayGonu is a collection of traditional Korean Gonu (고누) strategy board games, plus Gomoku. Every game is playable solo against a built-in AI (four difficulty levels) or online against another real person in real time — no install, no account, no download. Available in English and Korean.
 
 ## Games
 
