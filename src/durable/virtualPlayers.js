@@ -85,13 +85,10 @@ export function pickVirtualRoster(gameType) {
 // (pairs of virtual players), so the dashboard reads like a real lobby —
 // some people waiting, some mid-game — rather than a wall of empty rooms.
 // Roughly 40% of those online are shown as playing.
-// A mix of English and Korean, alternating — the lobby is shared by Korean
-// and international visitors alike.
-const ROOM_TITLES = [
-  'Quick game?', '한 판 해요', 'Beginners welcome', '초보 환영', 'Looking for a challenge', '고수만 오세요',
-  'Friendly match', '매너 게임해요', 'Practice game', '연습 상대 구해요', 'One more round', '빠르게 한 판',
-  'Good games only', '심심해서 한 판', 'Bring it on', '오늘 연승 중',
-];
+// Each host titles their room in their own language, like a real player
+// would — the shared lobby ends up mixed because the hosts are.
+const ROOM_TITLES_KO = ['한 판 해요', '초보 환영', '고수만 오세요', '매너 게임해요', '연습 상대 구해요', '빠르게 한 판', '심심해서 한 판', '오늘 연승 중'];
+const ROOM_TITLES_EN = ['Quick game?', 'Beginners welcome', 'Looking for a challenge', 'Friendly match', 'Practice game', 'One more round', 'Good games only', 'Bring it on'];
 
 // Splits the online roster into open rooms and games already in progress
 // (pairs of virtual players), so the dashboard reads like a real lobby —
@@ -105,10 +102,8 @@ export function pickVirtualLobby(gameType) {
   for (let i = 0; i < pairCount; i++) playing.push([roster[i * 2], roster[i * 2 + 1]]);
   const waiting = roster.slice(pairCount * 2).map((vp, i) => {
     if (i % 3 === 2) return { ...vp, title: null };
-    // Even slots take an English title, odd slots a Korean one, so the open
-    // rooms always read as a mix rather than clumping into one language.
-    const pick = (Number(vp.id.slice(1)) * 2 + (i % 2)) % ROOM_TITLES.length;
-    return { ...vp, title: ROOM_TITLES[pick] };
+    const titles = /[가-힣]/.test(vp.name) ? ROOM_TITLES_KO : ROOM_TITLES_EN;
+    return { ...vp, title: titles[(Number(vp.id.slice(1)) + i) % titles.length] };
   });
   return { waiting, playing };
 }
