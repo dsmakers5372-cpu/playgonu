@@ -9,7 +9,7 @@
 // (voice-over script with timestamps); with --stills, PNGs of each explain moment.
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import puppeteer from 'puppeteer-core';
 import { startServer } from './serve.mjs';
@@ -49,14 +49,14 @@ for (let i = firstPly; i <= episode.moves.length; i++) {
   const ex = explainAt.get(i);
   if (ex && keepExplain(i)) {
     const copy = ex[lang];
-    plan.push({ type: 'explain', at: i, ex, copy, dur: Math.min(shorts ? 8.5 : 13, readSecs(`${copy.title} ${copy.body}`)) });
+    plan.push({ type: 'explain', at: i, ex, copy, dur: Math.min(shorts ? 7.5 : 13, readSecs(`${copy.title} ${copy.body}`)) });
   }
   if (i < episode.moves.length) {
     const kind = states[i].pendingCapture ? 'capture' : episode.moves[i][0] === null ? 'place' : 'slide';
-    const speed = shorts && kind !== 'capture' && !(i >= 29 && i < 36) ? 0.6 : 1; // never rush a capture
+    const speed = shorts && kind !== 'capture' && !(i >= 29 && i < 36) ? 0.5 : 1; // never rush a capture
     plan.push({ type: 'ply', index: i, dur: PLY_DUR[kind] * speed });
   }
-  if (i === episode.moves.length) plan.push({ type: 'hold', dur: 1.5 });
+  if (i === episode.moves.length) plan.push({ type: 'hold', dur: shorts ? 1 : 1.5 });
 }
 plan.push({ type: 'outro', dur: shorts ? 4 : 5.5, copy: episode.outro[lang] });
 if (stillsMode) for (const seg of plan) if (seg.type === 'ply' || seg.type === 'intro' || seg.type === 'outro' || seg.type === 'hold') seg.dur = 0.12;
@@ -100,10 +100,30 @@ if (stillsMode) {
   });
 }
 
-const webm = path.join(outDir, `${name}.webm`);
-const recorder = stillsMode ? null : await page.screencast({ path: webm });
+// Recorded with Chrome's screencast directly, keeping each frame's own
+// timestamp. (Puppeteer's page.screencast rounds every frame to a whole
+// 1/30s, so frames arriving faster than that each got stretched and the video
+// ran up to ~1.6x slower than real time — captions drifted off the picture.)
+const framesDir = path.join(outDir, `${name}-frames`);
+const frames = [];
+let cdp = null;
+if (!stillsMode) {
+  fs.rmSync(framesDir, { recursive: true, force: true });
+  fs.mkdirSync(framesDir, { recursive: true });
+  cdp = await page.createCDPSession();
+  cdp.on('Page.screencastFrame', (e) => {
+    const file = `${String(frames.length).padStart(6, '0')}.jpg`;
+    fs.writeFileSync(path.join(framesDir, file), Buffer.from(e.data, 'base64'));
+    frames.push({ file, ts: e.metadata.timestamp });
+    cdp.send('Page.screencastFrameAck', { sessionId: e.sessionId }).catch(() => {});
+  });
+  await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
+  await new Promise((r) => setTimeout(r, 500));
+}
+const episodeStart = Date.now() / 1000;
 const marks = await page.evaluate(`(${runEpisode.toString()})(${JSON.stringify({ states, plan, layout: portrait ? 'portrait' : 'landscape', watermark: 'playgonu.com' })})`);
-if (recorder) await recorder.stop();
+const episodeEnd = Date.now() / 1000;
+if (cdp) await cdp.send('Page.stopScreencast');
 await browser.close();
 server.close();
 
@@ -111,9 +131,31 @@ if (stillsMode) {
   console.log(`stills → ${stillsDir}`);
 } else {
   const mp4 = path.join(outDir, `${name}.mp4`);
-  const ff = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', webm, '-r', '30', '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4], { stdio: 'inherit' });
-  if (ff.status !== 0) throw new Error('ffmpeg failed');
-  fs.unlinkSync(webm);
+  // Video time 0 = episode start, so caption times line up exactly: the frame
+  // on screen at that moment opens the video, each frame lasts until the next
+  // one arrived, and the last one holds until the episode ended.
+  const firstIdx = Math.max(0, frames.findIndex((fr) => fr.ts > episodeStart) - 1);
+  const kept = frames.slice(firstIdx);
+  if (kept.length) kept[0] = { ...kept[0], ts: episodeStart };
+  // Exactly 30 frames per second of real time: output frame k shows the
+  // newest captured frame at or before k/30 s.
+  const total = Math.round((episodeEnd - episodeStart) * 30);
+  const ff = spawn('ffmpeg', ['-y', '-loglevel', 'error', '-f', 'image2pipe', '-framerate', '30', '-c:v', 'mjpeg', '-i', '-', '-vf', `scale=${W}:${H}`, '-c:v', 'libx264', '-preset', 'medium', '-crf', '18', '-pix_fmt', 'yuv420p', '-movflags', '+faststart', mp4], { stdio: ['pipe', 'inherit', 'inherit'] });
+  const done = new Promise((r) => ff.on('close', (code) => r({ status: code })));
+  let src = 0;
+  let buf = null;
+  let bufIdx = -1;
+  for (let k = 0; k < total; k++) {
+    const t = episodeStart + k / 30;
+    while (src + 1 < kept.length && kept[src + 1].ts <= t) src++;
+    if (src !== bufIdx) { buf = fs.readFileSync(path.join(framesDir, kept[src].file)); bufIdx = src; }
+    if (!ff.stdin.write(buf)) await new Promise((r) => ff.stdin.once('drain', r));
+  }
+  ff.stdin.end();
+  const ffResult = await done;
+  if (ffResult.status !== 0) throw new Error('ffmpeg failed');
+  fs.rmSync(framesDir, { recursive: true, force: true });
+  console.log(`frames: ${kept.length} over ${(episodeEnd - episodeStart).toFixed(1)}s`);
   const ts = (sec, sep) => {
     const ms = Math.max(0, Math.round(sec * 1000));
     return `${String(Math.floor(ms / 3600000)).padStart(2, '0')}:${String(Math.floor(ms / 60000) % 60).padStart(2, '0')}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}${sep}${String(ms % 1000).padStart(3, '0')}`;
