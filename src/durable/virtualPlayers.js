@@ -85,14 +85,14 @@ export function pickVirtualRoster(gameType) {
 // (pairs of virtual players), so the dashboard reads like a real lobby —
 // some people waiting, some mid-game — rather than a wall of empty rooms.
 // Roughly 40% of those online are shown as playing.
-const ROOM_TITLES_KO = ['한 판 해요', '초보 환영', '고수만 오세요', '심심해서 한 판', '연습 상대 구해요', '빠르게 한 판', '매너 게임해요', '오늘 연승 중'];
-const ROOM_TITLES_EN = ['Quick game?', 'Beginners welcome', 'Looking for a challenge', 'Friendly match', 'Practice game', 'One more round', 'Good games only', 'Bring it on'];
+// English only: the lobby is shared by every visitor, Korean or not.
+const ROOM_TITLES = ['Quick game?', 'Beginners welcome', 'Looking for a challenge', 'Friendly match', 'Practice game', 'One more round', 'Good games only', 'Bring it on', 'Casual play', 'Masters only'];
 
 // Splits the online roster into open rooms and games already in progress
 // (pairs of virtual players), so the dashboard reads like a real lobby —
 // some people waiting, some mid-game — rather than a wall of empty rooms.
 // Roughly 40% of those online are shown as playing, and about two thirds of
-// the open rooms carry a title, in the language their host's name suggests.
+// the open rooms carry a title.
 export function pickVirtualLobby(gameType) {
   const roster = pickVirtualRoster(gameType);
   const pairCount = Math.floor(roster.length / 5);
@@ -100,8 +100,7 @@ export function pickVirtualLobby(gameType) {
   for (let i = 0; i < pairCount; i++) playing.push([roster[i * 2], roster[i * 2 + 1]]);
   const waiting = roster.slice(pairCount * 2).map((vp, i) => {
     if (i % 3 === 2) return { ...vp, title: null };
-    const titles = /[가-힣]/.test(vp.name) ? ROOM_TITLES_KO : ROOM_TITLES_EN;
-    return { ...vp, title: titles[(Number(vp.id.slice(1)) + i) % titles.length] };
+    return { ...vp, title: ROOM_TITLES[(Number(vp.id.slice(1)) + i) % ROOM_TITLES.length] };
   });
   return { waiting, playing };
 }
