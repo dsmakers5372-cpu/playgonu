@@ -82,10 +82,15 @@ export async function handleAdmin(request, env, url) {
   if (path === '/login' && method === 'POST') {
     const ip = request.headers.get('CF-Connecting-IP') || 'local';
     if (await tooManyAttempts(env, ip)) return json({ error: '시도가 너무 많아요. 15분 뒤에 다시 해주세요.' }, 429);
-    const { password } = await request.json().catch(() => ({}));
-    if (!password || !(await secretsEqual(password, env.ADMIN_PASSWORD))) {
+    const { username, password } = await request.json().catch(() => ({}));
+    // Both are always compared, so a wrong ID and a wrong password look alike.
+    const [userOk, passOk] = await Promise.all([
+      secretsEqual(String(username || '').trim(), env.ADMIN_USER || 'playgonu'),
+      secretsEqual(String(password || ''), env.ADMIN_PASSWORD),
+    ]);
+    if (!userOk || !passOk) {
       await recordFailedAttempt(env, ip);
-      return json({ error: '비밀번호가 맞지 않아요.' }, 401);
+      return json({ error: '아이디 또는 비밀번호가 맞지 않아요.' }, 401);
     }
     await clearAttempts(env, ip);
     return json({ ok: true }, 200, { 'Set-Cookie': sessionCookie(await createSessionToken(env.ADMIN_PASSWORD), secure) });

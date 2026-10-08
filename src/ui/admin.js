@@ -46,7 +46,7 @@ $('[data-login-form]').addEventListener('submit', async (e) => {
   e.preventDefault();
   const input = e.target.password;
   try {
-    await api('/login', { method: 'POST', body: { password: input.value } });
+    await api('/login', { method: 'POST', body: { username: e.target.username.value, password: input.value } });
     input.value = '';
     $('[data-login-msg]').textContent = '';
     await showApp();

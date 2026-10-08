@@ -28,6 +28,9 @@
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["GameRoom", "Lobby"] }
   ],
+  // The admin sign-in ID (not secret). The password is the secret
+  // ADMIN_PASSWORD — set it in the dashboard, never in this file.
+  "vars": { "ADMIN_USER": "playgonu" },
   // Admin data (blog posts, video links). Create once with
   // `npx wrangler d1 create playgonu`, put the printed id here, then
   // `npx wrangler d1 migrations apply playgonu --remote`.

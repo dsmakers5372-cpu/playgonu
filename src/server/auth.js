@@ -1,6 +1,7 @@
-// Admin sign-in for the PlayGonu admin page. One password, stored only as
-// the Worker secret ADMIN_PASSWORD (`wrangler secret put ADMIN_PASSWORD`;
-// locally in .dev.vars, never committed). A successful sign-in sets a signed,
+// Admin sign-in for the PlayGonu admin page: the ID in the ADMIN_USER var
+// (wrangler.jsonc) and a password stored only as the Worker secret
+// ADMIN_PASSWORD (`wrangler secret put ADMIN_PASSWORD`; locally in .dev.vars,
+// never committed). A successful sign-in sets a signed,
 // HttpOnly cookie valid for 12 hours; the signing key is derived from the
 // password, so changing the password signs everyone out.
 
