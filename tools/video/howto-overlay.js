@@ -31,7 +31,7 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
     @keyframes pgDash { to { stroke-dashoffset: -24; } }
     @keyframes pgTap { from { transform: scale(.5); opacity: .75; } to { transform: scale(1.5); opacity: 0; } }
     #pg-fast { position: absolute; left: 50%; top: -18px; transform: translateX(-50%); z-index: 6; background: #2A2420; color: #fff; font: 800 14px "Work Sans", system-ui, sans-serif; letter-spacing: .04em; border-radius: 999px; padding: 6px 14px; opacity: 0; transition: opacity .25s; pointer-events: none; }
-    #pg-watermark { position: fixed; right: 14px; bottom: ${portrait ? 150 : 10}px; z-index: 70; font: 600 ${portrait ? 13 : 12}px "Work Sans", system-ui, sans-serif; color: rgba(42,36,32,.55); letter-spacing: .02em; pointer-events: none; }
+    #pg-watermark { position: fixed; right: 14px; bottom: ${portrait ? 150 : 10}px; z-index: 70; font: 600 ${portrait ? 13 : 12}px "Work Sans", system-ui, sans-serif; color: rgba(42,36,32,.6); letter-spacing: .02em; pointer-events: none; background: rgba(246,241,230,.92); border-radius: 6px; padding: 2px 7px; }
   `;
   document.head.appendChild(style);
 
