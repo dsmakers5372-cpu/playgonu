@@ -25,7 +25,10 @@ const AUTO_OPPONENT_MS = 30 * 1000;
 // AI-vs-AI "watch" rooms (the lobby's virtual games in progress) only run
 // while someone is watching, at a pace a spectator can follow, and start a
 // new game a few seconds after one ends.
-const WATCH_MOVE_DELAY_MS = [1100, 2300];
+const WATCH_MOVE_DELAY_MS = [3000, 6000];
+// Now and then a watched player stops to think, like people do on a hard move.
+const WATCH_LONG_THINK_CHANCE = 0.2;
+const WATCH_LONG_THINK_EXTRA_MS = [3000, 5000];
 const WATCH_RESTART_MS = 6000;
 const WATCH_DIFFICULTY = 'hard';
 const LISTING_HEARTBEAT_MS = 60 * 1000; // keeps a public room's lobby entry from going stale (Lobby STALE_MS)
@@ -343,7 +346,12 @@ export class GameRoom {
         const board = this.room.engineState.cells ?? this.room.engineState.pieces;
         const openingMove = board.every((c) => c === null);
         const [min, max] = watch ? WATCH_MOVE_DELAY_MS : openingMove ? BOT_FIRST_MOVE_DELAY_MS : BOT_MOVE_DELAY_MS;
-        await new Promise((resolve) => setTimeout(resolve, min + Math.random() * (max - min)));
+        let delay = min + Math.random() * (max - min);
+        if (watch && Math.random() < WATCH_LONG_THINK_CHANCE) {
+          const [emin, emax] = WATCH_LONG_THINK_EXTRA_MS;
+          delay += emin + Math.random() * (emax - emin);
+        }
+        await new Promise((resolve) => setTimeout(resolve, delay));
         if (watch && this.sockets.size === 0) break;
         const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: mover.difficulty, deepMidgame: !watch });
         if (!aiMove) break;
