@@ -9,6 +9,7 @@ export default {
  },
  "pieceR": 13,
  "explainZoom": 1.5,
+ "portraitCardTitleOnly": true,
  "scenes": [
   {
    "moves": [
