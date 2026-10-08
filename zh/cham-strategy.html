@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>参高努策略：往返三连 — PlayGonu</title>
+<meta name="description" content="参高努真正的制胜之道：搭起一个每回合都能吃子的往返三连。用一盘真实对局配合截图逐手讲解，再告诉你怎么搭、怎么防。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/zh/cham-strategy.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/zh/cham-strategy.html">
+<meta property="og:title" content="参高努策略：往返三连 — PlayGonu">
+<meta property="og:description" content="参高努真正的制胜之道：搭起一个每回合都能吃子的往返三连。用一盘真实对局配合截图逐手讲解，再告诉你怎么搭、怎么防。">
+<meta property="og:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="参高努策略：往返三连 — PlayGonu">
+<meta name="twitter:description" content="参高努真正的制胜之道：搭起一个每回合都能吃子的往返三连。用一盘真实对局配合截图逐手讲解，再告诉你怎么搭、怎么防。">
+<meta name="twitter:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.7; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .shot img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--card-border); display: block; }
+  .shot figcaption { display: flex; flex-direction: column; gap: 4px; }
+  .shot .step { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--red); }
+  .shot .cap-title { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .shot .cap-body { font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
+  .points { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .points th, .points td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+  .points th { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+  .points td.n { font-variant-numeric: tabular-nums; }
+  .points tr.best td { font-weight: 700; color: var(--ink); }
+  .table-wrap { overflow-x: auto; }
+  .stat { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .stat .big { font-family: "Noto Serif KR", Georgia, serif; font-size: 34px; font-weight: 700; color: var(--red); }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">参高努</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">五子棋</a>
+        <a href="howto.html" class="variant-tab">玩法</a>
+        <a href="online.html" class="variant-tab">在线对战</a>
+        <a href="../blog/index.html" class="variant-tab">博客</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+
+    <section>
+      <div class="tag" style="color:var(--red);">策略指南 · 参高努 참고누</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;">往返三连：参高努真正的取胜之道</h1>
+      <p>参高努是韩国高努家族中最有深度的一种——双方各 12 枚棋子，在由三个嵌套正方形组成的 24 点棋盘上对弈。你可能整个前半段都领先，最后却还是输了，而原因几乎总是同一个：对方搭起了<strong>往返三连（running mill）</strong>。本指南先带你看一盘恰好如此的真实对局，再教你怎么自己搭一个，以及怎么阻止它。</p>
+      <div class="stat"><span class="big">160 局中 157 局</span><span>在只有一方搭起往返三连的对局里，搭起它的一方赢下的局数。（我们最强的 AI 之间的 400 局对局中，有 164 局出现了往返三连。）</span></div>
+    </section>
+
+    <section>
+      <h2 class="serif">30 秒看懂棋盘</h2>
+      <p>24 个点分布在三个嵌套的正方形上。各边中点之间有线贯穿三个正方形，而且与西方的莫里斯类棋不同，角点之间也有斜线相连。这样一共有 <strong>20 条线</strong>，在其中任意一条线上摆满自己的三枚棋子就构成三连。各个点的价值并不相同：</p>
+      <div class="table-wrap">
+        <table class="points">
+          <thead><tr><th>点位</th><th>相邻点</th><th>经过的线</th></tr></thead>
+          <tbody>
+            <tr class="best"><td>中层正方形·角点</td><td class="n">4</td><td class="n">3</td></tr>
+            <tr><td>中层正方形·边中点</td><td class="n">4</td><td class="n">2</td></tr>
+            <tr><td>外层／内层正方形·角点</td><td class="n">3</td><td class="n">3</td></tr>
+            <tr><td>外层／内层正方形·边中点</td><td class="n">3</td><td class="n">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>中层正方形的四个角点是全盘最好的位置：可走的方向最多，能参与的三连也最多。不过开局第一手有限制——必须下在外层的四个角之一。</p>
+    </section>
+
+    <section>
+      <h2 class="serif">实战演示：一盘真实对局</h2>
+      <p>红方先走。留意蓝方的底边——前半段的大部分时间里，它看起来毫无威胁。</p>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/01.webp" width="960" height="882" alt="开局第一手：红方落在外层右下角，四个外层角点都被圈出。" loading="lazy">
+        <figcaption><span class="step">第 1 手</span><span class="cap-title">第一手下在外层角点</span><span class="cap-body">最开始的第一枚棋子只能下在外层的四个角上。红方从右下角开始。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/02.webp" width="960" height="882" alt="右边的三枚红子作为三连亮起，左侧被吃掉的点被圈出。" loading="lazy">
+        <figcaption><span class="step">第 9–10 手</span><span class="cap-title">三子连线就是三连——还能吃子</span><span class="cap-body">红方在右边连成三子，吃掉一枚蓝子。被吃空的点会标上 ×，在前半段结束之前都不能落子。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/03.webp" width="960" height="882" alt="一条从外层左上角延伸到内层正方形的斜线三连亮起。" loading="lazy">
+        <figcaption><span class="step">第 22–23 手</span><span class="cap-title">斜线也算</span><span class="cap-body">从左上角顺着斜线一路下来——红方的第三个三连。正是这些角上的斜线，让参高努与众不同。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/04.webp" width="960" height="882" alt="蓝方在中层底边和内层底边的棋子被圈出，连接两者的桥上画着双向箭头。" loading="lazy">
+        <figcaption><span class="step">第 26 手</span><span class="cap-title">蓝方的框架完成了</span><span class="cap-body">中层底边三枚，内层底边两端各一枚，再加上连接两者的那座桥。桥尽头的空位，是蓝方早先吃子时腾出来的点。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/05.webp" width="960" height="882" alt="落子阶段结束时的棋盘：红方 11 枚，蓝方 8 枚。" loading="lazy">
+        <figcaption><span class="step">中场</span><span class="cap-title">11 比 8——红方明显领先</span><span class="cap-body">红方在落子阶段组成了四个三连。从这里开始，棋子不再放下，而是每次滑动一个点。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/06.webp" width="960" height="882" alt="蓝方底部的两个三连都亮起，箭头显示一枚棋子在两者之间来回滑动。" loading="lazy">
+        <figcaption><span class="step">第 32–36 手</span><span class="cap-title">往返三连</span><span class="cap-body">蓝方把一枚棋子沿桥滑下——内层三连，吃子——再滑回去——中层三连，吃子。每走一步都合上一个三连。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/07.webp" width="960" height="882" alt="走到空位旁边的红子被圈出；蓝方随即把它吃掉。" loading="lazy">
+        <figcaption><span class="step">第 37–39 手</span><span class="cap-title">想堵住空位</span><span class="cap-body">红方滑到空位旁边想把它堵住，蓝方干脆先把那枚棋子吃掉。内层的空位四周全是蓝子，红方根本走不进去。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/08.webp" width="960" height="882" alt="终局：红方只剩两枚棋子，蓝方获胜。" loading="lazy">
+        <figcaption><span class="step">第 57 手</span><span class="cap-title">连吃九子</span><span class="cap-body">红方只剩两枚棋子，输了——明明是从 11 比 8 开始，蓝方却自始至终只用了这一招。</span></figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2 class="serif">怎么搭往返三连</h2>
+      <ul>
+        <li><strong>两条平行边加一座桥。</strong>选两条由一根直线相连的边——比如中层底边和内层底边。占住每条边的两个角点，再在桥上留一枚棋子。</li>
+        <li><strong>让空位够不着。</strong>来回穿梭的那枚棋子离开的点，不能与敌子相邻，否则对方会走进来把它堵死。外层或内层正方形的边中点最理想：它的相邻点只有你的两个角点和那座桥。</li>
+        <li><strong>在落子阶段就搭好。</strong>后半段一开始，就不能再放新棋子了。前半段宁可让对方多组成几个三连，也要把手数花在框架上——蓝方正是这么做的。</li>
+        <li><strong>吃子可以帮你腾出空位。</strong>落子阶段因吃子而空出的点，在开始走子之前都不能再放棋子——正好给你的桥留出一个现成的空位。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">怎么阻止它</h2>
+      <ul>
+        <li><strong>尽早占据框架上的一个点。</strong>往返三连需要五个点。在落子阶段占住其中任意一个，整个结构就搭不起来了。</li>
+        <li><strong>堵空位——要赶在三连合上之前。</strong>走到空位旁边，只有你的棋子活下来才有用；正如上面的对局所示，往返三连会先把来堵的棋子吃掉。</li>
+        <li><strong>反击敞开的一侧。</strong>每当穿梭的棋子离开一个三连，留在原地的两枚棋子就失去了保护。组成你自己的三连，吃掉其中一枚。</li>
+        <li><strong>算一算行动力。</strong>如果对方轮到自己时无棋可走，你就直接获胜——棋盘一挤，被困死的情况很常见。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">自己试试</h2>
+      <p>大师 AI 既会搭往返三连，也会防守它。看看你能不能抢先让自己的往返三连转起来。</p>
+      <div class="cta">
+        <a href="index.html" class="btn-primary" style="padding:12px 24px;">与 AI 对战参高努</a>
+        <a href="online.html?game=cham" class="btn" style="padding:12px 24px;">在线对战</a>
+        <a href="howto.html" class="btn" style="padding:12px 24px;">完整规则</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">隐私政策</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'zh', currentPage: 'cham-strategy.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'zh', currentPage: 'cham-strategy.html' });
+</script>
+</body>
+</html>

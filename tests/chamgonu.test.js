@@ -67,6 +67,31 @@ test('completing a mill triggers a pending capture without passing the turn', ()
   assert.deepEqual(legalCaptures(state).sort((a, b) => a - b), [12, 13]);
 });
 
+// The strategy guide's worked example: holding 0·2 (outer top side) and
+// 8·10 (middle top side), one piece shuttling 1↔9 closes a mill on every
+// move, and the point it leaves is surrounded by its own pieces, so the
+// opponent can never step in to block it.
+test('running mill: shuttling one piece between two mills captures every turn and cannot be blocked', () => {
+  const pieces = new Array(24).fill(null);
+  for (const i of [0, 1, 2, 8, 10, 16, 18]) pieces[i] = PLAYERS.A;
+  for (const i of [4, 5, 6, 7, 12, 13, 14, 19, 20, 21, 22, 23]) pieces[i] = PLAYERS.B;
+  let state = emptyState({ pieces, phase: 'moving', placedCount: { A: 12, B: 12 } });
+
+  for (const [from, to] of [[1, 9], [9, 1], [1, 9]]) {
+    state = move(state, from, to);
+    assert.equal(state.pendingCapture, true, `${from}->${to} should close a mill`);
+    state = move(state, null, legalCaptures(state)[0]);
+    assert.equal(state.turn, PLAYERS.B);
+    const blocks = [];
+    for (let i = 0; i < 24; i++) {
+      if (state.pieces[i] === PLAYERS.B && legalMovesFrom(state, i).includes(from)) blocks.push(i);
+    }
+    assert.deepEqual(blocks, [], `B should not be able to step into vacated point ${from}`);
+    state = { ...state, turn: PLAYERS.A };
+  }
+  assert.equal(state.pieces.filter((p) => p === PLAYERS.B).length, 9);
+});
+
 test('lastMove tracks the latest placement and is kept through the capture that follows a mill', () => {
   let state = createInitialState();
   assert.equal(state.lastMove, null);

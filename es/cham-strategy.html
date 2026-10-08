@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Estrategia de Cham-gonu: el molino corredizo — PlayGonu</title>
+<meta name="description" content="Así se gana de verdad al Cham-gonu: arma un molino corredizo que captura en cada turno. Una partida real explicada jugada a jugada, con imágenes, y además cómo armar uno y cómo frenarlo.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/es/cham-strategy.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/es/cham-strategy.html">
+<meta property="og:title" content="Estrategia de Cham-gonu: el molino corredizo — PlayGonu">
+<meta property="og:description" content="Así se gana de verdad al Cham-gonu: arma un molino corredizo que captura en cada turno. Una partida real explicada jugada a jugada, con imágenes, y además cómo armar uno y cómo frenarlo.">
+<meta property="og:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Estrategia de Cham-gonu: el molino corredizo — PlayGonu">
+<meta name="twitter:description" content="Así se gana de verdad al Cham-gonu: arma un molino corredizo que captura en cada turno. Una partida real explicada jugada a jugada, con imágenes, y además cómo armar uno y cómo frenarlo.">
+<meta name="twitter:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.7; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .shot img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--card-border); display: block; }
+  .shot figcaption { display: flex; flex-direction: column; gap: 4px; }
+  .shot .step { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--red); }
+  .shot .cap-title { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .shot .cap-body { font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
+  .points { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .points th, .points td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+  .points th { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+  .points td.n { font-variant-numeric: tabular-nums; }
+  .points tr.best td { font-weight: 700; color: var(--ink); }
+  .table-wrap { overflow-x: auto; }
+  .stat { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .stat .big { font-family: "Noto Serif KR", Georgia, serif; font-size: 34px; font-weight: 700; color: var(--red); }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="howto.html" class="variant-tab">Cómo jugar</a>
+        <a href="online.html" class="variant-tab">En línea</a>
+        <a href="../blog/index.html" class="variant-tab">Blog</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+
+    <section>
+      <div class="tag" style="color:var(--red);">Guía de estrategia · Cham-gonu 참고누</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;">El molino corredizo: así se gana de verdad al Cham-gonu</h1>
+      <p>El Cham-gonu es el juego más profundo de la familia coreana del Gonu: dos jugadores, 12 piezas cada uno y un tablero de 24 puntos formado por tres cuadrados concéntricos. Puedes ir por delante durante toda la primera mitad y aun así perder, y casi siempre por la misma razón: tu rival armó un <strong>molino corredizo</strong> (running mill). Esta guía repasa una partida real en la que pasa justo eso, y luego te enseña a armar uno y a frenarlo.</p>
+      <div class="stat"><span class="big">157 de 160</span><span>partidas las ganó el bando que armó un molino corredizo, cuando solo uno de los dos lo tenía. (El molino corredizo apareció en 164 de 400 partidas entre nuestras IA más fuertes.)</span></div>
+    </section>
+
+    <section>
+      <h2 class="serif">El tablero en 30 segundos</h2>
+      <p>Los 24 puntos están sobre tres cuadrados concéntricos. Unas líneas unen el punto medio de cada lado a través de los tres cuadrados y, a diferencia de los juegos de molino occidentales, las esquinas también se unen con diagonales. Eso da <strong>20 líneas</strong> en las que tres de tus piezas forman un molino. No todos los puntos valen lo mismo:</p>
+      <div class="table-wrap">
+        <table class="points">
+          <thead><tr><th>Punto</th><th>Vecinos</th><th>Líneas que pasan por él</th></tr></thead>
+          <tbody>
+            <tr class="best"><td>Cuadrado del medio, esquina</td><td class="n">4</td><td class="n">3</td></tr>
+            <tr><td>Cuadrado del medio, centro de lado</td><td class="n">4</td><td class="n">2</td></tr>
+            <tr><td>Cuadrado exterior / interior, esquina</td><td class="n">3</td><td class="n">3</td></tr>
+            <tr><td>Cuadrado exterior / interior, centro de lado</td><td class="n">3</td><td class="n">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>Las cuatro esquinas del cuadrado del medio son los mejores puntos del tablero: dan más libertad de movimiento y forman parte de más molinos. Eso sí, la jugada de apertura está restringida: tiene que ir en una de las cuatro esquinas exteriores.</p>
+    </section>
+
+    <section>
+      <h2 class="serif">Míralo en acción: una partida real</h2>
+      <p>Rojo mueve primero. No pierdas de vista el lado inferior de Azul: durante casi toda la primera mitad parece inofensivo.</p>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/01.webp" width="960" height="882" alt="La jugada de apertura: Rojo coloca en la esquina exterior inferior derecha; las cuatro esquinas exteriores están marcadas con un círculo." loading="lazy">
+        <figcaption><span class="step">Jugada 1</span><span class="cap-title">La primera pieza va en una esquina exterior</span><span class="cap-body">Para la primerísima pieza solo valen las cuatro esquinas exteriores. Rojo empieza abajo a la derecha.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/02.webp" width="960" height="882" alt="Las tres piezas rojas del lado derecho brillan como un molino; el punto capturado a la izquierda está marcado con un círculo." loading="lazy">
+        <figcaption><span class="step">Jugadas 9–10</span><span class="cap-title">Tres en línea es un molino… y una captura</span><span class="cap-body">Rojo alinea tres piezas en el lado derecho y retira una pieza azul. El punto que queda vacío se marca con una × y nadie puede usarlo hasta que termine la primera mitad.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/03.webp" width="960" height="882" alt="Brilla un molino en diagonal que va de la esquina exterior superior izquierda al cuadrado interior." loading="lazy">
+        <figcaption><span class="step">Jugadas 22–23</span><span class="cap-title">Las diagonales también cuentan</span><span class="cap-body">Desde la esquina superior izquierda, recto por la diagonal: el tercer molino de Rojo. Estas diagonales de las esquinas son lo que distingue al Cham-gonu.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/04.webp" width="960" height="882" alt="Las piezas azules de los lados inferiores del cuadrado del medio y del interior están marcadas con un círculo, con una flecha de doble sentido a lo largo del puente que los une." loading="lazy">
+        <figcaption><span class="step">Jugada 26</span><span class="cap-title">La estructura de Azul está lista</span><span class="cap-body">Tres piezas en el lado inferior del cuadrado del medio, los dos extremos del lado inferior del cuadrado interior y el puente que los une. El hueco al final del puente es un punto que Azul vació antes al capturar.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/05.webp" width="960" height="882" alt="El tablero al final de la mitad de colocación: Rojo con 11 piezas y Azul con 8." loading="lazy">
+        <figcaption><span class="step">Medio tiempo</span><span class="cap-title">11 contra 8: Rojo va claramente por delante</span><span class="cap-body">Rojo formó cuatro molinos durante la colocación. A partir de aquí, las piezas ya no se colocan: se deslizan de un punto en un punto.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/06.webp" width="960" height="882" alt="Brillan los dos molinos inferiores de Azul, con una flecha que muestra una pieza deslizándose de ida y vuelta entre ellos." loading="lazy">
+        <figcaption><span class="step">Jugadas 32–36</span><span class="cap-title">El molino corredizo</span><span class="cap-body">Azul baja una pieza por el puente —molino interior, captura— y la vuelve a subir —molino del medio, captura—. Cada una de sus jugadas cierra un molino.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/07.webp" width="960" height="882" alt="La pieza roja que se colocó junto al hueco está marcada con un círculo; Azul la capturó de inmediato." loading="lazy">
+        <figcaption><span class="step">Jugadas 37–39</span><span class="cap-title">Intentar tapar el hueco</span><span class="cap-body">Rojo se desliza junto al hueco para bloquearlo, y Azul simplemente captura esa pieza primero. El hueco interior está rodeado de piezas azules, así que Rojo ni siquiera puede llegar a él.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/08.webp" width="960" height="882" alt="La posición final: a Rojo le quedan dos piezas y gana Azul." loading="lazy">
+        <figcaption><span class="step">Jugada 57</span><span class="cap-title">Nueve capturas seguidas</span><span class="cap-body">Rojo se queda con dos piezas y pierde. Y eso partiendo de 11 contra 8, sin que Azul necesitara ninguna otra idea.</span></figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2 class="serif">Cómo armar un molino corredizo</h2>
+      <ul>
+        <li><strong>Dos lados paralelos y un puente.</strong> Elige dos lados unidos por una línea recta, por ejemplo el lado inferior del cuadrado del medio y el del cuadrado interior. Ocupa las dos esquinas de cada lado y deja una pieza en el puente.</li>
+        <li><strong>Haz que el hueco sea inalcanzable.</strong> El punto que deja libre tu pieza de ida y vuelta no debe tocar ninguna pieza rival; si no, tu rival se mete y lo atasca. Lo ideal es el centro de un lado del cuadrado exterior o interior: sus únicos vecinos son tus dos esquinas y el puente.</li>
+        <li><strong>Constrúyelo durante la colocación.</strong> En cuanto empieza la segunda mitad, ya no se puede colocar nada nuevo. Dedica jugadas de la primera mitad a la estructura aunque eso suponga dejar que tu rival forme algunos molinos; es justo lo que hizo Azul.</li>
+        <li><strong>Las capturas pueden abrirte el hueco.</strong> Un punto que vacías al capturar durante la colocación no se puede volver a ocupar hasta que empiezan los movimientos: un agujero listo para tu puente.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">Cómo frenarlo</h2>
+      <ul>
+        <li><strong>Ocupa pronto un punto de la estructura.</strong> Un molino corredizo necesita cinco puntos. Ocupa cualquiera de ellos durante la colocación y todo se viene abajo.</li>
+        <li><strong>Bloquea el hueco… antes de que se cierre el molino.</strong> Ponerte junto al hueco solo sirve si tu pieza sobrevive; como muestra la partida de arriba, el molino corredizo captura primero a la pieza que intenta bloquearlo.</li>
+        <li><strong>Contraataca por el lado abierto.</strong> Cada vez que la pieza de ida y vuelta abandona un molino, las dos piezas que deja atrás quedan desprotegidas. Cierra un molino propio y captura una de ellas.</li>
+        <li><strong>Cuenta los movimientos.</strong> Si tu rival no tiene ninguna jugada legal en su turno, ganas directamente; con el tablero tan lleno, los bloqueos son frecuentes.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">Pruébalo tú mismo</h2>
+      <p>La IA Maestro sabe armar molinos corredizos y defenderse de ellos. A ver si consigues que el tuyo funcione primero.</p>
+      <div class="cta">
+        <a href="index.html" class="btn-primary" style="padding:12px 24px;">Jugar Cham-gonu contra la IA</a>
+        <a href="online.html?game=cham" class="btn" style="padding:12px 24px;">Partida en línea</a>
+        <a href="howto.html" class="btn" style="padding:12px 24px;">Reglas completas</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">Política de privacidad</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'es', currentPage: 'cham-strategy.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'es', currentPage: 'cham-strategy.html' });
+</script>
+</body>
+</html>

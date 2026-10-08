@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>참고누 전략: 왕복 꼰 — 플레이고누</title>
+<meta name="description" content="참고누는 결국 왕복 꼰으로 이깁니다. 실제 대국을 스크린샷과 함께 한 수씩 따라가며, 왕복 꼰 만드는 법과 막는 법을 정리했어요.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/ko/cham-strategy.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ko/cham-strategy.html">
+<meta property="og:title" content="참고누 전략: 왕복 꼰 — 플레이고누">
+<meta property="og:description" content="참고누는 결국 왕복 꼰으로 이깁니다. 실제 대국을 스크린샷과 함께 한 수씩 따라가며, 왕복 꼰 만드는 법과 막는 법을 정리했어요.">
+<meta property="og:image" content="https://playgonu.com/images/guide/cham-running-mill/ko/06.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="참고누 전략: 왕복 꼰 — 플레이고누">
+<meta name="twitter:description" content="참고누는 결국 왕복 꼰으로 이깁니다. 실제 대국을 스크린샷과 함께 한 수씩 따라가며, 왕복 꼰 만드는 법과 막는 법을 정리했어요.">
+<meta name="twitter:image" content="https://playgonu.com/images/guide/cham-running-mill/ko/06.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; word-break: keep-all; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .shot img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--card-border); display: block; }
+  .shot figcaption { display: flex; flex-direction: column; gap: 4px; }
+  .shot .step { font-size: 12.5px; font-weight: 700; letter-spacing: .04em; color: var(--red); }
+  .shot .cap-title { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .shot .cap-body { font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+  .points { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .points th, .points td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+  .points th { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+  .points td.n { font-variant-numeric: tabular-nums; }
+  .points tr.best td { font-weight: 700; color: var(--ink); }
+  .table-wrap { overflow-x: auto; }
+  .stat { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .stat .big { font-family: "Noto Serif KR", Georgia, serif; font-size: 34px; font-weight: 700; color: var(--red); }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">참고누</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">오목</a>
+        <a href="howto.html" class="variant-tab">하는 법</a>
+        <a href="online.html" class="variant-tab">온라인 대전</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+
+    <section>
+      <div class="tag" style="color:var(--red);">전략 가이드 · 참고누</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.3;">왕복 꼰: 참고누는 이걸로 이긴다</h1>
+      <p>참고누는 고누 중 가장 묵직한 게임이에요. 둘이서 말 12개씩, 세 겹 사각형 24칸 판에서 둡니다. 전반 내내 앞서다가도 지는 일이 흔한데, 이유는 거의 하나예요. 상대가 <strong>왕복 꼰</strong>을 만들었기 때문이죠. 실제로 그렇게 끝난 한 판을 같이 따라가 보고, 직접 만드는 법과 막는 법까지 정리했어요.</p>
+      <div class="stat"><span class="big">160판 중 157판</span><span>한쪽만 왕복 꼰을 만든 판에서, 만든 쪽이 이긴 횟수예요. (우리 사이트 최강 AI끼리 둔 400판 중 164판에서 왕복 꼰이 나왔어요.)</span></div>
+    </section>
+
+    <section>
+      <h2 class="serif">30초 만에 판 읽기</h2>
+      <p>24칸은 세 겹 사각형 위에 있어요. 각 변의 가운데가 세 사각형을 가로질러 이어지고, 서양 모리스 게임과 달리 모서리끼리도 대각선으로 이어져요. 그래서 꼰이 되는 줄은 모두 <strong>20개</strong>예요. 자리마다 힘이 달라요.</p>
+      <div class="table-wrap">
+        <table class="points">
+          <thead><tr><th>자리</th><th>이어진 칸</th><th>걸린 줄</th></tr></thead>
+          <tbody>
+            <tr class="best"><td>가운데 사각형 모서리</td><td class="n">4</td><td class="n">3</td></tr>
+            <tr><td>가운데 사각형 변 중앙</td><td class="n">4</td><td class="n">2</td></tr>
+            <tr><td>바깥·안쪽 사각형 모서리</td><td class="n">3</td><td class="n">3</td></tr>
+            <tr><td>바깥·안쪽 사각형 변 중앙</td><td class="n">3</td><td class="n">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>가운데 사각형의 모서리 네 곳이 명당이에요. 움직일 길도 가장 많고 꼰에 걸리는 줄도 가장 많거든요. 단, 게임의 첫 수는 바깥 사각형 모서리 네 곳 중 하나에만 둘 수 있어요.</p>
+    </section>
+
+    <section>
+      <h2 class="serif">실제 대국으로 보기</h2>
+      <p>빨강이 먼저 둡니다. 전반 내내 별것 없어 보이는 파랑의 아래쪽을 눈여겨보세요.</p>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/01.webp" width="960" height="882" alt="첫 수: 빨강이 오른쪽 아래 바깥 모서리에 놓고, 바깥 모서리 네 곳에 동그라미가 쳐져 있다." loading="lazy">
+        <figcaption><span class="step">1수</span><span class="cap-title">첫 수는 바깥 모서리에만</span><span class="cap-body">맨 첫 말은 바깥 사각형 모서리 네 곳에만 놓을 수 있어요. 빨강은 오른쪽 아래로 시작.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/02.webp" width="960" height="882" alt="오른쪽 변의 빨강 세 개가 꼰으로 빛나고, 왼쪽의 잡힌 자리에 동그라미가 쳐져 있다." loading="lazy">
+        <figcaption><span class="step">9–10수</span><span class="cap-title">한 줄에 셋이면 꼰, 그리고 잡기</span><span class="cap-body">빨강이 오른쪽 변에 셋을 나란히 놓고 파랑 말 하나를 잡았어요. 잡혀서 빈 자리엔 ×(말뚝)가 박혀서 전반이 끝날 때까지 아무도 못 놔요.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/03.webp" width="960" height="882" alt="왼쪽 위 바깥 모서리에서 안쪽 사각형까지 이어진 대각선 꼰이 빛난다." loading="lazy">
+        <figcaption><span class="step">22–23수</span><span class="cap-title">대각선도 꼰이 돼요</span><span class="cap-body">왼쪽 위 모서리부터 대각선으로 셋, 빨강의 세 번째 꼰이에요. 이 대각선 줄이 참고누만의 특징이에요.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/04.webp" width="960" height="882" alt="가운데 아래 변과 안쪽 아래 변의 파랑 말에 동그라미가 쳐져 있고, 둘을 잇는 다리에 왕복 화살표가 그려져 있다." loading="lazy">
+        <figcaption><span class="step">26수</span><span class="cap-title">파랑의 틀이 완성됐어요</span><span class="cap-body">가운데 아래 변 셋, 안쪽 아래 변 양 끝, 그리고 둘을 잇는 다리. 다리 끝 빈자리는 아까 파랑이 잡기로 비워둔 자리예요.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/05.webp" width="960" height="882" alt="배치 단계가 끝난 판. 빨강 11개, 파랑 8개." loading="lazy">
+        <figcaption><span class="step">전반 끝</span><span class="cap-title">11 대 8, 빨강이 확실히 앞서요</span><span class="cap-body">빨강은 배치하면서 꼰을 네 번 만들었어요. 이제부터는 말을 놓는 대신 한 칸씩 옮기는 후반전이에요.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/06.webp" width="960" height="882" alt="파랑의 아래쪽 꼰 두 개가 빛나고, 말 하나가 둘 사이를 오가는 화살표가 그려져 있다." loading="lazy">
+        <figcaption><span class="step">32–36수</span><span class="cap-title">이게 바로 왕복 꼰</span><span class="cap-body">파랑은 말 하나를 다리로 내렸다가(안쪽 꼰, 잡기) 다시 올려요(가운데 꼰, 잡기). 움직일 때마다 꼰이 생겨요.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/07.webp" width="960" height="882" alt="틈 옆으로 온 빨강 말에 동그라미가 쳐져 있다. 파랑이 곧바로 잡았다." loading="lazy">
+        <figcaption><span class="step">37–39수</span><span class="cap-title">틈을 막으려다…</span><span class="cap-body">빨강이 빈자리 옆으로 와서 막으려 했지만, 파랑은 그 말부터 잡아버려요. 안쪽 빈자리는 주변이 전부 파랑이라 들어갈 길조차 없어요.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/ko/08.webp" width="960" height="882" alt="마지막 장면: 빨강은 말 두 개만 남았고 파랑이 이겼다." loading="lazy">
+        <figcaption><span class="step">57수</span><span class="cap-title">아홉 번 연속 잡기</span><span class="cap-body">빨강은 2개만 남아 패배. 11 대 8에서 시작해, 파랑은 다른 수 하나 없이 왕복 꼰만으로 역전했어요.</span></figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2 class="serif">왕복 꼰 만드는 법</h2>
+      <ul>
+        <li><strong>나란한 두 변 + 다리 하나.</strong> 직선 다리로 이어진 두 변을 고르세요. 예를 들어 가운데 아래 변과 안쪽 아래 변이에요. 각 변의 양 모서리를 잡고, 다리 위에 말 하나를 둬요.</li>
+        <li><strong>빈자리는 상대가 못 오게.</strong> 왔다 갔다 하는 말이 비우는 칸 옆에 상대 말이 있으면, 상대가 들어와서 막아요. 바깥이나 안쪽 사각형의 변 중앙이 딱 좋아요. 이웃이 내 모서리 둘과 다리뿐이거든요.</li>
+        <li><strong>배치 단계에서 미리 짓기.</strong> 후반전엔 새 말을 놓을 수 없어요. 상대에게 꼰을 몇 번 내주더라도 전반에 틀을 먼저 짓는 게 남는 장사예요. 위 대국의 파랑처럼요.</li>
+        <li><strong>잡기로 빈자리를 만들 수도 있어요.</strong> 배치 단계에서 잡아서 생긴 자리는 후반전이 시작될 때까지 아무도 못 채워요. 다리용 빈칸으로 딱이죠.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">왕복 꼰 막는 법</h2>
+      <ul>
+        <li><strong>틀의 한 칸을 먼저 차지하기.</strong> 왕복 꼰엔 다섯 칸이 필요해요. 배치 단계에서 그중 한 칸만 먼저 막아도 통째로 무너져요.</li>
+        <li><strong>틈은 꼰이 닫히기 전에 막기.</strong> 틈 옆으로 가는 건 그 말이 살아남아야 의미가 있어요. 위 대국처럼, 왕복 꼰은 막으러 온 말부터 잡아요.</li>
+        <li><strong>열린 쪽을 역습하기.</strong> 왕복하는 말이 한쪽 꼰을 떠나면, 남은 두 말은 더 이상 꼰으로 보호받지 못해요. 내 꼰을 만들어서 그 말부터 잡으세요.</li>
+        <li><strong>움직일 길 세기.</strong> 상대 차례에 둘 수 있는 수가 하나도 없으면 바로 이겨요. 판이 빽빽한 참고누에선 가둬서 이기는 판이 꽤 많아요.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">직접 해보세요</h2>
+      <p>마스터 AI는 왕복 꼰을 만들고 막을 줄 알아요. 내 왕복 꼰이 먼저 돌아가게 해보세요.</p>
+      <div class="cta">
+        <a href="index.html" class="btn-primary" style="padding:12px 24px;">AI와 참고누 두기</a>
+        <a href="online.html?game=cham" class="btn" style="padding:12px 24px;">온라인 대전</a>
+        <a href="howto.html" class="btn" style="padding:12px 24px;">전체 규칙</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">개인정보처리방침</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'cham-strategy.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ko', currentPage: 'cham-strategy.html' });
+</script>
+</body>
+</html>

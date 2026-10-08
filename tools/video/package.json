@@ -1,0 +1,9 @@
+{
+  "name": "playgonu-video-tools",
+  "private": true,
+  "type": "module",
+  "description": "Renders strategy videos and guide screenshots from real games. Not part of the deployed site.",
+  "dependencies": {
+    "puppeteer-core": "^24.0.0"
+  }
+}

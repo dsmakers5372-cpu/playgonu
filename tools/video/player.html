@@ -1,0 +1,300 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>PlayGonu video player</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@600;700;900&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #F6F1E6; --sheet: #FBF8F1; --ink: #2A2420; --ink-soft: #5B524A; --muted: #8A7F73; --rule: #E3D9C6;
+    --red: #AC3B2A; --blue: #2C5F8A; --teal: #2F6E6A; --gold: #D9A441;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--paper); color: var(--ink); font-family: "Noto Sans KR", system-ui, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 1920px; height: 1080px; background: var(--paper); overflow: hidden; }
+  body.portrait #stage { width: 1080px; height: 1920px; }
+
+  body.ko #bubble, body.ko #card { word-break: keep-all; }
+  #boardWrap { position: absolute; left: 80px; top: 60px; width: 960px; height: 960px; border-radius: 22px; background: #C99A5B; border: 6px solid #8B6239; box-shadow: 0 18px 40px rgba(42,36,32,.18); transform-origin: 50% 50%; }
+  /* Shorts: YouTube overlays the bottom ~280px and a button column on the right, so the board sits above that and away from the right edge. */
+  body.portrait #boardWrap { left: 60px; top: 760px; width: 880px; height: 880px; }
+  #board { position: absolute; inset: 40px; width: calc(100% - 80px); height: calc(100% - 80px); overflow: visible; }
+
+  #panel { position: absolute; left: 1110px; top: 60px; width: 730px; height: 960px; display: flex; flex-direction: column; gap: 26px; }
+  body.portrait #panel { left: 60px; top: 60px; width: 960px; height: 250px; gap: 14px; }
+  .brand { display: flex; align-items: baseline; gap: 16px; }
+  .brand .logo { font-family: "Noto Serif KR", serif; font-weight: 900; font-size: 40px; }
+  .brand .game { font-size: 24px; font-weight: 700; color: var(--red); letter-spacing: .04em; }
+  .players { display: flex; flex-direction: column; gap: 12px; }
+  body.portrait .players { flex-direction: row; }
+  .player { display: flex; align-items: center; gap: 16px; background: var(--sheet); border: 2px solid var(--rule); border-radius: 16px; padding: 14px 20px; flex: 1; }
+  .player.active { border-color: var(--ink); }
+  .chip { width: 30px; height: 30px; border-radius: 50%; flex: none; }
+  .pname { font-size: 24px; font-weight: 700; flex: 1; }
+  .pcount { font-family: "Noto Serif KR", serif; font-size: 40px; font-weight: 900; font-variant-numeric: tabular-nums; }
+  .status { font-size: 22px; font-weight: 700; color: var(--ink-soft); }
+  body.portrait .status { display: none; }
+
+  #bubble { position: relative; background: #fff; border: 3px solid var(--ink); border-radius: 28px; padding: 30px 34px 34px; box-shadow: 8px 8px 0 var(--ink); display: flex; flex-direction: column; gap: 14px; opacity: 0; transform: translateY(16px); }
+  body.portrait #bubble { position: absolute; left: 0; width: 880px; top: 200px; }
+  #bubble::before { content: ""; position: absolute; left: -26px; top: 70px; border: 14px solid transparent; border-right: 14px solid var(--ink); }
+  body.portrait #bubble::before { display: none; }
+  #bubble .tag { align-self: flex-start; font-size: 22px; font-weight: 900; color: #fff; background: var(--teal); border-radius: 999px; padding: 6px 18px; letter-spacing: .03em; }
+  #bubble .tag.alert { background: var(--red); }
+  #bubble .title { font-size: 44px; font-weight: 900; line-height: 1.25; }
+  #bubble .body { font-size: 29px; line-height: 1.6; color: var(--ink-soft); font-weight: 500; }
+  body.portrait #bubble .title { font-size: 50px; }
+  body.portrait #bubble .body { font-size: 33px; }
+
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; pointer-events: none; }
+  #card { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 28px; background: rgba(246,241,230,.94); opacity: 0; text-align: center; padding: 0 160px; }
+  #card .logo { font-family: "Noto Serif KR", serif; font-weight: 900; font-size: 44px; color: var(--red); letter-spacing: .02em; }
+  #card .title { font-family: "Noto Serif KR", serif; font-weight: 900; font-size: 92px; line-height: 1.2; }
+  #card .body { font-size: 36px; line-height: 1.6; color: var(--ink-soft); max-width: 1300px; font-weight: 500; }
+  body.portrait #card { padding: 0 80px; }
+  body.portrait #card .title { font-size: 84px; }
+  #card .url { margin-top: 10px; font-size: 40px; font-weight: 900; color: #fff; background: var(--red); border-radius: 18px; padding: 16px 40px; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="boardWrap"><svg id="board" viewBox="0 0 420 420"></svg></div>
+  <div id="panel">
+    <div class="brand"><span class="logo">PlayGonu</span><span class="game" id="gameName"></span></div>
+    <div class="players">
+      <div class="player" id="pA"><span class="chip" style="background:#AC3B2A"></span><span class="pname" id="nameA"></span><span class="pcount" id="countA"></span></div>
+      <div class="player" id="pB"><span class="chip" style="background:#2C5F8A"></span><span class="pname" id="nameB"></span><span class="pcount" id="countB"></span></div>
+    </div>
+    <div class="status" id="status"></div>
+    <div id="bubble"><span class="tag" id="bTag"></span><div class="title" id="bTitle"></div><div class="body" id="bBody"></div></div>
+  </div>
+  <div id="flash"></div>
+  <div id="card"><div class="logo">PlayGonu</div><div class="title" id="cTitle"></div><div class="body" id="cBody"></div><div class="url" id="cUrl">playgonu.com</div></div>
+</div>
+<script type="module">
+import * as engine from '/src/engine/chamgonu.js';
+
+const params = new URLSearchParams(location.search);
+const lang = params.get('lang') === 'en' ? 'en' : 'ko';
+const portrait = params.get('format') === 'portrait';
+const cut = params.get('cut') || 'full';
+if (portrait) document.body.classList.add('portrait');
+document.body.classList.add(lang);
+const episode = (await import(`./episodes/${params.get('episode') || 'cham-running-mill'}.js`)).default;
+
+const POINTS = [
+  [40, 40], [210, 40], [380, 40], [380, 210], [380, 380], [210, 380], [40, 380], [40, 210],
+  [97, 97], [210, 97], [323, 97], [323, 210], [323, 323], [210, 323], [97, 323], [97, 210],
+  [153, 153], [210, 153], [267, 153], [267, 210], [267, 267], [210, 267], [153, 267], [153, 210],
+];
+const COLOR = { A: { fill: '#AC3B2A', stroke: '#7A2A1E' }, B: { fill: '#2C5F8A', stroke: '#1D4360' } };
+const TEXT = {
+  ko: { game: '참고누 · Cham-gonu', placing: '배치 단계', moving: '이동 단계', move: (n) => `${n}수째` },
+  en: { game: 'Cham-gonu · 참고누', placing: 'Placing (first half)', moving: 'Moving (second half)', move: (n) => `Move ${n}` },
+}[lang];
+
+// Replay the real game once; states[i] is the position after i plies.
+const states = [engine.createInitialState()];
+for (const [from, to] of episode.moves) states.push(engine.move(states[states.length - 1], from, to));
+
+// ---- timeline -------------------------------------------------------------
+const PLY_DUR = { place: 0.8, capture: 1.05, slide: 1.0 };
+const readSecs = (text) => lang === 'ko' ? 3.2 + [...text].length * 0.072 : 3.2 + text.split(/\s+/).length * 0.3;
+const segments = [];
+let clock = 0;
+const push = (seg) => { segments.push({ ...seg, start: clock }); clock += seg.dur; };
+
+const explainAt = new Map(episode.explain.map((e) => [e.after, e]));
+// Shorts keep only the comeback: from the "look at Blue's bottom side" pause onward.
+const firstPly = cut === 'shorts' ? 26 : 0;
+const keepExplain = (after) => cut !== 'shorts' || [26, 29, 36, 57].includes(after);
+
+const shorts = cut === 'shorts';
+push({ type: 'card', kind: 'intro', at: firstPly, dur: shorts ? 3.2 : 4.6, text: (shorts && episode.shortsIntro ? episode.shortsIntro : episode.intro)[lang] });
+for (let i = firstPly; i <= episode.moves.length; i++) {
+  const ex = explainAt.get(i);
+  if (ex && keepExplain(i)) {
+    const copy = ex[lang];
+    push({ type: 'explain', at: i, ex, dur: Math.min(shorts ? 8.5 : 13, readSecs(copy.title + ' ' + copy.body)) });
+  }
+  if (i < episode.moves.length) {
+    const before = states[i];
+    const kind = before.pendingCapture ? 'capture' : episode.moves[i][0] === null ? 'place' : 'slide';
+    // Shorts: keep the first shuttle at full speed so it reads, rush the rest.
+    const speed = shorts && !(i >= 29 && i < 36) ? 0.55 : 1;
+    push({ type: 'ply', index: i, kind, dur: PLY_DUR[kind] * speed });
+  }
+}
+push({ type: 'card', kind: 'outro', at: episode.moves.length, dur: shorts ? 4 : 5.5, text: episode.outro[lang] });
+const duration = clock;
+
+// ---- drawing ----------------------------------------------------------------
+const ease = (p) => (p < 0 ? 0 : p > 1 ? 1 : 1 - (1 - p) ** 3);
+const clamp01 = (p) => Math.max(0, Math.min(1, p));
+
+function boardSvg(state, { hide = [], extra = '', overlay = '', glow = [] } = {}) {
+  let s = '';
+  s += '<g stroke="#3A2E1F" stroke-width="2.4" stroke-linecap="round">';
+  for (const [a, b] of engine.BOARD_EDGES) s += `<line x1="${POINTS[a][0]}" y1="${POINTS[a][1]}" x2="${POINTS[b][0]}" y2="${POINTS[b][1]}"/>`;
+  s += '</g>';
+  for (const mill of glow) {
+    const [a, , c] = mill.map((i) => POINTS[i]);
+    s += `<line x1="${a[0]}" y1="${a[1]}" x2="${c[0]}" y2="${c[1]}" stroke="#F3C969" stroke-width="20" stroke-linecap="round" opacity=".75"/>`;
+  }
+  POINTS.forEach(([x, y], i) => {
+    if (state.phase === 'placing' && state.deadForPlacement[i] && !state.pieces[i]) {
+      s += `<circle cx="${x}" cy="${y}" r="10" fill="#F6F1E6"/><path d="M${x - 6} ${y - 6}L${x + 6} ${y + 6}M${x + 6} ${y - 6}L${x - 6} ${y + 6}" stroke="#AC3B2A" stroke-width="3" stroke-linecap="round"/>`;
+    } else {
+      s += `<circle cx="${x}" cy="${y}" r="4" fill="#3A2E1F"/>`;
+    }
+  });
+  state.pieces.forEach((p, i) => { if (p && !hide.includes(i)) s += piece(p, POINTS[i][0], POINTS[i][1], 1, 1, i === state.lastMove); });
+  return s + extra + overlay;
+}
+
+function piece(player, x, y, scale = 1, opacity = 1, lastMove = false) {
+  const c = COLOR[player];
+  const r = 15 * scale;
+  let s = `<g opacity="${opacity}">`;
+  if (player === 'B') s += `<circle cx="${x}" cy="${y}" r="${r + 2.5}" fill="none" stroke="#F6F1E6" stroke-width="2" opacity=".85"/>`;
+  s += `<circle cx="${x}" cy="${y}" r="${r}" fill="${c.fill}" stroke="${c.stroke}" stroke-width="2.4"/>`;
+  if (lastMove) s += `<circle cx="${x}" cy="${y}" r="${4.5 * scale}" fill="#F6F1E6"/>`;
+  return s + '</g>';
+}
+
+function plyFrame(seg, p) {
+  const before = states[seg.index];
+  const after = states[seg.index + 1];
+  const [from, to] = episode.moves[seg.index];
+  if (seg.kind === 'place') {
+    if (p < 0.45) {
+      const q = ease(p / 0.45);
+      return boardSvg(before, { extra: piece(before.turn, ...POINTS[to], 1.6 - 0.6 * q, q) });
+    }
+    return boardSvg(after, { glow: after.pendingCapture ? [after.lastMill] : [] });
+  }
+  if (seg.kind === 'slide') {
+    if (p < 0.55) {
+      const q = ease(p / 0.55);
+      const [x1, y1] = POINTS[from];
+      const [x2, y2] = POINTS[to];
+      return boardSvg(before, { hide: [from], extra: piece(before.turn, x1 + (x2 - x1) * q, y1 + (y2 - y1) * q, 1.12) });
+    }
+    return boardSvg(after, { glow: after.pendingCapture ? [after.lastMill] : [] });
+  }
+  // capture: the mill keeps glowing while the captured piece fades out with a ring
+  const victim = before.pieces[to];
+  if (p < 0.75) {
+    const q = clamp01((p - 0.12) / 0.6);
+    const ring = `<circle cx="${POINTS[to][0]}" cy="${POINTS[to][1]}" r="${14 + 24 * q}" fill="none" stroke="#AC3B2A" stroke-width="4" opacity="${1 - q}"/>`;
+    return boardSvg(before, { hide: [to], glow: [before.lastMill], extra: piece(victim, ...POINTS[to], 1 + 0.25 * q, 1 - q) + ring });
+  }
+  return boardSvg(after);
+}
+
+function explainOverlay(ex, t) {
+  let s = '';
+  const pulse = 1 + 0.12 * Math.sin(t * Math.PI * 2 * 1.1);
+  const ringColor = { gold: '#E9B949', red: '#AC3B2A', blue: '#2C5F8A' };
+  for (const ring of ex.rings || []) {
+    for (const i of ring.points) {
+      s += `<circle cx="${POINTS[i][0]}" cy="${POINTS[i][1]}" r="${25 * pulse}" fill="none" stroke="#fff" stroke-width="8" opacity=".9"/>`;
+      s += `<circle cx="${POINTS[i][0]}" cy="${POINTS[i][1]}" r="${25 * pulse}" fill="none" stroke="${ringColor[ring.color]}" stroke-width="4.5"/>`;
+    }
+  }
+  for (const arrow of ex.arrows || []) {
+    const [x1, y1] = POINTS[arrow.from];
+    const [x2, y2] = POINTS[arrow.to];
+    const mx = (x1 + x2) / 2 + 46;
+    const my = (y1 + y2) / 2;
+    const dash = -(t * 40) % 24;
+    s += `<path d="M${x1 + 18} ${y1}Q${mx} ${my} ${x2 + 18} ${y2}" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".9"/>`;
+    s += `<path d="M${x1 + 18} ${y1}Q${mx} ${my} ${x2 + 18} ${y2}" fill="none" stroke="#E9B949" stroke-width="5" stroke-linecap="round" stroke-dasharray="12 12" stroke-dashoffset="${dash}"/>`;
+    for (const [hx, hy, dir] of [[x1 + 18, y1, -1], [x2 + 18, y2, 1]]) {
+      s += `<path d="M${hx - 9} ${hy + 10 * dir}L${hx} ${hy}L${hx + 9} ${hy + 10 * dir}" fill="none" stroke="#E9B949" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    }
+  }
+  return s;
+}
+
+const $ = (id) => document.getElementById(id);
+$('gameName').textContent = TEXT.game;
+$('nameA').textContent = episode.players[lang].A;
+$('nameB').textContent = episode.players[lang].B;
+
+function setPanel(state, plyCount) {
+  $('countA').textContent = state.pieces.filter((p) => p === 'A').length;
+  $('countB').textContent = state.pieces.filter((p) => p === 'B').length;
+  $('pA').classList.toggle('active', !state.winner && state.turn === 'A');
+  $('pB').classList.toggle('active', !state.winner && state.turn === 'B');
+  $('status').textContent = `${state.phase === 'placing' ? TEXT.placing : TEXT.moving} · ${TEXT.move(plyCount)}`;
+}
+
+function showBubble(copy, alert, k) {
+  const b = $('bubble');
+  b.style.opacity = String(k);
+  b.style.transform = `translateY(${16 * (1 - k)}px)`;
+  if (!copy) return;
+  $('bTag').textContent = copy.tag;
+  $('bTag').classList.toggle('alert', !!alert);
+  $('bTitle').textContent = copy.title;
+  $('bBody').textContent = copy.body;
+}
+
+function renderAt(t) {
+  const seg = segments.find((s) => t >= s.start && t < s.start + s.dur) || segments[segments.length - 1];
+  const local = t - seg.start;
+  const p = clamp01(local / seg.dur);
+  const board = $('board');
+  const wrap = $('boardWrap');
+  const card = $('card');
+  wrap.style.transform = 'none';
+  $('flash').style.opacity = '0';
+  card.style.opacity = '0';
+
+  if (seg.type === 'card') {
+    const state = states[seg.at];
+    board.innerHTML = boardSvg(state);
+    setPanel(state, seg.at);
+    showBubble(null, false, 0);
+    const fade = seg.kind === 'intro' ? 1 - clamp01((local - (seg.dur - 0.5)) / 0.5) : clamp01(local / 0.5);
+    card.style.opacity = String(fade);
+    $('cTitle').textContent = seg.text.title;
+    $('cBody').textContent = seg.text.body;
+    $('cUrl').style.display = seg.kind === 'outro' ? '' : 'none';
+    return;
+  }
+  if (seg.type === 'ply') {
+    board.innerHTML = plyFrame(seg, p);
+    setPanel(p < 0.5 ? states[seg.index] : states[seg.index + 1], seg.index + (p < 0.5 ? 0 : 1));
+    showBubble(null, false, 0);
+    return;
+  }
+  // explain: freeze the board like a screenshot (shutter flash + slight zoom), then annotate
+  const state = states[seg.at];
+  board.innerHTML = boardSvg(state, { glow: seg.ex.mills || [], overlay: explainOverlay(seg.ex, local) });
+  setPanel(state, seg.at);
+  $('flash').style.opacity = String(Math.max(0, 0.75 - local / 0.22));
+  wrap.style.transform = `scale(${1 + 0.035 * ease(local / 0.5)}) rotate(${-0.6 * ease(local / 0.5)}deg)`;
+  const inK = ease(clamp01((local - 0.15) / 0.35));
+  const outK = 1 - clamp01((local - (seg.dur - 0.3)) / 0.3);
+  showBubble(seg.ex[lang], seg.ex.tagTone === 'alert', Math.min(inK, outK));
+}
+
+await document.fonts.ready;
+window.__timeline = {
+  duration,
+  fps: 30,
+  explains: segments.filter((s) => s.type === 'explain' || s.type === 'card').map((s) => ({
+    start: s.start, end: s.start + s.dur, kind: s.type === 'card' ? s.kind : 'explain', after: s.at,
+    title: s.type === 'card' ? s.text.title : s.ex[lang].title,
+    body: s.type === 'card' ? s.text.body : s.ex[lang].body,
+  })),
+};
+window.__renderAt = renderAt;
+renderAt(Number(params.get('t') || 0));
+window.__ready = true;
+</script>
+</body>
+</html>

@@ -6,3 +6,4 @@ package.json
 CLAUDE.md
 wrangler.jsonc
 src/worker.js
+tools/

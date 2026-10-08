@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cham-gonu Strategy: The Running Mill — PlayGonu</title>
+<meta name="description" content="How Cham-gonu is really won: build a running mill that captures every turn. A real game walked through move by move, with screenshots, plus how to build one and how to stop it.">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/cham-strategy.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/cham-strategy.html">
+<meta property="og:title" content="Cham-gonu Strategy: The Running Mill — PlayGonu">
+<meta property="og:description" content="How Cham-gonu is really won: build a running mill that captures every turn. A real game walked through move by move, with screenshots, plus how to build one and how to stop it.">
+<meta property="og:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cham-gonu Strategy: The Running Mill — PlayGonu">
+<meta name="twitter:description" content="How Cham-gonu is really won: build a running mill that captures every turn. A real game walked through move by move, with screenshots, plus how to build one and how to stop it.">
+<meta name="twitter:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.7; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .shot img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--card-border); display: block; }
+  .shot figcaption { display: flex; flex-direction: column; gap: 4px; }
+  .shot .step { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--red); }
+  .shot .cap-title { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .shot .cap-body { font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
+  .points { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .points th, .points td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+  .points th { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+  .points td.n { font-variant-numeric: tabular-nums; }
+  .points tr.best td { font-weight: 700; color: var(--ink); }
+  .table-wrap { overflow-x: auto; }
+  .stat { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .stat .big { font-family: "Noto Serif KR", Georgia, serif; font-size: 34px; font-weight: 700; color: var(--red); }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="howto.html" class="variant-tab">How to Play</a>
+        <a href="online.html" class="variant-tab">Online</a>
+        <a href="blog/index.html" class="variant-tab">Blog</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+
+    <section>
+      <div class="tag" style="color:var(--red);">Strategy guide · Cham-gonu 참고누</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;">The running mill: how Cham-gonu is really won</h1>
+      <p>Cham-gonu is the deepest game in Korea's Gonu family — two players, 12 pieces each, a 24-point board of three nested squares. You can lead the whole first half and still lose, and almost always for the same reason: the other player built a <strong>running mill</strong>. This guide walks through a real game where exactly that happens, then shows how to build one yourself and how to stop one.</p>
+      <div class="stat"><span class="big">157 of 160</span><span>games were won by the side that built a running mill, whenever only one side had one. (A running mill appeared in 164 of 400 games between our strongest AIs.)</span></div>
+    </section>
+
+    <section>
+      <h2 class="serif">The board in 30 seconds</h2>
+      <p>The 24 points sit on three nested squares. Lines join the middle of each side across all three squares, and — unlike the Western Morris games — the corners are joined by diagonals too. That makes <strong>20 lines</strong> where three of your pieces form a mill. Not every point is equal:</p>
+      <div class="table-wrap">
+        <table class="points">
+          <thead><tr><th>Point</th><th>Neighbours</th><th>Lines through it</th></tr></thead>
+          <tbody>
+            <tr class="best"><td>Middle square, corner</td><td class="n">4</td><td class="n">3</td></tr>
+            <tr><td>Middle square, side centre</td><td class="n">4</td><td class="n">2</td></tr>
+            <tr><td>Outer / inner square, corner</td><td class="n">3</td><td class="n">3</td></tr>
+            <tr><td>Outer / inner square, side centre</td><td class="n">3</td><td class="n">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The four middle-square corners are the best points on the board: the most room to move and the most mills to join. The opening move itself is restricted — it has to go on one of the four outer corners.</p>
+    </section>
+
+    <section>
+      <h2 class="serif">Watch it happen: a real game</h2>
+      <p>Red moves first. Keep an eye on Blue's bottom side — it looks harmless for most of the first half.</p>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/01.webp" width="960" height="882" alt="The opening move: Red places on the bottom-right outer corner; the four outer corners are circled." loading="lazy">
+        <figcaption><span class="step">Move 1</span><span class="cap-title">The first move goes on an outer corner</span><span class="cap-body">Only the four outer corners are legal for the very first piece. Red starts bottom-right.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/02.webp" width="960" height="882" alt="Red's three pieces on the right side glow as a mill; the captured point on the left is circled." loading="lazy">
+        <figcaption><span class="step">Moves 9–10</span><span class="cap-title">Three in a row is a mill — and a capture</span><span class="cap-body">Red lines up three on the right side and removes a blue piece. The emptied point is marked × and stays off-limits until the first half ends.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/03.webp" width="960" height="882" alt="A diagonal mill from the top-left outer corner to the inner square glows." loading="lazy">
+        <figcaption><span class="step">Moves 22–23</span><span class="cap-title">Diagonals count too</span><span class="cap-body">Top-left corner straight down the diagonal — Red's third mill. These corner diagonals are what set Cham-gonu apart.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/04.webp" width="960" height="882" alt="Blue's pieces on the middle and inner bottom sides are circled, with a two-way arrow along the bridge between them." loading="lazy">
+        <figcaption><span class="step">Move 26</span><span class="cap-title">Blue's frame is finished</span><span class="cap-body">Three on the middle bottom side, both ends of the inner bottom side, and the bridge that joins them. The gap at the end of the bridge is a point Blue emptied earlier by capturing.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/05.webp" width="960" height="882" alt="The board at the end of the placing half, Red with 11 pieces and Blue with 8." loading="lazy">
+        <figcaption><span class="step">Halftime</span><span class="cap-title">11 against 8 — Red is clearly ahead</span><span class="cap-body">Red built four mills while placing. From here pieces slide one point at a time instead of being placed.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/06.webp" width="960" height="882" alt="Both of Blue's bottom mills glow, with an arrow showing one piece sliding back and forth between them." loading="lazy">
+        <figcaption><span class="step">Moves 32–36</span><span class="cap-title">The running mill</span><span class="cap-body">Blue slides one piece down the bridge — inner mill, capture — and back up — middle mill, capture. Every single move closes a mill.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/07.webp" width="960" height="882" alt="The red piece that stepped next to the gap is circled; Blue captured it straight away." loading="lazy">
+        <figcaption><span class="step">Moves 37–39</span><span class="cap-title">Trying to plug the gap</span><span class="cap-body">Red slides next to the gap to block it, and Blue simply captures that piece first. The inner gap is surrounded by blue pieces, so Red can't reach it at all.</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="images/guide/cham-running-mill/en/08.webp" width="960" height="882" alt="The final position: Red is down to two pieces and Blue wins." loading="lazy">
+        <figcaption><span class="step">Move 57</span><span class="cap-title">Nine captures in a row</span><span class="cap-body">Red drops to two pieces and loses — from 11 against 8, without Blue ever needing a second idea.</span></figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2 class="serif">How to build a running mill</h2>
+      <ul>
+        <li><strong>Two parallel sides and one bridge.</strong> Take two sides that are joined by a straight spoke — for example the middle and inner bottom sides. Hold both corners of each side, and keep one piece on the bridge.</li>
+        <li><strong>Make the gap unreachable.</strong> The point your shuttle leaves must not border an enemy piece, or they step in and jam it. A side centre on the outer or inner square is ideal: its only neighbours are your two corners and the bridge.</li>
+        <li><strong>Build it while placing.</strong> Once the second half starts, nothing new can be placed. Spend first-half moves on the frame even if it means letting your opponent win a few mills — Blue did exactly that.</li>
+        <li><strong>Captures can open the gap for you.</strong> A point you empty by capturing during placement can't be filled again until moving starts — a ready-made hole for your bridge.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">How to stop one</h2>
+      <ul>
+        <li><strong>Take a frame point early.</strong> A running mill needs five points. Occupy any one of them during placement and the whole thing collapses.</li>
+        <li><strong>Block the gap — before the mill closes.</strong> Stepping next to the gap only works if your piece survives; as the game above shows, the running mill captures the blocker first.</li>
+        <li><strong>Counter-attack the open side.</strong> Whenever the shuttle leaves a mill, the two pieces it left behind are no longer protected. Close a mill of your own and capture one of them.</li>
+        <li><strong>Count mobility.</strong> If they have no legal move on their turn, you win outright — a crowded board makes blockades common.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">Try it yourself</h2>
+      <p>The Master AI builds and defends running mills. See if you can get yours working first.</p>
+      <div class="cta">
+        <a href="index.html" class="btn-primary" style="padding:12px 24px;">Play Cham-gonu vs AI</a>
+        <a href="online.html?game=cham" class="btn" style="padding:12px 24px;">Online battle</a>
+        <a href="howto.html" class="btn" style="padding:12px 24px;">Full rules</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="privacy.html" style="color:var(--muted);text-decoration:underline;">Privacy Policy</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountLanguageSwitcher } from './src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from './src/ui/variantMenu.js';
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'cham-strategy.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'cham-strategy.html' });
+</script>
+</body>
+</html>

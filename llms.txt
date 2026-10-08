@@ -14,6 +14,7 @@
 ## Other pages
 
 - [How to Play](https://playgonu.com/howto.html): Full written rules for every game on the site, in one place.
+- [Cham-gonu strategy: the running mill](https://playgonu.com/cham-strategy.html): How Cham-gonu is usually won — a real game walked through with screenshots, the board's strongest points, and how to build or stop a running mill (a piece shuttling between two mills to capture every turn). Also in Korean, Spanish, Japanese and Chinese.
 - [Online Battle](https://playgonu.com/online.html): Real-time multiplayer for Cham-gonu and Gomoku — create a private room and share the link, or join an open public room. No account needed, just a name.
 - [Blog](https://playgonu.com/blog/index.html): Articles on Gonu's history and how it compares to Nine Men's Morris, Gomoku, and Renju.
 - [Privacy Policy](https://playgonu.com/privacy.html)

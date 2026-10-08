@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>チャムゴヌの作戦：往復ミル — PlayGonu</title>
+<meta name="description" content="チャムゴヌの勝負を決めるのは、毎手駒を取れる「往復ミル」です。実際の対局をスクリーンショット付きで1手ずつたどりながら、往復ミルの作り方と防ぎ方を解説します。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/ja/cham-strategy.html">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ja/cham-strategy.html">
+<meta property="og:title" content="チャムゴヌの作戦：往復ミル — PlayGonu">
+<meta property="og:description" content="チャムゴヌの勝負を決めるのは、毎手駒を取れる「往復ミル」です。実際の対局をスクリーンショット付きで1手ずつたどりながら、往復ミルの作り方と防ぎ方を解説します。">
+<meta property="og:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="チャムゴヌの作戦：往復ミル — PlayGonu">
+<meta name="twitter:description" content="チャムゴヌの勝負を決めるのは、毎手駒を取れる「往復ミル」です。実際の対局をスクリーンショット付きで1手ずつたどりながら、往復ミルの作り方と防ぎ方を解説します。">
+<meta name="twitter:image" content="https://playgonu.com/images/guide/cham-running-mill/en/06.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.7; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .shot img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--card-border); display: block; }
+  .shot figcaption { display: flex; flex-direction: column; gap: 4px; }
+  .shot .step { font-size: 12.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--red); }
+  .shot .cap-title { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .shot .cap-body { font-size: 15px; line-height: 1.65; color: var(--ink-soft); }
+  .points { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .points th, .points td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+  .points th { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+  .points td.n { font-variant-numeric: tabular-nums; }
+  .points tr.best td { font-weight: 700; color: var(--ink); }
+  .table-wrap { overflow-x: auto; }
+  .stat { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .stat .big { font-family: "Noto Serif KR", Georgia, serif; font-size: 34px; font-weight: 700; color: var(--red); }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">チャムゴヌ</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">五目並べ</a>
+        <a href="howto.html" class="variant-tab">遊び方</a>
+        <a href="online.html" class="variant-tab">オンライン</a>
+        <a href="../blog/index.html" class="variant-tab">ブログ</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+
+    <section>
+      <div class="tag" style="color:var(--red);">作戦ガイド · チャムゴヌ 참고누</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;">往復ミル：チャムゴヌはこうして勝つ</h1>
+      <p>チャムゴヌは、韓国のコヌ一族の中でいちばん奥が深いゲームです。2人で各12個の駒を使い、入れ子になった3つの正方形からなる24点の盤で遊びます。前半ずっとリードしていても負けることがあり、その理由はほとんどいつも同じです。相手が<strong>往復ミル（running mill）</strong>を作ったからです。このガイドでは、まさにそうなった実際の対局をたどったうえで、往復ミルの作り方と防ぎ方を紹介します。</p>
+      <div class="stat"><span class="big">160局中157局</span><span>片方だけが往復ミルを作った対局で、作った側が勝った数です。（当サイト最強のAI同士の400局のうち、164局で往復ミルが現れました。）</span></div>
+    </section>
+
+    <section>
+      <h2 class="serif">30秒でわかる盤のしくみ</h2>
+      <p>24の点は、入れ子になった3つの正方形の上にあります。各辺の中点は3つの正方形をまたぐ線でつながっていて、さらに西洋のモリス系のゲームと違い、角どうしも斜めの線でつながっています。そのため、自分の駒3個でミルになる線は全部で<strong>20本</strong>あります。どの点も同じ価値というわけではありません。</p>
+      <div class="table-wrap">
+        <table class="points">
+          <thead><tr><th>点</th><th>隣接する点</th><th>通る線</th></tr></thead>
+          <tbody>
+            <tr class="best"><td>真ん中の正方形・角</td><td class="n">4</td><td class="n">3</td></tr>
+            <tr><td>真ん中の正方形・辺の中点</td><td class="n">4</td><td class="n">2</td></tr>
+            <tr><td>外側／内側の正方形・角</td><td class="n">3</td><td class="n">3</td></tr>
+            <tr><td>外側／内側の正方形・辺の中点</td><td class="n">3</td><td class="n">2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>真ん中の正方形の4つの角が、盤上で最高の点です。動ける場所がいちばん多く、加われるミルもいちばん多いからです。ただし最初の1手には制限があり、外側の4つの角のどこかに置かなければなりません。</p>
+    </section>
+
+    <section>
+      <h2 class="serif">実際の対局で見てみましょう</h2>
+      <p>赤が先手です。前半のほとんどは何でもなさそうに見える、青の下側に注目していてください。</p>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/01.webp" width="960" height="882" alt="最初の1手：赤が外側の右下の角に置き、外側の4つの角が丸で囲まれています。" loading="lazy">
+        <figcaption><span class="step">1手目</span><span class="cap-title">最初の1手は外側の角に</span><span class="cap-body">いちばん最初の1個を置けるのは、外側の4つの角だけです。赤は右下からスタートします。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/02.webp" width="960" height="882" alt="右辺の赤の駒3個がミルとして光り、左側の取られた点が丸で囲まれています。" loading="lazy">
+        <figcaption><span class="step">9–10手目</span><span class="cap-title">3つ並べばミル、そして駒取り</span><span class="cap-body">赤が右辺に3個並べて、青の駒を1個取ります。空いた点には×が付き、前半が終わるまで誰も置けません。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/03.webp" width="960" height="882" alt="外側の左上の角から内側の正方形まで続く、斜めのミルが光っています。" loading="lazy">
+        <figcaption><span class="step">22–23手目</span><span class="cap-title">斜めの線もミルになります</span><span class="cap-body">左上の角から斜めにまっすぐ — 赤の3つ目のミルです。この角の斜め線こそが、チャムゴヌならではの特徴です。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/04.webp" width="960" height="882" alt="真ん中と内側の下辺にある青の駒が丸で囲まれ、それらをつなぐ橋に沿って両方向の矢印が描かれています。" loading="lazy">
+        <figcaption><span class="step">26手目</span><span class="cap-title">青の骨組みが完成しました</span><span class="cap-body">真ん中の正方形の下辺に3個、内側の正方形の下辺の両端、そしてその2つをつなぐ橋。橋の先の空いた点は、青が前に駒取りで空けておいた点です。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/05.webp" width="960" height="882" alt="配置の前半が終わった盤面。赤は11個、青は8個です。" loading="lazy">
+        <figcaption><span class="step">前半終了</span><span class="cap-title">11対8、赤がはっきりリード</span><span class="cap-body">赤は配置中にミルを4回作りました。ここからは駒を置くのではなく、1点ずつ動かしていきます。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/06.webp" width="960" height="882" alt="青の下側の2つのミルが光り、1個の駒がその間を行き来する矢印が描かれています。" loading="lazy">
+        <figcaption><span class="step">32–36手目</span><span class="cap-title">これが往復ミル</span><span class="cap-body">青は駒を1個、橋に沿って下ろし（内側のミルで駒取り）、また上げます（真ん中のミルで駒取り）。動かすたびに、毎回ミルが完成します。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/07.webp" width="960" height="882" alt="すき間の隣に動いた赤の駒が丸で囲まれています。青はすぐにその駒を取りました。" loading="lazy">
+        <figcaption><span class="step">37–39手目</span><span class="cap-title">すき間をふさごうとしても…</span><span class="cap-body">赤はすき間をふさごうと隣に駒を動かしますが、青はあっさりその駒から先に取ってしまいます。内側のすき間は青の駒に囲まれているので、赤はそもそもたどり着けません。</span></figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="../images/guide/cham-running-mill/en/08.webp" width="960" height="882" alt="最終局面：赤は残り2個になり、青の勝ちです。" loading="lazy">
+        <figcaption><span class="step">57手目</span><span class="cap-title">9回連続の駒取り</span><span class="cap-body">赤は残り2個になって負けです。11対8から、青はほかの作戦をひとつも使わずに逆転しました。</span></figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2 class="serif">往復ミルの作り方</h2>
+      <ul>
+        <li><strong>平行な2辺と橋1本。</strong>まっすぐな線でつながった2つの辺を選びます。たとえば真ん中と内側の下辺です。それぞれの辺の両方の角を押さえ、橋の上に駒を1個置いておきます。</li>
+        <li><strong>すき間に相手が届かないようにする。</strong>行き来する駒が空ける点が相手の駒と隣り合っていると、相手が入ってきてふさがれてしまいます。外側か内側の正方形の辺の中点が理想的です。隣接する点が自分の2つの角と橋だけだからです。</li>
+        <li><strong>配置中に作っておく。</strong>後半が始まると、新しい駒は置けません。相手にミルを何回か許してでも、前半の手を骨組みづくりに使いましょう。青がまさにそうしていました。</li>
+        <li><strong>駒取りですき間を作れることも。</strong>配置中に駒取りで空けた点は、移動が始まるまで誰も埋められません。橋のためのすき間が、最初から用意できるわけです。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">往復ミルの防ぎ方</h2>
+      <ul>
+        <li><strong>骨組みの点を早めに取る。</strong>往復ミルには5つの点が必要です。配置中にそのうちどれか1つを占めてしまえば、全体が成り立たなくなります。</li>
+        <li><strong>すき間はミルが閉じる前にふさぐ。</strong>すき間の隣に動いても、その駒が生き残らなければ意味がありません。上の対局のとおり、往復ミルはふさぎに来た駒から先に取ってしまいます。</li>
+        <li><strong>空いた側に反撃する。</strong>行き来する駒がミルを離れるたびに、残された2個の駒は守られていない状態になります。自分のミルを作って、そのうち1個を取りましょう。</li>
+        <li><strong>動ける手を数える。</strong>相手が自分の番に動かせる手を1つも持っていなければ、その時点で勝ちです。盤が混み合うので、封じ込めで決まることもよくあります。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">自分で試してみましょう</h2>
+      <p>マスターAIは、往復ミルを作るのも防ぐのも得意です。先に自分の往復ミルを完成させられるか、挑戦してみてください。</p>
+      <div class="cta">
+        <a href="index.html" class="btn-primary" style="padding:12px 24px;">AIとチャムゴヌで対戦</a>
+        <a href="online.html?game=cham" class="btn" style="padding:12px 24px;">オンライン対戦</a>
+        <a href="howto.html" class="btn" style="padding:12px 24px;">ルールをすべて見る</a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">プライバシーポリシー</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ja', currentPage: 'cham-strategy.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ja', currentPage: 'cham-strategy.html' });
+</script>
+</body>
+</html>
