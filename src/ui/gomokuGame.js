@@ -23,7 +23,51 @@ const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#242019', stroke: '#000000' },
   [PLAYERS.B]: { fill: '#F8F4E9', stroke: '#3A332C' },
 };
-const PLAYER_NAME = { en: { A: 'Black', B: 'White' }, ko: { A: '검정', B: '흰돌' } };
+const PLAYER_NAME = {
+  en: { A: 'Black', B: 'White' },
+  ko: { A: '검정', B: '흰돌' },
+  es: { A: 'Negras', B: 'Blancas' },
+  ja: { A: '黒', B: '白' },
+  zh: { A: '黑方', B: '白方' },
+};
+
+const STRINGS = {
+  en: {
+    draw: "It's a draw!",
+    wins: (n) => `${n} wins!`,
+    toMove: (n) => `${n} to move`,
+    foul: 'Renju rule: that point is forbidden (double-three, double-four, or overline).',
+    placed: (b, w) => `Stones placed — Black: ${b} · White: ${w}`,
+  },
+  ko: {
+    draw: '무승부!',
+    wins: (n) => `${n} 승리!`,
+    toMove: (n) => `${n} 차례`,
+    foul: '렌주룰: 그 자리는 삼삼·사사·장목 금수입니다.',
+    placed: (b, w) => `놓은 돌 — 검정: ${b} · 흰돌: ${w}`,
+  },
+  es: {
+    draw: '¡Empate!',
+    wins: (n) => `¡Ganan ${n}!`,
+    toMove: (n) => `Turno de ${n}`,
+    foul: 'Regla Renju: esa casilla está prohibida (doble tres, doble cuatro o más de cinco).',
+    placed: (b, w) => `Piedras colocadas — Negras: ${b} · Blancas: ${w}`,
+  },
+  ja: {
+    draw: '引き分け！',
+    wins: (n) => `${n}の勝ち！`,
+    toMove: (n) => `${n}の番`,
+    foul: '連珠ルール：そこは禁じ手です（三三・四四・長連）。',
+    placed: (b, w) => `置いた石 — 黒: ${b} · 白: ${w}`,
+  },
+  zh: {
+    draw: '平局！',
+    wins: (n) => `${n}获胜！`,
+    toMove: (n) => `轮到${n}`,
+    foul: '连珠规则：该点为禁手（三三、四四或长连）。',
+    placed: (b, w) => `已落子 — 黑: ${b} · 白: ${w}`,
+  },
+};
 
 const VIEWPORT = 420;
 const MARGIN = 14; // just enough room for a stone/hit-circle at the edge rows/cols not to clip
@@ -36,16 +80,14 @@ function pointPixel(index) {
 }
 
 function statusText(lang, game) {
-  const name = PLAYER_NAME[lang][game.turn];
-  if (game.winner === 'draw') return lang === 'ko' ? '무승부!' : "It's a draw!";
-  if (game.winner) {
-    const winnerName = PLAYER_NAME[lang][game.winner];
-    return lang === 'ko' ? `${winnerName} 승리!` : `${winnerName} wins!`;
-  }
-  return lang === 'ko' ? `${name} 차례` : `${name} to move`;
+  const s = STRINGS[lang];
+  if (game.winner === 'draw') return s.draw;
+  if (game.winner) return s.wins(PLAYER_NAME[lang][game.winner]);
+  return s.toMove(PLAYER_NAME[lang][game.turn]);
 }
 
-export function mountGomokuGame(root, { lang = 'en' } = {}) {
+export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
+  const lang = STRINGS[requestedLang] ? requestedLang : 'en';
   const svg = root.querySelector('[data-board-svg]');
   const boardFrame = root.querySelector('[data-board-frame]');
   const turnDot = root.querySelector('[data-turn-dot]');
@@ -91,9 +133,7 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
 
   function showFoulNote() {
     if (!foulNote) return;
-    foulNote.textContent = lang === 'ko'
-      ? '렌주룰: 그 자리는 삼삼·사사·장목 금수입니다.'
-      : 'Renju rule: that point is forbidden (double-three, double-four, or overline).';
+    foulNote.textContent = STRINGS[lang].foul;
     foulNote.style.opacity = '1';
     clearTimeout(showFoulNote._t);
     showFoulNote._t = setTimeout(() => { foulNote.style.opacity = '0'; }, 2200);
@@ -208,9 +248,7 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
     if (capturedLabel) {
       const blackOnBoard = game.cells.filter((p) => p === PLAYERS.A).length;
       const whiteOnBoard = game.cells.filter((p) => p === PLAYERS.B).length;
-      capturedLabel.textContent = lang === 'ko'
-        ? `놓은 돌 — 검정: ${blackOnBoard} · 흰돌: ${whiteOnBoard}`
-        : `Stones placed — Black: ${blackOnBoard} · White: ${whiteOnBoard}`;
+      capturedLabel.textContent = STRINGS[lang].placed(blackOnBoard, whiteOnBoard);
     }
     undoBtn.disabled = history.length === 0;
   }
@@ -218,9 +256,7 @@ export function mountGomokuGame(root, { lang = 'en' } = {}) {
   function showWinBanner() {
     if (!game.winner) return;
     stats.stop();
-    winMessage.textContent = game.winner === 'draw'
-      ? (lang === 'ko' ? '무승부!' : "It's a draw!")
-      : (lang === 'ko' ? `${PLAYER_NAME.ko[game.winner]} 승리!` : `${PLAYER_NAME.en[game.winner]} wins!`);
+    winMessage.textContent = statusText(lang, game);
     if (winMoves) winMoves.textContent = String(stats.moveCount);
     if (winTime) winTime.textContent = formatElapsed(stats.elapsedMs());
     winBanner.classList.add('is-visible');

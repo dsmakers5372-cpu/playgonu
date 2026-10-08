@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — 在线畅玩参高努：韩国版“九子棋”</title>
+<meta name="description" content="参高努是韩国传统棋高努中最有深度的变体——支持双人本地对战或对战 AI。可以先从更简单的线高努和轮子高努热热身。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/zh/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/zh/">
+<meta property="og:title" content="PlayGonu — 在线畅玩参高努：韩国版“九子棋”">
+<meta property="og:description" content="参高努是韩国传统棋高努中最有深度的变体——支持双人本地对战或对战 AI。可以先从更简单的线高努和轮子高努热热身。">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayGonu — 在线畅玩参高努：韩国版“九子棋”">
+<meta name="twitter:description" content="参高努是韩国传统棋高努中最有深度的变体——支持双人本地对战或对战 AI。可以先从更简单的线高努和轮子高努热热身。">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab is-active">参高努</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">五子棋</a>
+        <a href="howto.html" class="variant-tab">玩法</a>
+        <a href="online.html" class="variant-tab">在线对战</a>
+        <a href="../blog/index.html" class="variant-tab">博客</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:1280px;margin:0 auto;padding:56px 40px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;">
+    <div class="tag" style="color:var(--red);">韩国传统策略棋类游戏</div>
+    <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;max-width:720px;">烧脑对弈 — 参高努 &amp; 五子棋</h1>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-soft);max-width:560px;">吃子、围困、步步算计，智胜对手——单人挑战 AI，或在线与真人对弈。无需安装，无需注册。</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+      <a href="#board-top" class="btn-primary" style="padding:14px 28px;font-size:15px;">单人游戏</a>
+      <a href="online.html" class="btn" style="padding:14px 28px;font-size:15px;">在线对战</a>
+    </div>
+  </div>
+
+  <div class="toolbar" id="board-top">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>红方落子 (0/12)</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>盘上棋子 — 红: 0 · 蓝: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">执红 · 先手</option>
+          <option value="B">执蓝 · 后手</option>
+        </select>
+        <select class="pill" data-opponent-mode style="cursor:pointer;">
+          <option value="local">双人（本地）</option>
+          <option value="ai" selected>对战 AI</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">简单</option>
+          <option value="normal" selected>普通</option>
+          <option value="hard">困难</option>
+          <option value="master">大师</option>
+        </select>
+        <button class="btn" data-undo>悔棋</button>
+        <button class="btn-primary" data-new-game>新对局</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">棋盘颜色</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div class="serif" style="font-size:18px;font-weight:700;">参高努怎么玩</div>
+        <ul>
+          <li>双方各有 12 枚棋子，轮流每次在 24 点棋盘的任意空点上放下一枚——落子阶段是对局的前半段。整局的第一手只能下在最外层正方形的 4 个角之一。</li>
+          <li>沿棋盘上画好的线把自己的 3 枚棋子连成一条直线，即构成“三连”（mill）——随后可以移除对方一枚棋子。用于吃子的点会被标记，并在落子阶段剩余时间内锁定。</li>
+          <li>24 枚棋子全部放完后进入后半段：每回合将一枚棋子滑到相邻的空点，仍可通过组成三连来吃子。</li>
+          <li>把对方棋子减少到 2 枚，或让对方无棋可走，即获胜。</li>
+          <li><strong>决定先手（쟁두）：</strong>按传统，双方先猜拳（石头剪刀布），<em>输</em>的一方先走。</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">什么是高努？</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">高努（韩国传统棋）是一类流传了数百年的韩国民间棋类游戏——参高努是其中最有深度的一种，与西方的“九子棋”（Nine Men's Morris）同属一个家族。第一次接触高努？不妨先<a href="jul.html">试试线高努</a>，掌握基本玩法。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="max-width:1280px;margin:0 auto;padding:0 40px 48px;display:flex;flex-direction:column;gap:40px;">
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="tag">高努练习</div>
+        <h2 class="serif" style="margin:0;font-size:22px;">几分钟就能学会基本玩法</h2>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="jul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">线高努 (Jul-gonu) 줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">每方 4 枚棋子，简单的线格棋盘。每次走一步，左右夹住即可吃子。</p>
+        </a>
+        <a href="daseotjul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">五线高努 (Daseotjul-gonu) 다섯줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">规则与线高努相同，棋盘大一号——每方 5 枚棋子，更有谋划空间。</p>
+        </a>
+        <a href="palpal.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">八八高努 (Palpal-gonu) 팔팔고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">线高努家族中棋盘最大的一种——8x8 棋盘，每方 8 枚棋子。</p>
+        </a>
+        <a href="bakwi.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">轮子高努 (Bakwi-gonu) 바퀴고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">站上角落的“轮子”，就能沿直线滑行任意距离来吃子。</p>
+        </a>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag" style="color:var(--red);">主打玩法</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">参高努 (Cham-gonu) 참고누</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">24 点棋盘，每方 12 枚棋子，与九子棋同属一个家族。落子组成“三连”来吃子，棋盘放满后改为移动棋子——真正有深度，多花几分钟学习非常值得。</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="#board-top" class="btn-primary">单人游戏</a>
+          <a href="online.html?game=cham" class="btn">邀请好友</a>
+        </div>
+      </div>
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag">并非高努变体</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">五子棋 오목</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">在 15×15 棋盘上，任意方向连成五子即获胜——可选自由规则或标准（连珠）规则。没有吃子，纯粹比拼布局。</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="gomoku.html" class="btn-primary">单人游戏</a>
+          <a href="online.html?game=gomoku" class="btn">邀请好友</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>红方获胜！</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">步数</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">用时</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>再来一局</button>
+      <a href="index.html" class="btn" style="text-align:center;">返回首页</a>
+    </div>
+  </div>
+
+  <div class="win-banner" data-phase-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">前半段结束！</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">24 枚棋子已全部放下。后半段不再落子，改为每回合将一枚棋子滑到相邻的点。</p>
+      <button class="btn-primary" data-phase-banner-ok>知道了</button>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">双人对战</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">在这台设备上一起玩，还是在线邀请别人？</p>
+      <button class="btn-primary" data-mode-local>同一设备</button>
+      <button class="btn" data-mode-online>在线对战 →</button>
+      <a href="#" data-mode-cancel style="font-size:13px;color:var(--muted);">取消</a>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">隐私政策</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountChamgonuGame } from '../src/ui/chamgonuGame.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'zh' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'zh', currentPage: 'index.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'zh', currentPage: 'index.html' });
+</script>
+</body>
+</html>

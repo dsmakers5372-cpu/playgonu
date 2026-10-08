@@ -16,7 +16,13 @@ const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#AC3B2A', stroke: '#7A2A1E' },
   [PLAYERS.B]: { fill: '#2C5F8A', stroke: '#1D4360' },
 };
-const PLAYER_NAME = { en: { A: 'Red', B: 'Blue' }, ko: { A: '빨강', B: '파랑' } };
+const PLAYER_NAME = {
+  en: { A: 'Red', B: 'Blue' },
+  ko: { A: '빨강', B: '파랑' },
+  es: { A: 'Rojo', B: 'Azul' },
+  ja: { A: '赤', B: '青' },
+  zh: { A: '红方', B: '蓝方' },
+};
 
 const POINT_PIXELS = [
   { x: 40, y: 40 }, { x: 210, y: 40 }, { x: 380, y: 40 },
@@ -49,6 +55,8 @@ const T = {
     resultDrawTitle: "It's a draw",
     playAgain: 'Play again',
     leave: 'Leave',
+    wins: (n) => `${n} wins!`,
+    opponent: 'Opponent',
     rematchWaiting: 'Waiting for your opponent…',
     rematchAsked: (n) => `${n} wants a rematch — press Play again.`,
     rematchStarted: (c) => `New game — this time you are ${PLAYER_NAME.en[c]}.`,
@@ -71,14 +79,89 @@ const T = {
     resultDrawTitle: '무승부입니다',
     playAgain: '한번더',
     leave: '나가기',
+    wins: (n) => `${n} 승리!`,
+    opponent: '상대',
     rematchWaiting: '상대방을 기다리는 중…',
     rematchAsked: (n) => `${n}님이 한 판 더 원해요 — '한번더'를 누르세요.`,
     rematchStarted: (c) => `새 판 시작 — 이번엔 ${PLAYER_NAME.ko[c]}입니다.`,
   },
+  es: {
+    youAre: (c) => `Eres ${PLAYER_NAME.es[c]}`,
+    oppLeft: 'Tu rival abandonó la partida.',
+    waitTurn: (n) => `Turno de ${n}`,
+    yourTurn: 'Tu turno',
+    spectating: 'Observando',
+    gameStarted: (c) => `La partida ha comenzado — eres ${PLAYER_NAME.es[c]}. ¡Suerte!`,
+    youWin: '¡Ganaste! 🎉',
+    youLose: 'Perdiste — buena partida.',
+    resultWinTitle: '¡Ganaste! 🎉',
+    resultLoseTitle: 'Perdiste',
+    resultDrawTitle: 'Empate',
+    playAgain: 'Otra partida',
+    leave: 'Salir',
+    rematchWaiting: 'Esperando a tu rival…',
+    rematchAsked: (n) => `${n} quiere la revancha — pulsa Otra partida.`,
+    rematchStarted: (c) => `Nueva partida — esta vez eres ${PLAYER_NAME.es[c]}.`,
+    wins: (n) => `¡Gana ${n}!`,
+    opponent: 'Rival',
+    pickCapture: 'Elige una pieza para capturar',
+    phaseBannerTitle: '¡Fin de la primera mitad!',
+    phaseBannerBody: 'Ya se colocaron las 24 piezas. En la segunda mitad, en lugar de colocar, mueve una pieza por turno a un punto vecino libre siguiendo las líneas.',
+    phaseBannerOk: 'Entendido',
+  },
+  ja: {
+    youAre: (c) => `あなたは${PLAYER_NAME.ja[c]}です`,
+    oppLeft: '相手が退出しました。',
+    waitTurn: (n) => `${n}の番`,
+    yourTurn: 'あなたの番',
+    spectating: '観戦中',
+    gameStarted: (c) => `対局開始 — あなたは${PLAYER_NAME.ja[c]}です。がんばって！`,
+    youWin: 'あなたの勝ち！🎉',
+    youLose: '負けました — いい勝負でした。',
+    resultWinTitle: 'あなたの勝ち！🎉',
+    resultLoseTitle: '負けました',
+    resultDrawTitle: '引き分けです',
+    playAgain: 'もう一局',
+    leave: '退出',
+    rematchWaiting: '相手を待っています…',
+    rematchAsked: (n) => `${n}さんがもう一局を希望しています — 「もう一局」を押してください。`,
+    rematchStarted: (c) => `新しい対局 — 今回は${PLAYER_NAME.ja[c]}です。`,
+    wins: (n) => `${n}の勝ち！`,
+    opponent: '相手',
+    pickCapture: '取る駒を選んでください',
+    phaseBannerTitle: '前半終了！',
+    phaseBannerBody: '24個の駒をすべて置きました。後半は駒を置く代わりに、1手につき駒を1つ、線に沿って隣の空いている点へ動かします。',
+    phaseBannerOk: 'OK',
+  },
+  zh: {
+    youAre: (c) => `你是${PLAYER_NAME.zh[c]}`,
+    oppLeft: '对手已离开对局。',
+    waitTurn: (n) => `轮到${n}`,
+    yourTurn: '轮到你了',
+    spectating: '观战中',
+    gameStarted: (c) => `对局开始 — 你是${PLAYER_NAME.zh[c]}。祝你好运！`,
+    youWin: '你赢了！🎉',
+    youLose: '你输了 — 下次加油。',
+    resultWinTitle: '你赢了！🎉',
+    resultLoseTitle: '你输了',
+    resultDrawTitle: '平局',
+    playAgain: '再来一局',
+    leave: '离开',
+    rematchWaiting: '等待对手…',
+    rematchAsked: (n) => `${n} 想再来一局 — 请点击“再来一局”。`,
+    rematchStarted: (c) => `新对局 — 这次你是${PLAYER_NAME.zh[c]}。`,
+    wins: (n) => `${n}获胜！`,
+    opponent: '对手',
+    pickCapture: '请选择要吃掉的棋子',
+    phaseBannerTitle: '上半场结束！',
+    phaseBannerBody: '24 枚棋子已全部落下。下半场起不再落子，每回合沿线把一枚棋子移到相邻的空位。',
+    phaseBannerOk: '知道了',
+  },
 };
 
 export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
-  const t = T[lang] || T.en;
+  if (!T[lang]) lang = 'en';
+  const t = T[lang];
   root.innerHTML = `
     <div data-lobby-root></div>
     <div data-game-root style="display:none;">
@@ -312,7 +395,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
     if (role === 'spectator') {
       turnLabel.textContent = t.spectating;
     } else if (game.winner) {
-      turnLabel.textContent = `${PLAYER_NAME[lang][game.winner]} ${lang === 'ko' ? '승리!' : 'wins!'}`;
+      turnLabel.textContent = t.wins(PLAYER_NAME[lang][game.winner]);
     } else if (game.pendingCapture) {
       turnLabel.textContent = isMyTurn() ? t.pickCapture : t.waitTurn(PLAYER_NAME[lang][game.turn]);
     } else {
@@ -374,7 +457,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
           lang,
           gameType: 'cham',
           youName: info.name,
-          opponentName: info.opponentName || (lang === 'ko' ? '상대' : 'Opponent'),
+          opponentName: info.opponentName || t.opponent,
           youColorHex: PLAYER_COLOR[myColor].fill,
           opponentColorHex: PLAYER_COLOR[opponentColor].fill,
         });

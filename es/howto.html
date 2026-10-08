@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cómo jugar Gonu — PlayGonu</title>
+<meta name="description" content="Cómo jugar Cham-gonu, Jul-gonu, Bakwi-gonu y Gomoku — las reglas de cada variante de Gonu en PlayGonu, explicadas con claridad.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/es/howto.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/es/howto.html">
+<meta property="og:title" content="Cómo jugar Gonu — PlayGonu">
+<meta property="og:description" content="Cómo jugar Cham-gonu, Jul-gonu, Bakwi-gonu y Gomoku — las reglas de cada variante de Gonu en PlayGonu, explicadas con claridad.">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Cómo jugar Gonu — PlayGonu">
+<meta name="twitter:description" content="Cómo jugar Cham-gonu, Jul-gonu, Bakwi-gonu y Gomoku — las reglas de cada variante de Gonu en PlayGonu, explicadas con claridad.">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="howto.html" class="variant-tab is-active">Cómo jugar</a>
+        <a href="online.html" class="variant-tab">En línea</a>
+        <a href="../blog/index.html" class="variant-tab">Blog</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:800px;margin:0 auto;padding:56px 40px;display:flex;flex-direction:column;gap:40px;">
+
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="tag" style="color:var(--red);">Reglas</div>
+      <h1 class="serif" style="margin:0;font-size:32px;line-height:1.25;">Cómo jugar Gonu</h1>
+      <p style="margin:0;font-size:15.5px;line-height:1.65;color:var(--ink-soft);">
+        El Gonu (고누) es toda una familia de juegos de tablero populares coreanos — se conocen más de cuarenta variantes, que tradicionalmente se trazaban en la tierra de los patios en lugar de imprimirse en un reglamento. El juego de Gonu principal de PlayGonu es el Cham-gonu, uno realmente profundo; el Jul-gonu y las demás variantes de abajo son rondas de calentamiento más cortas. El Gomoku es un clásico aparte (no forma parte de la familia del Gonu) que incluimos junto a ellos — así funciona cada uno.
+      </p>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Cham-gonu 참고누 <span class="tag" style="color:var(--red);">El juego principal</span></div>
+      <ul>
+        <li>Cada jugador tiene 12 piezas. Por turnos, colocan una a la vez en cualquier punto vacío de un tablero de 24 puntos (tres cuadrados concéntricos, con las esquinas y los puntos medios de los lados conectados) — esta es la primera mitad de la partida. La jugada de apertura solo puede hacerse en una de las 4 esquinas del cuadrado exterior.</li>
+        <li>Alinea 3 de tus piezas en fila — un "molino" — para capturar una pieza rival. El punto usado en una captura queda marcado y bloqueado durante el resto de la colocación.</li>
+        <li>Cuando ya están colocadas las 24 piezas, empieza la segunda mitad: en cada turno desliza una pieza a un punto vacío adyacente, siempre buscando formar molinos.</li>
+        <li>Ganas si reduces a tu rival a 2 piezas o lo dejas sin movimientos legales. Es de la misma familia que el "Nine Men's Morris" occidental (el juego del molino).</li>
+      </ul>
+      <a href="index.html" style="font-size:14px;font-weight:600;">Jugar Cham-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Jul-gonu 줄고누 <span class="tag" style="color:var(--teal, #2F6E6A);">Ronda de calentamiento</span></div>
+      <ul>
+        <li>Cada jugador empieza con 4 piezas alineadas en su propio borde de un tablero de líneas de 4×4.</li>
+        <li>En cada turno se mueve una pieza un paso a lo largo de una línea.</li>
+        <li>Atrapa una pieza rival entre dos de las tuyas en línea recta para capturarla.</li>
+        <li>Ganas si reduces a tu rival a una sola pieza o lo dejas sin movimientos legales.</li>
+        <li>Si pasan 40 jugadas seguidas (contando ambos bandos) sin ninguna captura, la partida termina en empate.</li>
+      </ul>
+      <a href="jul.html" style="font-size:14px;font-weight:600;">Jugar Jul-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Daseotjul-gonu 다섯줄고누 <span class="tag" style="color:var(--teal, #2F6E6A);">Familia del Jul-gonu</span></div>
+      <ul>
+        <li>Las mismas reglas que el Jul-gonu, una talla más grande: 5 piezas por jugador en un tablero de 5×5 puntos.</li>
+        <li>En cada turno se mueve una pieza un paso a lo largo de una línea; encierra una pieza rival entre dos de las tuyas para capturarla.</li>
+        <li>Ganas si reduces a tu rival a una sola pieza o lo dejas sin movimientos legales.</li>
+        <li>Si pasan 40 jugadas seguidas (contando ambos bandos) sin ninguna captura, la partida termina en empate.</li>
+      </ul>
+      <a href="daseotjul.html" style="font-size:14px;font-weight:600;">Jugar Daseotjul-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Palpal-gonu 팔팔고누 <span class="tag" style="color:var(--teal, #2F6E6A);">Familia del Jul-gonu</span></div>
+      <ul>
+        <li>El tablero más amplio de la familia del Jul-gonu — 8 piezas por jugador en una cuadrícula de 8×8 puntos.</li>
+        <li>Las mismas reglas de captura por encierro que el Jul-gonu y el Daseotjul-gonu, pero con mucho más espacio para maniobrar.</li>
+        <li>Ganas si reduces a tu rival a una sola pieza o lo dejas sin movimientos legales.</li>
+        <li>Si pasan 40 jugadas seguidas (contando ambos bandos) sin ninguna captura, la partida termina en empate.</li>
+      </ul>
+      <a href="palpal.html" style="font-size:14px;font-weight:600;">Jugar Palpal-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Bakwi-gonu 바퀴고누 <span class="tag">Más estrategia</span></div>
+      <ul>
+        <li>4 piezas por jugador, agrupadas en esquinas opuestas de un tablero de 4×4 puntos.</li>
+        <li>Un movimiento normal es de un paso — pero una pieza que esté sobre una de las cuatro "ruedas" de las esquinas del tablero puede, en cambio, girar y deslizarse cualquier distancia en línea recta.</li>
+        <li>Un deslizamiento desde la rueda que choca con una pieza rival la captura — es la única forma de capturar en este juego.</li>
+        <li>Ganas si capturas todas las piezas de tu rival o lo dejas sin movimientos legales.</li>
+        <li>Si pasan 40 jugadas seguidas (contando ambos bandos) sin ninguna captura, la partida termina en empate.</li>
+      </ul>
+      <a href="bakwi.html" style="font-size:14px;font-weight:600;">Jugar Bakwi-gonu →</a>
+    </div>
+
+    <div class="card" style="padding:28px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:19px;font-weight:700;">Gomoku 오목 <span class="tag">No es una variante de Gonu</span></div>
+      <ul>
+        <li>Los jugadores se turnan para colocar una piedra por turno en cualquier intersección vacía de un tablero de 15×15.</li>
+        <li>Consigue 5 piedras propias en fila — en cualquier dirección — para ganar. Sin capturas.</li>
+        <li>Elige <strong>Estilo libre</strong> (gana cualquier fila de 5 o más) o <strong>Estándar (Renju)</strong>, donde el primer jugador no puede jugar en ciertos "puntos prohibidos" (doble tres, doble cuatro, seis o más en fila) — el tablero los marca con una ×.</li>
+        <li>Si se llega a 225 jugadas sin ganador, es empate.</li>
+      </ul>
+      <a href="gomoku.html" style="font-size:14px;font-weight:600;">Jugar Gomoku →</a>
+    </div>
+
+    <div class="card" style="padding:24px 28px;display:flex;flex-direction:column;gap:14px;">
+      <div class="serif" style="font-size:18px;font-weight:700;">Consejos de estrategia</div>
+      <ul>
+        <li><strong>Controla el centro.</strong> Los puntos centrales se conectan con más líneas, así que una pieza ahí tiene más lugares adonde moverse — y más líneas en las que preparar una captura.</li>
+        <li><strong>Fíjate dónde pisas.</strong> Mover una pieza entre dos piezas rivales no hace que la capturen — solo la pieza que acaba de moverse puede provocar una captura. Pero revisa lo contrario: no le regales a tu rival un encierro fácil en su turno.</li>
+        <li><strong>No cambies piezas a ciegas.</strong> En las variantes con captura, intercambiar piezas uno por uno rara vez sale gratis — casi siempre le abre una línea a quien mueve a continuación.</li>
+        <li><strong>En el Cham-gonu, no te apresures a formar un molino durante la colocación.</strong> Un molino que puedes abrir y volver a cerrar más adelante (sacando una pieza y regresándola al mismo punto) captura una y otra vez — eso vale más que una captura temprana.</li>
+      </ul>
+    </div>
+
+    <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+      <div style="font-size:13px;font-weight:600;color:var(--muted);">Jugar contra la IA</div>
+      <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">Cada variante tiene un oponente de computadora integrado (sin servidor, sin descargas) con cuatro niveles de dificultad. Fácil suele mirar solo una jugada hacia adelante; Maestro calcula varias jugadas de profundidad y juega una partida realmente difícil. También puedes elegir si juegas primero o segundo.</p>
+    </div>
+
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">Política de privacidad</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'es', currentPage: 'howto.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'es', currentPage: 'howto.html' });
+</script>
+</body>
+</html>

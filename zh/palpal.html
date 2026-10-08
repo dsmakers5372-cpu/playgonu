@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — 八八高努 (Palpal-gonu)</title>
+<meta name="description" content="八八高努 (Palpal-gonu) 是线高努家族中棋盘最大的一种——8x8 点棋盘，每方 8 枚棋子。支持双人本地对战或对战 AI。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/zh/palpal.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/zh/palpal.html">
+<meta property="og:title" content="PlayGonu — 八八高努 (Palpal-gonu)">
+<meta property="og:description" content="八八高努 (Palpal-gonu) 是线高努家族中棋盘最大的一种——8x8 点棋盘，每方 8 枚棋子。支持双人本地对战或对战 AI。">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayGonu — 八八高努 (Palpal-gonu)">
+<meta name="twitter:description" content="八八高努 (Palpal-gonu) 是线高努家族中棋盘最大的一种——8x8 点棋盘，每方 8 枚棋子。支持双人本地对战或对战 AI。">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">参高努</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">五子棋</a>
+        <a href="howto.html" class="variant-tab">玩法</a>
+        <a href="online.html" class="variant-tab">在线对战</a>
+        <a href="../blog/index.html" class="variant-tab">博客</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>轮到红方</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>已吃子 — 红: 0 · 黑: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">执红 · 先手</option>
+          <option value="B">执黑 · 后手</option>
+        </select>
+        <select class="pill" data-opponent-mode style="cursor:pointer;">
+          <option value="local">双人（本地）</option>
+          <option value="ai" selected>对战 AI</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">简单</option>
+          <option value="normal" selected>普通</option>
+          <option value="hard">困难</option>
+          <option value="master">大师</option>
+        </select>
+        <button class="btn" data-undo>悔棋</button>
+        <button class="btn-primary" data-new-game>新对局</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">棋盘颜色</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div class="serif" style="font-size:18px;font-weight:700;">八八高努怎么玩</div>
+        <ul>
+          <li>开局时，双方各有 8 枚棋子，排列在 8x8 点棋盘靠近自己的一侧边线上。</li>
+          <li>每回合移动一枚棋子，沿线走一步。</li>
+          <li>在一条直线上用自己的两枚棋子夹住对方一枚棋子，即可吃掉它。</li>
+          <li>把对方棋子减少到只剩一枚，或让对方无棋可走，即获胜。</li>
+          <li>如果连续 40 步（双方合计）都没有吃子，则为和棋。</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">线高努家族的一员</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">韩国高努“线”类变体中棋盘最大的一种——“팔팔”意为“八八”，指每方 8 枚棋子。夹击吃子规则与线高努、五线高努相同，只是周旋空间大得多。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>红方获胜！</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">步数</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">用时</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>再来一局</button>
+      <a href="index.html" class="btn" style="text-align:center;">返回首页</a>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">隐私政策</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountPalpalgonuGame } from '../src/ui/palpalgonuGame.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountPalpalgonuGame(document.querySelector('[data-root]'), { lang: 'zh' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'zh', currentPage: 'palpal.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'zh', currentPage: 'palpal.html' });
+</script>
+</body>
+</html>

@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — 韓国版ナイン・メンズ・モリス「チャムゴヌ」をオンラインで</title>
+<meta name="description" content="韓国の伝統ゲーム・コヌの中で最も奥深い変種、チャムゴヌ（Cham-gonu）を遊べます。2人対戦（ローカル）にもAI対戦にも対応。まずはシンプルなチュルゴヌやパクィゴヌでウォームアップしましょう。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/ja/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ja/">
+<meta property="og:title" content="PlayGonu — 韓国版ナイン・メンズ・モリス「チャムゴヌ」をオンラインで">
+<meta property="og:description" content="韓国の伝統ゲーム・コヌの中で最も奥深い変種、チャムゴヌ（Cham-gonu）を遊べます。2人対戦（ローカル）にもAI対戦にも対応。まずはシンプルなチュルゴヌやパクィゴヌでウォームアップしましょう。">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayGonu — 韓国版ナイン・メンズ・モリス「チャムゴヌ」をオンラインで">
+<meta name="twitter:description" content="韓国の伝統ゲーム・コヌの中で最も奥深い変種、チャムゴヌ（Cham-gonu）を遊べます。2人対戦（ローカル）にもAI対戦にも対応。まずはシンプルなチュルゴヌやパクィゴヌでウォームアップしましょう。">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab is-active">チャムゴヌ</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">五目並べ</a>
+        <a href="howto.html" class="variant-tab">遊び方</a>
+        <a href="online.html" class="variant-tab">オンライン</a>
+        <a href="../blog/index.html" class="variant-tab">ブログ</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:1280px;margin:0 auto;padding:56px 40px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;">
+    <div class="tag" style="color:var(--red);">韓国の伝統戦略ゲーム</div>
+    <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;max-width:720px;">頭脳で勝負 — チャムゴヌ &amp; 五目並べ</h1>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-soft);max-width:560px;">取って、封じて、相手の一手先を読む — AIを相手にひとりで、またはオンラインで本物の相手と対戦できます。インストールもアカウントも不要です。</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+      <a href="#board-top" class="btn-primary" style="padding:14px 28px;font-size:15px;">シングルプレイ</a>
+      <a href="online.html" class="btn" style="padding:14px 28px;font-size:15px;">オンライン対戦</a>
+    </div>
+  </div>
+
+  <div class="toolbar" id="board-top">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>赤の番 — 配置 (0/12)</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>盤上 — 赤: 0 · 青: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">赤で遊ぶ · 先手</option>
+          <option value="B">青で遊ぶ · 後手</option>
+        </select>
+        <select class="pill" data-opponent-mode style="cursor:pointer;">
+          <option value="local">2人対戦（ローカル）</option>
+          <option value="ai" selected>AIと対戦</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">かんたん</option>
+          <option value="normal" selected>ふつう</option>
+          <option value="hard">むずかしい</option>
+          <option value="master">マスター</option>
+        </select>
+        <button class="btn" data-undo>1手戻す</button>
+        <button class="btn-primary" data-new-game>新しいゲーム</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">盤の色</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div class="serif" style="font-size:18px;font-weight:700;">チャムゴヌ（Cham-gonu）の遊び方</div>
+        <ul>
+          <li>各プレイヤーは12個の駒を持ちます。24点の盤の空いている点に、1個ずつ交互に置いていきます — この配置がゲームの前半です。ゲームの最初の1手は、いちばん外側の四角形の4つの角のどこかにしか置けません。</li>
+          <li>自分の駒3個を（描かれた線に沿って）一直線に並べると「ミル」になり、相手の駒を1個取り除けます。駒取りに使われた点には印が付き、配置が終わるまで使えなくなります。</li>
+          <li>24個すべての駒が置かれると後半が始まります。1手ごとに駒を1個、隣の空いている点へ動かし、引き続きミルを作って駒を取ります。</li>
+          <li>相手の駒を2個まで減らすか、相手が動けない状態にすれば勝ちです。</li>
+          <li><strong>先手の決め方（쟁두）：</strong>伝統的には2人でじゃんけんをして、<em>負けた</em>ほうが先に打ちます。</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">コヌとは？</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">何世紀も前から伝わる韓国の民俗ボードゲームの一族です。チャムゴヌはその中でも奥深いゲームで、西洋の「ナイン・メンズ・モリス」と同じ系統です。コヌは初めてですか？まずは<a href="jul.html">チュルゴヌ</a>で基本を覚えましょう。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="max-width:1280px;margin:0 auto;padding:0 40px 48px;display:flex;flex-direction:column;gap:40px;">
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="tag">コヌで練習</div>
+        <h2 class="serif" style="margin:0;font-size:22px;">数分で基本を覚えられます</h2>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="jul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">チュルゴヌ 줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">駒は4個、シンプルな線の盤。1マスずつ進み、挟んで取ります。</p>
+        </a>
+        <a href="daseotjul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">タソッチュルゴヌ 다섯줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">チュルゴヌと同じルールで、盤がひと回り大きい — 駒は5個、作戦の幅が広がります。</p>
+        </a>
+        <a href="palpal.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">パルパルゴヌ 팔팔고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">チュルゴヌ系でいちばん広い盤 — 8x8の盤で、各8個の駒を使います。</p>
+        </a>
+        <a href="bakwi.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">パクィゴヌ 바퀴고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">角の「車輪」に立てば、どこまでも滑って駒を取れます。</p>
+        </a>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag" style="color:var(--red);">メインゲーム</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">チャムゴヌ 참고누</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">24点の盤に各12個の駒。ナイン・メンズ・モリスと同じ系統です。駒を置いて「ミル」を作って駒を取り、盤が埋まったら駒を動かします — 本格的な奥深さがあり、数分かけて覚える価値のあるゲームです。</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="#board-top" class="btn-primary">ひとりで遊ぶ</a>
+          <a href="online.html?game=cham" class="btn">友達を招待</a>
+        </div>
+      </div>
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag">コヌの変種ではありません</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">五目並べ 오목</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">15×15の盤で、どの方向でも5つ並べれば勝ち — 自由ルールまたは標準（連珠）ルールで遊べます。駒取りはなく、純粋な位置取りの勝負です。</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="gomoku.html" class="btn-primary">ひとりで遊ぶ</a>
+          <a href="online.html?game=gomoku" class="btn">友達を招待</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>赤の勝ち！</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">手数</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">時間</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>もう一度遊ぶ</button>
+      <a href="index.html" class="btn" style="text-align:center;">ホームに戻る</a>
+    </div>
+  </div>
+
+  <div class="win-banner" data-phase-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">前半終了！</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">24個すべての駒が置かれました。後半は駒を置く代わりに、1手ごとに駒を1個、隣の点へ動かします。</p>
+      <button class="btn-primary" data-phase-banner-ok>わかりました</button>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">2人対戦</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">このデバイスで一緒に遊びますか？それともオンラインで誰かを招待しますか？</p>
+      <button class="btn-primary" data-mode-local>同じデバイスで</button>
+      <button class="btn" data-mode-online>オンラインで遊ぶ →</button>
+      <a href="#" data-mode-cancel style="font-size:13px;color:var(--muted);">キャンセル</a>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">プライバシーポリシー</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountChamgonuGame } from '../src/ui/chamgonuGame.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'ja' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ja', currentPage: 'index.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ja', currentPage: 'index.html' });
+</script>
+</body>
+</html>

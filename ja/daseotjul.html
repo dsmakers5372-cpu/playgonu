@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — タソッチュルゴヌ（5本線のコヌ）で遊ぶ</title>
+<meta name="description" content="タソッチュルゴヌ（Daseotjul-gonu）は、チュルゴヌをひと回り大きくした5x5点の盤のゲーム — 挟んで取るルールはそのままに、動ける余地が広がります。2人対戦（ローカル）にもAI対戦にも対応。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/ja/daseotjul.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ja/daseotjul.html">
+<meta property="og:title" content="PlayGonu — タソッチュルゴヌ（5本線のコヌ）で遊ぶ">
+<meta property="og:description" content="タソッチュルゴヌ（Daseotjul-gonu）は、チュルゴヌをひと回り大きくした5x5点の盤のゲーム — 挟んで取るルールはそのままに、動ける余地が広がります。2人対戦（ローカル）にもAI対戦にも対応。">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayGonu — タソッチュルゴヌ（5本線のコヌ）で遊ぶ">
+<meta name="twitter:description" content="タソッチュルゴヌ（Daseotjul-gonu）は、チュルゴヌをひと回り大きくした5x5点の盤のゲーム — 挟んで取るルールはそのままに、動ける余地が広がります。2人対戦（ローカル）にもAI対戦にも対応。">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">チャムゴヌ</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">五目並べ</a>
+        <a href="howto.html" class="variant-tab">遊び方</a>
+        <a href="online.html" class="variant-tab">オンライン</a>
+        <a href="../blog/index.html" class="variant-tab">ブログ</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>赤の番</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>取った駒 — 赤: 0 · 黒: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">赤で遊ぶ · 先手</option>
+          <option value="B">黒で遊ぶ · 後手</option>
+        </select>
+        <select class="pill" data-opponent-mode style="cursor:pointer;">
+          <option value="local">2人対戦（ローカル）</option>
+          <option value="ai" selected>AIと対戦</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">かんたん</option>
+          <option value="normal" selected>ふつう</option>
+          <option value="hard">むずかしい</option>
+          <option value="master">マスター</option>
+        </select>
+        <button class="btn" data-undo>1手戻す</button>
+        <button class="btn-primary" data-new-game>新しいゲーム</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">盤の色</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div class="serif" style="font-size:18px;font-weight:700;">タソッチュルゴヌ（Daseotjul-gonu）の遊び方</div>
+        <ul>
+          <li>各プレイヤーは、5x5点の盤の自分側の端に1列に並べた5個の駒から始めます。</li>
+          <li>1手ごとに駒を1個、線に沿って1歩動かします。</li>
+          <li>相手の駒を自分の駒2個で一直線に挟むと、その駒を取れます。</li>
+          <li>相手の駒を1個まで減らすか、相手が動けない状態にすれば勝ちです。</li>
+          <li>駒取りがないまま40手（双方の手を合算）続くと、引き分けになります。</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">チュルゴヌの仲間</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">韓国のコヌの「線」系の変種は、盤の大きさで名前が付いています — 넉줄고누（4本線）、다섯줄고누（5本線、このゲーム）、여섯줄고누（6本線）など。どれも同じルールで遊び、盤が大きいほど広く使えます。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>赤の勝ち！</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">手数</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">時間</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>もう一度遊ぶ</button>
+      <a href="index.html" class="btn" style="text-align:center;">ホームに戻る</a>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">プライバシーポリシー</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountDaseotjulgonuGame } from '../src/ui/daseotjulgonuGame.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountDaseotjulgonuGame(document.querySelector('[data-root]'), { lang: 'ja' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ja', currentPage: 'daseotjul.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ja', currentPage: 'daseotjul.html' });
+</script>
+</body>
+</html>

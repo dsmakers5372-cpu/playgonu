@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — Juega Cham-gonu, el "molino" coreano, en línea</title>
+<meta name="description" content="Juega Cham-gonu, la variante más profunda del Gonu tradicional coreano — 2 jugadores en local o contra la IA. Calienta primero con los más sencillos Jul-gonu y Bakwi-gonu.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/es/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/es/">
+<meta property="og:title" content="PlayGonu — Juega Cham-gonu, el &quot;molino&quot; coreano, en línea">
+<meta property="og:description" content="Juega Cham-gonu, la variante más profunda del Gonu tradicional coreano — 2 jugadores en local o contra la IA. Calienta primero con los más sencillos Jul-gonu y Bakwi-gonu.">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayGonu — Juega Cham-gonu, el &quot;molino&quot; coreano, en línea">
+<meta name="twitter:description" content="Juega Cham-gonu, la variante más profunda del Gonu tradicional coreano — 2 jugadores en local o contra la IA. Calienta primero con los más sencillos Jul-gonu y Bakwi-gonu.">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab is-active">Cham-gonu</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="howto.html" class="variant-tab">Cómo jugar</a>
+        <a href="online.html" class="variant-tab">En línea</a>
+        <a href="../blog/index.html" class="variant-tab">Blog</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:1280px;margin:0 auto;padding:56px 40px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:18px;">
+    <div class="tag" style="color:var(--red);">Juegos de estrategia tradicionales coreanos</div>
+    <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;max-width:720px;">Domina los juegos de ingenio — Cham-gonu &amp; Gomoku</h1>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-soft);max-width:560px;">Captura, encierra y supera en astucia a tu rival — solo contra la IA o en línea contra una persona real. Sin instalar nada, sin crear cuenta.</p>
+    <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+      <a href="#board-top" class="btn-primary" style="padding:14px 28px;font-size:15px;">Un jugador</a>
+      <a href="online.html" class="btn" style="padding:14px 28px;font-size:15px;">Partida en línea</a>
+    </div>
+  </div>
+
+  <div class="toolbar" id="board-top">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>Rojo coloca (0/12)</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>En el tablero — Rojo: 0 · Azul: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">Jugar con Rojo · Primero</option>
+          <option value="B">Jugar con Azul · Segundo</option>
+        </select>
+        <select class="pill" data-opponent-mode style="cursor:pointer;">
+          <option value="local">2 jugadores (local)</option>
+          <option value="ai" selected>vs IA</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">Fácil</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Difícil</option>
+          <option value="master">Maestro</option>
+        </select>
+        <button class="btn" data-undo>Deshacer</button>
+        <button class="btn-primary" data-new-game>Nueva partida</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">Color del tablero</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div class="serif" style="font-size:18px;font-weight:700;">Cómo se juega el Cham-gonu</div>
+        <ul>
+          <li>Cada jugador tiene 12 piezas. Por turnos, colocan una a la vez en cualquier punto vacío del tablero de 24 puntos — la colocación es la primera mitad de la partida. La primerísima colocación de la partida solo puede hacerse en una de las 4 esquinas del cuadrado exterior.</li>
+          <li>Alinea 3 de tus piezas en fila (en línea recta, siguiendo las líneas dibujadas) para formar un "molino" — y retira una pieza rival. El punto usado en una captura queda marcado y bloqueado durante el resto de la colocación.</li>
+          <li>Cuando ya están colocadas las 24 piezas, empieza la segunda mitad: en cada turno desliza una pieza a un punto vacío adyacente, y sigue formando molinos para capturar.</li>
+          <li>Ganas si reduces a tu rival a 2 piezas o lo dejas sin movimientos legales.</li>
+          <li><strong>Quién empieza (쟁두):</strong> tradicionalmente, los dos jugadores juegan piedra, papel o tijera, y el que <em>pierde</em> mueve primero.</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">¿Qué es el Gonu?</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">Una familia de juegos de tablero populares coreanos con siglos de historia — el Cham-gonu es el más profundo, de la misma familia que el "Nine Men's Morris" occidental (el juego del molino). ¿Nuevo en el Gonu? <a href="jul.html">Prueba primero el Jul-gonu</a> para aprender lo básico.</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div style="max-width:1280px;margin:0 auto;padding:0 40px 48px;display:flex;flex-direction:column;gap:40px;">
+
+    <div style="display:flex;flex-direction:column;gap:16px;">
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="tag">Practica Gonu</div>
+        <h2 class="serif" style="margin:0;font-size:22px;">Aprende lo básico en un par de minutos</h2>
+      </div>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="jul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Jul-gonu 줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">4 piezas y un tablero de líneas sencillo. Avanza un punto y encierra entre dos para capturar.</p>
+        </a>
+        <a href="daseotjul.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Daseotjul-gonu 다섯줄고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">Las mismas reglas que el Jul-gonu, una talla más grande — 5 piezas y más espacio para planear.</p>
+        </a>
+        <a href="palpal.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Palpal-gonu 팔팔고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">El más amplio de la familia de gonu de líneas — 8 piezas por bando en un tablero de 8x8.</p>
+        </a>
+        <a href="bakwi.html" class="card" style="flex:1 1 220px;padding:22px;display:flex;flex-direction:column;gap:8px;">
+          <div class="serif" style="font-size:17px;font-weight:700;">Bakwi-gonu 바퀴고누</div>
+          <p style="margin:0;font-size:13px;line-height:1.55;color:var(--ink-soft);">Sube a una "rueda" de esquina y deslízate cualquier distancia para capturar.</p>
+        </a>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:20px;flex-wrap:wrap;">
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag" style="color:var(--red);">El juego principal</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">Cham-gonu 참고누</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">12 piezas por jugador en un tablero de 24 puntos, de la misma familia que el Nine Men's Morris. Coloca piezas para formar "molinos" y capturar; cuando el tablero se llena, toca deslizarlas — un juego realmente profundo que vale los minutos extra que toma aprenderlo.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="#board-top" class="btn-primary">Jugar solo</a>
+          <a href="online.html?game=cham" class="btn">Invitar a un amigo</a>
+        </div>
+      </div>
+      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
+        <div class="tag">No es una variante de Gonu</div>
+        <div class="serif" style="font-size:22px;font-weight:700;">Gomoku 오목</div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">Cinco en fila, en cualquier dirección, sobre un tablero de 15×15 — reglas de estilo libre o estándar (Renju). Sin capturas, pura colocación.</p>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <a href="gomoku.html" class="btn-primary">Jugar solo</a>
+          <a href="online.html?game=gomoku" class="btn">Invitar a un amigo</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>¡Gana Rojo!</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">Jugadas</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">Tiempo</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>Jugar de nuevo</button>
+      <a href="index.html" class="btn" style="text-align:center;">Volver al inicio</a>
+    </div>
+  </div>
+
+  <div class="win-banner" data-phase-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">¡Terminó la primera mitad!</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">Ya están colocadas las 24 piezas. En la segunda mitad, en lugar de colocar, desliza una pieza por turno a un punto adyacente.</p>
+      <button class="btn-primary" data-phase-banner-ok>Entendido</button>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">2 jugadores</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">¿Juegan juntos en este dispositivo o quieres invitar a alguien en línea?</p>
+      <button class="btn-primary" data-mode-local>Mismo dispositivo</button>
+      <button class="btn" data-mode-online>Jugar en línea →</button>
+      <a href="#" data-mode-cancel style="font-size:13px;color:var(--muted);">Cancelar</a>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">Política de privacidad</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountChamgonuGame } from '../src/ui/chamgonuGame.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'es' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'es', currentPage: 'index.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'es', currentPage: 'index.html' });
+</script>
+</body>
+</html>

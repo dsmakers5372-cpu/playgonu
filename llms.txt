@@ -1,6 +1,6 @@
 # PlayGonu
 
-> PlayGonu is a collection of traditional Korean Gonu (고누) strategy board games, plus Gomoku. Every game is playable solo against a built-in AI (four difficulty levels) or online against another real person in real time — no install, no account, no download. Available in English and Korean.
+> PlayGonu is a collection of traditional Korean Gonu (고누) strategy board games, plus Gomoku. Every game is playable solo against a built-in AI (four difficulty levels) or online against another real person in real time — no install, no account, no download. Available in English, Korean, Spanish, Japanese and Simplified Chinese.
 
 ## Games
 
@@ -17,4 +17,7 @@
 - [Online Battle](https://playgonu.com/online.html): Real-time multiplayer for Cham-gonu and Gomoku — create a private room and share the link, or join an open public room. No account needed, just a name.
 - [Blog](https://playgonu.com/blog/index.html): Articles on Gonu's history and how it compares to Nine Men's Morris, Gomoku, and Renju.
 - [Privacy Policy](https://playgonu.com/privacy.html)
-- [Korean version (한국어)](https://playgonu.com/ko/index.html): The full site, translated into Korean, at the /ko/ path.
+- [Korean version (한국어)](https://playgonu.com/ko/index.html): The game pages, how-to and online battle in Korean, at the /ko/ path.
+- [Spanish version (Español)](https://playgonu.com/es/index.html): The same pages in Spanish, at /es/.
+- [Japanese version (日本語)](https://playgonu.com/ja/index.html): The same pages in Japanese, at /ja/ (Gomoku appears as 五目並べ).
+- [Simplified Chinese version (简体中文)](https://playgonu.com/zh/index.html): The same pages in Simplified Chinese, at /zh/ (Gomoku appears as 五子棋).

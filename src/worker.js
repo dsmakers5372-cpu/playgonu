@@ -14,7 +14,16 @@ import { Lobby } from './durable/Lobby.js';
 
 export { GameRoom, Lobby };
 
-const COUNTRY_DEFAULT_LANG = { KR: 'ko' };
+// Traditional-Chinese regions (TW, HK, MO) stay on English until there's a
+// Traditional Chinese version — Simplified would read as foreign there.
+const SPANISH_COUNTRIES = ['ES', 'MX', 'AR', 'CO', 'CL', 'PE', 'VE', 'EC', 'GT', 'CU', 'BO', 'DO', 'HN', 'PY', 'SV', 'NI', 'CR', 'PA', 'UY', 'PR', 'GQ'];
+const COUNTRY_DEFAULT_LANG = {
+  KR: 'ko',
+  JP: 'ja',
+  CN: 'zh',
+  SG: 'zh',
+  ...Object.fromEntries(SPANISH_COUNTRIES.map((c) => [c, 'es'])),
+};
 const ASSET_PATH = /\.(js|css|svg|png|jpg|jpeg|webp|ico|json|woff2?|txt|xml)$/;
 
 export default {

@@ -18,7 +18,13 @@ const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#242019', stroke: '#000000' },
   [PLAYERS.B]: { fill: '#F8F4E9', stroke: '#3A332C' },
 };
-const PLAYER_NAME = { en: { A: 'Black', B: 'White' }, ko: { A: '검정', B: '흰돌' } };
+const PLAYER_NAME = {
+  en: { A: 'Black', B: 'White' },
+  ko: { A: '검정', B: '흰돌' },
+  es: { A: 'Negras', B: 'Blancas' },
+  ja: { A: '黒', B: '白' },
+  zh: { A: '黑方', B: '白方' },
+};
 
 const VIEWPORT = 420;
 const MARGIN = 14;
@@ -47,6 +53,8 @@ const T = {
     resultDrawTitle: "It's a draw",
     playAgain: 'Play again',
     leave: 'Leave',
+    wins: (n) => `${n} wins!`,
+    opponent: 'Opponent',
     rematchWaiting: 'Waiting for your opponent…',
     rematchAsked: (n) => `${n} wants a rematch — press Play again.`,
     rematchStarted: (c) => `New game — this time you are ${PLAYER_NAME.en[c]}.`,
@@ -67,14 +75,83 @@ const T = {
     resultDrawTitle: '무승부입니다',
     playAgain: '한번더',
     leave: '나가기',
+    wins: (n) => `${n} 승리!`,
+    opponent: '상대',
     rematchWaiting: '상대방을 기다리는 중…',
     rematchAsked: (n) => `${n}님이 한 판 더 원해요 — '한번더'를 누르세요.`,
     rematchStarted: (c) => `새 판 시작 — 이번엔 ${PLAYER_NAME.ko[c]}입니다.`,
   },
+  es: {
+    youAre: (c) => `Juegas con ${PLAYER_NAME.es[c]}`,
+    oppLeft: 'Tu rival abandonó la partida.',
+    waitTurn: (n) => `Turno de ${n}`,
+    yourTurn: 'Tu turno',
+    spectating: 'Observando',
+    gameStarted: (c) => `La partida ha comenzado — juegas con ${PLAYER_NAME.es[c]}. ¡Suerte!`,
+    youWin: '¡Ganaste! 🎉',
+    youLose: 'Perdiste — buena partida.',
+    resultWinTitle: '¡Ganaste! 🎉',
+    resultLoseTitle: 'Perdiste',
+    resultDrawTitle: 'Empate',
+    playAgain: 'Otra partida',
+    leave: 'Salir',
+    rematchWaiting: 'Esperando a tu rival…',
+    rematchAsked: (n) => `${n} quiere la revancha — pulsa Otra partida.`,
+    rematchStarted: (c) => `Nueva partida — esta vez juegas con ${PLAYER_NAME.es[c]}.`,
+    wins: (n) => `¡Ganan ${n}!`,
+    opponent: 'Rival',
+    draw: '¡Empate!',
+    drawMsg: '¡Empate!',
+  },
+  ja: {
+    youAre: (c) => `あなたは${PLAYER_NAME.ja[c]}です`,
+    oppLeft: '相手が退出しました。',
+    waitTurn: (n) => `${n}の番`,
+    yourTurn: 'あなたの番',
+    spectating: '観戦中',
+    gameStarted: (c) => `対局開始 — あなたは${PLAYER_NAME.ja[c]}です。がんばって！`,
+    youWin: 'あなたの勝ち！🎉',
+    youLose: '負けました — いい勝負でした。',
+    resultWinTitle: 'あなたの勝ち！🎉',
+    resultLoseTitle: '負けました',
+    resultDrawTitle: '引き分けです',
+    playAgain: 'もう一局',
+    leave: '退出',
+    rematchWaiting: '相手を待っています…',
+    rematchAsked: (n) => `${n}さんがもう一局を希望しています — 「もう一局」を押してください。`,
+    rematchStarted: (c) => `新しい対局 — 今回は${PLAYER_NAME.ja[c]}です。`,
+    wins: (n) => `${n}の勝ち！`,
+    opponent: '相手',
+    draw: '引き分け！',
+    drawMsg: '引き分けです。',
+  },
+  zh: {
+    youAre: (c) => `你是${PLAYER_NAME.zh[c]}`,
+    oppLeft: '对手已离开对局。',
+    waitTurn: (n) => `轮到${n}`,
+    yourTurn: '轮到你了',
+    spectating: '观战中',
+    gameStarted: (c) => `对局开始 — 你是${PLAYER_NAME.zh[c]}。祝你好运！`,
+    youWin: '你赢了！🎉',
+    youLose: '你输了 — 下次加油。',
+    resultWinTitle: '你赢了！🎉',
+    resultLoseTitle: '你输了',
+    resultDrawTitle: '平局',
+    playAgain: '再来一局',
+    leave: '离开',
+    rematchWaiting: '等待对手…',
+    rematchAsked: (n) => `${n} 想再来一局 — 请点击“再来一局”。`,
+    rematchStarted: (c) => `新对局 — 这次你是${PLAYER_NAME.zh[c]}。`,
+    wins: (n) => `${n}获胜！`,
+    opponent: '对手',
+    draw: '平局！',
+    drawMsg: '平局。',
+  },
 };
 
 export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FREESTYLE, onMatchStart } = {}) {
-  const t = T[lang] || T.en;
+  if (!T[lang]) lang = 'en';
+  const t = T[lang];
   root.innerHTML = `
     <div data-lobby-root></div>
     <div data-game-root style="display:none;">
@@ -244,7 +321,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     } else if (game.winner === 'draw') {
       turnLabel.textContent = t.draw;
     } else if (game.winner) {
-      turnLabel.textContent = `${PLAYER_NAME[lang][game.winner]} ${lang === 'ko' ? '승리!' : 'wins!'}`;
+      turnLabel.textContent = t.wins(PLAYER_NAME[lang][game.winner]);
     } else {
       turnLabel.textContent = isMyTurn() ? t.yourTurn : t.waitTurn(PLAYER_NAME[lang][game.turn]);
     }
@@ -290,7 +367,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
           lang,
           gameType: 'gomoku',
           youName: info.name,
-          opponentName: info.opponentName || (lang === 'ko' ? '상대' : 'Opponent'),
+          opponentName: info.opponentName || t.opponent,
           youColorHex: PLAYER_COLOR[myColor].fill,
           opponentColorHex: PLAYER_COLOR[opponentColor].fill,
         });

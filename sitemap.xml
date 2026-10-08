@@ -6,51 +6,74 @@
     <loc>https://playgonu.com/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
   </url>
   <url>
     <loc>https://playgonu.com/jul.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/jul.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/jul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/jul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/jul.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/jul.html" />
   </url>
   <url>
     <loc>https://playgonu.com/daseotjul.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/daseotjul.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/daseotjul.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/daseotjul.html" />
   </url>
   <url>
     <loc>https://playgonu.com/palpal.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/palpal.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/palpal.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/palpal.html" />
   </url>
   <url>
     <loc>https://playgonu.com/bakwi.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/bakwi.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/bakwi.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/bakwi.html" />
   </url>
   <url>
     <loc>https://playgonu.com/gomoku.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/gomoku.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/gomoku.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/gomoku.html" />
   </url>
   <url>
     <loc>https://playgonu.com/howto.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/howto.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/howto.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/howto.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/howto.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/howto.html" />
   </url>
   <url>
     <loc>https://playgonu.com/online.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/online.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/online.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/online.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/online.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/online.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/online.html" />
   </url>
-
   <url>
     <loc>https://playgonu.com/privacy.html</loc>
   </url>
@@ -69,53 +92,292 @@
   <url>
     <loc>https://playgonu.com/blog/cham-gonu-nine-mens-morris.html</loc>
   </url>
-
   <url>
     <loc>https://playgonu.com/ko/</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/jul.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/jul.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/jul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/jul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/jul.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/jul.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/daseotjul.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/daseotjul.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/daseotjul.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/daseotjul.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/palpal.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/palpal.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/palpal.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/palpal.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/bakwi.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/bakwi.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/bakwi.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/bakwi.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/gomoku.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/gomoku.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/gomoku.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/gomoku.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/howto.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/howto.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/howto.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/howto.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/howto.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/howto.html" />
   </url>
   <url>
     <loc>https://playgonu.com/ko/online.html</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/online.html" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/online.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/online.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/online.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/online.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/online.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/jul.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/jul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/jul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/jul.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/jul.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/daseotjul.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/daseotjul.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/palpal.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/palpal.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/bakwi.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/bakwi.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/gomoku.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/gomoku.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/howto.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/howto.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/howto.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/howto.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/howto.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/online.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/online.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/online.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/online.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/online.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/online.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/online.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/jul.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/jul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/jul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/jul.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/jul.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/daseotjul.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/daseotjul.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/palpal.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/palpal.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/bakwi.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/bakwi.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/gomoku.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/gomoku.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/howto.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/howto.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/howto.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/howto.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/howto.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/online.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/online.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/online.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/online.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/online.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/online.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/online.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/jul.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/jul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/jul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/jul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/jul.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/jul.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/daseotjul.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/daseotjul.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/daseotjul.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/palpal.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/palpal.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/palpal.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/bakwi.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/bakwi.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/bakwi.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/gomoku.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/gomoku.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/gomoku.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/howto.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/howto.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/howto.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/howto.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/howto.html" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/howto.html" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/online.html</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/online.html" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/online.html" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/online.html" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/online.html" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/online.html" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/online.html" />
   </url>
 

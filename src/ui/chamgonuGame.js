@@ -19,7 +19,51 @@ const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#AC3B2A', stroke: '#7A2A1E' },
   [PLAYERS.B]: { fill: '#2C5F8A', stroke: '#1D4360' },
 };
-const PLAYER_NAME = { en: { A: 'Red', B: 'Blue' }, ko: { A: '빨강', B: '파랑' } };
+const PLAYER_NAME = {
+  en: { A: 'Red', B: 'Blue' },
+  ko: { A: '빨강', B: '파랑' },
+  es: { A: 'Rojo', B: 'Azul' },
+  ja: { A: '赤', B: '青' },
+  zh: { A: '红方', B: '蓝方' },
+};
+
+const STRINGS = {
+  en: {
+    wins: (n) => `${n} wins!`,
+    pickCapture: (n) => `${n} — pick a piece to capture`,
+    toPlace: (n, placed) => `${n} to place (${placed}/12)`,
+    toMove: (n) => `${n} to move`,
+    onBoard: (r, b) => `On board — Red: ${r} · Blue: ${b}`,
+  },
+  ko: {
+    wins: (n) => `${n} 승리!`,
+    pickCapture: (n) => `${n} — 잡을 말을 고르세요`,
+    toPlace: (n, placed) => `${n} 차례 — 놓기 (${placed}/12)`,
+    toMove: (n) => `${n} 차례`,
+    onBoard: (r, b) => `남은 말 — 빨강: ${r} · 파랑: ${b}`,
+  },
+  es: {
+    wins: (n) => `¡Gana ${n}!`,
+    pickCapture: (n) => `${n} — elige una pieza para capturar`,
+    toPlace: (n, placed) => `${n} coloca (${placed}/12)`,
+    toMove: (n) => `Turno de ${n}`,
+    onBoard: (r, b) => `En el tablero — Rojo: ${r} · Azul: ${b}`,
+  },
+  ja: {
+    wins: (n) => `${n}の勝ち！`,
+    pickCapture: (n) => `${n} — 取る駒を選んでください`,
+    toPlace: (n, placed) => `${n}の番 — 配置 (${placed}/12)`,
+    toMove: (n) => `${n}の番`,
+    onBoard: (r, b) => `盤上の駒 — 赤: ${r} · 青: ${b}`,
+  },
+  zh: {
+    wins: (n) => `${n}获胜！`,
+    pickCapture: (n) => `${n} — 请选择要吃掉的棋子`,
+    toPlace: (n, placed) => `${n}落子 (${placed}/12)`,
+    toMove: (n) => `轮到${n}`,
+    onBoard: (r, b) => `棋盘上 — 红: ${r} · 蓝: ${b}`,
+  },
+};
 
 // Three concentric squares (outer/middle/inner), each an 8-point ring, with
 // the midpoint of each side connected across all three rings — matching
@@ -44,22 +88,16 @@ function animate(node, attrs) {
 }
 
 function statusText(lang, game) {
+  const s = STRINGS[lang];
   const name = PLAYER_NAME[lang][game.turn];
-  if (game.winner) {
-    const winnerName = PLAYER_NAME[lang][game.winner];
-    return lang === 'ko' ? `${winnerName} 승리!` : `${winnerName} wins!`;
-  }
-  if (game.pendingCapture) {
-    return lang === 'ko' ? `${name} — 잡을 말을 고르세요` : `${name} — pick a piece to capture`;
-  }
-  if (game.phase === 'placing') {
-    const placed = game.placedCount[game.turn];
-    return lang === 'ko' ? `${name} 차례 — 놓기 (${placed}/12)` : `${name} to place (${placed}/12)`;
-  }
-  return lang === 'ko' ? `${name} 차례` : `${name} to move`;
+  if (game.winner) return s.wins(PLAYER_NAME[lang][game.winner]);
+  if (game.pendingCapture) return s.pickCapture(name);
+  if (game.phase === 'placing') return s.toPlace(name, game.placedCount[game.turn]);
+  return s.toMove(name);
 }
 
-export function mountChamgonuGame(root, { lang = 'en' } = {}) {
+export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
+  const lang = STRINGS[requestedLang] ? requestedLang : 'en';
   const svg = root.querySelector('[data-board-svg]');
   const boardFrame = root.querySelector('[data-board-frame]');
   const turnDot = root.querySelector('[data-turn-dot]');
@@ -301,9 +339,7 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
     if (capturedLabel) {
       const redOnBoard = game.pieces.filter((p) => p === PLAYERS.A).length;
       const blueOnBoard = game.pieces.filter((p) => p === PLAYERS.B).length;
-      capturedLabel.textContent = lang === 'ko'
-        ? `남은 말 — 빨강: ${redOnBoard} · 파랑: ${blueOnBoard}`
-        : `On board — Red: ${redOnBoard} · Blue: ${blueOnBoard}`;
+      capturedLabel.textContent = STRINGS[lang].onBoard(redOnBoard, blueOnBoard);
     }
     undoBtn.disabled = history.length === 0;
   }
@@ -311,8 +347,7 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
   function showWinBanner() {
     if (!game.winner) return;
     stats.stop();
-    const winnerName = PLAYER_NAME[lang][game.winner];
-    winMessage.textContent = lang === 'ko' ? `${winnerName} 승리!` : `${winnerName} wins!`;
+    winMessage.textContent = STRINGS[lang].wins(PLAYER_NAME[lang][game.winner]);
     if (winMoves) winMoves.textContent = String(stats.moveCount);
     if (winTime) winTime.textContent = formatElapsed(stats.elapsedMs());
     winBanner.classList.add('is-visible');

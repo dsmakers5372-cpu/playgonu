@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — 五目並べ（Gomoku）をオンラインで</title>
+<meta name="description" content="定番の五目並べ（5つ並べたら勝ち）を遊べます — 自由ルールまたは標準（連珠）ルール、2人対戦（ローカル）にもAI対戦にも対応。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/ja/gomoku.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ja/gomoku.html">
+<meta property="og:title" content="PlayGonu — 五目並べ（Gomoku）をオンラインで">
+<meta property="og:description" content="定番の五目並べ（5つ並べたら勝ち）を遊べます — 自由ルールまたは標準（連珠）ルール、2人対戦（ローカル）にもAI対戦にも対応。">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayGonu — 五目並べ（Gomoku）をオンラインで">
+<meta name="twitter:description" content="定番の五目並べ（5つ並べたら勝ち）を遊べます — 自由ルールまたは標準（連珠）ルール、2人対戦（ローカル）にもAI対戦にも対応。">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">チャムゴヌ</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab is-active">五目並べ</a>
+        <a href="howto.html" class="variant-tab">遊び方</a>
+        <a href="online.html" class="variant-tab">オンライン</a>
+        <a href="../blog/index.html" class="variant-tab">ブログ</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>黒の番</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>置いた石 — 黒: 0 · 白: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-ruleset style="cursor:pointer;">
+          <option value="freestyle" selected>自由ルール</option>
+          <option value="renju">標準（連珠）</option>
+        </select>
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">黒で遊ぶ · 先手</option>
+          <option value="B">白で遊ぶ · 後手</option>
+        </select>
+        <select class="pill" data-opponent-mode style="cursor:pointer;">
+          <option value="local">2人対戦（ローカル）</option>
+          <option value="ai" selected>AIと対戦</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">かんたん</option>
+          <option value="normal" selected>ふつう</option>
+          <option value="hard">むずかしい</option>
+          <option value="master">マスター</option>
+        </select>
+        <button class="btn" data-undo>1手戻す</button>
+        <button class="btn-primary" data-new-game>新しいゲーム</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">盤の色</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+      <div class="tag" data-foul-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;"></div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
+        <div class="serif" style="font-size:18px;font-weight:700;">五目並べの遊び方</div>
+        <ul>
+          <li>15×15の盤の空いている交点に、1手ごとに石を1個ずつ交互に置きます。</li>
+          <li>自分の石を縦・横・斜めのいずれかに5個並べれば勝ちです。駒取りも、石を取り除くこともありません。</li>
+          <li><strong>自由ルール</strong>では、5個以上並べば勝ちです。<strong>標準（連珠）</strong>では、先手は特定の「禁じ手」（三三、四四、6個以上の長連）に打てません — 禁じ手は盤上に×で表示されます。後手にはこの制限はありません。</li>
+          <li>225手で盤が埋まっても勝者が決まらなければ、引き分けになります。</li>
+        </ul>
+      </div>
+      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
+        <div style="font-size:13px;font-weight:600;color:var(--muted);">コヌの変種ではありません</div>
+        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">五目並べ（五目、「5つの目」）はコヌの一族ではない、独立した定番ボードゲームです — 紙と鉛筆で遊べるシンプルな精神が共通しているため、PlayGonuの韓国のコヌの変種と並べて収録しています。</p>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>黒の勝ち！</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">手数</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">時間</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>もう一度遊ぶ</button>
+      <a href="index.html" class="btn" style="text-align:center;">ホームに戻る</a>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;">2人対戦</div>
+      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">このデバイスで一緒に遊びますか？それともオンラインで誰かを招待しますか？</p>
+      <button class="btn-primary" data-mode-local>同じデバイスで</button>
+      <button class="btn" data-mode-online>オンラインで遊ぶ →</button>
+      <a href="#" data-mode-cancel style="font-size:13px;color:var(--muted);">キャンセル</a>
+    </div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">プライバシーポリシー</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountGomokuGame } from '../src/ui/gomokuGame.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountGomokuGame(document.querySelector('[data-root]'), { lang: 'ja' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ja', currentPage: 'gomoku.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ja', currentPage: 'gomoku.html' });
+</script>
+</body>
+</html>

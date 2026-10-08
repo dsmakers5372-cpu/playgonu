@@ -29,6 +29,36 @@ const STRINGS = {
     draw: '무',
     loss: '패',
   },
+  es: {
+    chatTitle: 'Chat',
+    chatPlaceholder: 'Escribe un mensaje…',
+    send: 'Enviar',
+    you: 'Tú',
+    player: 'Jugador',
+    win: 'G',
+    draw: 'E',
+    loss: 'P',
+  },
+  ja: {
+    chatTitle: 'チャット',
+    chatPlaceholder: 'メッセージを入力…',
+    send: '送信',
+    you: 'あなた',
+    player: 'プレイヤー',
+    win: '勝',
+    draw: '分',
+    loss: '敗',
+  },
+  zh: {
+    chatTitle: '聊天',
+    chatPlaceholder: '输入消息…',
+    send: '发送',
+    you: '我',
+    player: '玩家',
+    win: '胜',
+    draw: '平',
+    loss: '负',
+  },
 };
 
 function loadStats(gameType) {

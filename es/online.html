@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PlayGonu — Partidas en línea</title>
+<meta name="description" content="Juega Cham-gonu o Gomoku en línea contra otra persona — crea una sala privada y comparte el enlace, o únete a una sala pública abierta.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/es/online.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/es/online.html">
+<meta property="og:title" content="PlayGonu — Partidas en línea">
+<meta property="og:description" content="Juega Cham-gonu o Gomoku en línea contra otra persona — crea una sala privada y comparte el enlace, o únete a una sala pública abierta.">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PlayGonu — Partidas en línea">
+<meta name="twitter:description" content="Juega Cham-gonu o Gomoku en línea contra otra persona — crea una sala privada y comparte el enlace, o únete a una sala pública abierta.">
+<meta name="twitter:image" content="https://playgonu.com/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="online.html" class="variant-tab is-active">En línea</a>
+        <a href="howto.html" class="variant-tab">Cómo jugar</a>
+        <a href="../blog/index.html" class="variant-tab">Blog</a>
+      </nav>
+    </div>
+  </header>
+
+  <div style="max-width:720px;margin:0 auto;padding:48px 40px;display:flex;flex-direction:column;gap:24px;">
+    <div data-intro style="display:flex;flex-direction:column;gap:10px;">
+      <div class="tag" style="color:var(--red);">Partidas en línea</div>
+      <h1 class="serif" style="margin:0;font-size:28px;">Juega contra otra persona, en vivo</h1>
+      <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);">No necesitas cuenta — solo un nombre. Crea una sala privada y comparte el enlace con un amigo, hazla pública para que cualquiera pueda unirse, o entra en la sala abierta de otra persona aquí abajo.</p>
+    </div>
+
+    <div data-intro style="display:flex;gap:8px;">
+      <button type="button" class="variant-tab" data-game-tab="cham" style="border:1px solid var(--card-border);cursor:pointer;">Cham-gonu</button>
+      <button type="button" class="variant-tab" data-game-tab="gomoku" style="border:1px solid var(--card-border);cursor:pointer;">Gomoku</button>
+    </div>
+
+    <div data-online-root></div>
+  </div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">Política de privacidad</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountOnlineChamGame } from '../src/ui/onlineChamGame.js';
+  import { mountOnlineGomokuGame } from '../src/ui/onlineGomokuGame.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'es', currentPage: 'online.html' });
+
+  const onlineRoot = document.querySelector('[data-online-root]');
+  const gameTabs = document.querySelectorAll('[data-game-tab]');
+  const params = new URLSearchParams(location.search);
+  const initialGame = params.get('game') === 'gomoku' ? 'gomoku' : 'cham';
+
+  // Once matched, the "which game / what's online battle" setup above is
+  // already decided — hide it so the match (board, player bar, chat) has
+  // the full page, instead of sitting below settings the player can't
+  // change mid-game anyway.
+  function hideIntro() {
+    document.querySelectorAll('[data-intro]').forEach((el) => { el.style.display = 'none'; });
+  }
+
+  function mount(game) {
+    onlineRoot.innerHTML = '';
+    document.querySelectorAll('[data-intro]').forEach((el) => { el.style.display = ''; });
+    gameTabs.forEach((btn) => { btn.classList.toggle('is-active', btn.dataset.gameTab === game); });
+    const url = new URL(location.href);
+    url.searchParams.set('game', game);
+    history.replaceState(null, '', url);
+    const opts = { lang: 'es', onMatchStart: hideIntro };
+    if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, opts);
+    else mountOnlineChamGame(onlineRoot, opts);
+  }
+  mount(initialGame);
+  gameTabs.forEach((btn) => {
+    btn.addEventListener('click', () => mount(btn.dataset.gameTab));
+  });
+</script>
+</body>
+</html>
