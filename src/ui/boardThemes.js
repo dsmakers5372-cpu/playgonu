@@ -1,3 +1,5 @@
+import { mountSoundToggle } from './sound.js';
+
 export const THEMES = {
   wood: { label: 'Wood', fill: '#C99A5B', border: '#8B6239', line: '#3A2E1F' },
   ink: { label: 'Ink', fill: '#3A3630', border: '#1E1B17', line: '#E7DEC9' },
@@ -38,6 +40,7 @@ export function renderThemeSwatches(container, { current, onSelect }) {
     btn.addEventListener('click', () => onSelect(key));
     container.appendChild(btn);
   }
+  mountSoundToggle(container);
 }
 
 export function updateThemeSwatches(container, current) {

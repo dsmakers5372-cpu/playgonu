@@ -82,9 +82,9 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
             <span class="turn-dot" data-turn-dot></span>
             <span data-turn-label></span>
           </div>
-          <div style="display:flex;align-items:center;gap:12px;">
+          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
             <span class="tag" data-you-label></span>
-            <div data-theme-row style="display:flex;gap:8px;"></div>
+            <div style="display:flex;align-items:center;gap:8px;"><div data-theme-row style="display:flex;gap:8px;"></div></div>
           </div>
         </div>
       </div>

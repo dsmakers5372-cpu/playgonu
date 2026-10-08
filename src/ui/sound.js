@@ -77,18 +77,17 @@ const ICON_PATH_SPEAKER = '<path d="M11 5 6 9H3v6h3l5 4z"/>';
 const ICON_ON = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATH_SPEAKER}<path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg>`;
 const ICON_OFF = `<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON_PATH_SPEAKER}<path d="m16 9 6 6"/><path d="m22 9-6 6"/></svg>`;
 
-// Every page that can make a sound imports this module, so the toggle mounts
-// itself into the header nav here — no per-page wiring, and pages without
-// game audio (how-to, blog) simply never get the button.
-function mountSoundToggle() {
-  const nav = document.querySelector('.site-header nav');
-  if (!nav || nav.querySelector('[data-sound-toggle]')) return;
+// Placed as a sibling right after the board-color swatches (not inside
+// them — updateThemeSwatches rewrites aria-pressed on every button in that
+// container), so it sits on the board's own toolbar row.
+export function mountSoundToggle(afterEl) {
+  const parent = afterEl.parentNode;
+  if (!parent || parent.querySelector('[data-sound-toggle]')) return;
   const ko = document.documentElement.lang === 'ko';
   const btn = document.createElement('button');
   btn.type = 'button';
-  btn.className = 'pill';
+  btn.className = 'sound-toggle';
   btn.dataset.soundToggle = '';
-  btn.style.cssText = 'cursor:pointer;padding:7px 11px;';
   const render = () => {
     btn.innerHTML = muted ? ICON_OFF : ICON_ON;
     const label = muted ? (ko ? '소리 켜기' : 'Turn sound on') : (ko ? '소리 끄기' : 'Turn sound off');
@@ -102,12 +101,5 @@ function mountSoundToggle() {
     if (!muted) playPlaceSound();
   });
   render();
-  const langSwitcher = nav.querySelector('[data-lang-switcher]');
-  if (langSwitcher) nav.insertBefore(btn, langSwitcher);
-  else nav.appendChild(btn);
-}
-
-if (typeof document !== 'undefined') {
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', mountSoundToggle);
-  else mountSoundToggle();
+  afterEl.after(btn);
 }

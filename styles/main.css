@@ -205,6 +205,25 @@ a:hover {
   border-color: var(--ink);
 }
 
+.sound-toggle {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  padding: 0;
+  margin-left: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--ink);
+  background: var(--paper-deep);
+  border: 1px solid var(--card-border);
+}
+
+.sound-toggle[aria-pressed="true"] {
+  color: var(--muted);
+}
+
 .board-frame {
   border-radius: 10px;
   padding: 34px;
