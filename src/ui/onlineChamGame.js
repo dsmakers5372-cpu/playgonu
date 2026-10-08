@@ -239,6 +239,9 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       const piece = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
       if (index === moveEffectIndex) animate(piece, { attributeName: 'r', values: '13;18;13', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
       svg.appendChild(piece);
+      if (index === game.lastMove) {
+        svg.appendChild(el('circle', { cx: x, cy: y, r: 4, fill: '#F6F1E6' }));
+      }
       if (index === moveEffectIndex) {
         const ring = el('circle', { cx: x, cy: y, r: 13, fill: 'none', stroke: colors.fill, 'stroke-width': '3' });
         animate(ring, { attributeName: 'r', from: '13', to: '24', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });

@@ -253,6 +253,9 @@ export function mountChamgonuGame(root, { lang = 'en' } = {}) {
       }
       const colors = PLAYER_COLOR[player];
       svg.appendChild(el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' }));
+      if (index === game.lastMove) {
+        svg.appendChild(el('circle', { cx: x, cy: y, r: 4, fill: '#F6F1E6' }));
+      }
     });
 
     // Capture targets sit on an opponent's stone — a filled dot drawn before

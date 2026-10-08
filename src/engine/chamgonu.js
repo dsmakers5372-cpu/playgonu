@@ -59,6 +59,7 @@ export function createInitialState() {
     winner: null,
     pendingCapture: false,
     lastMill: [],
+    lastMove: null,
   };
 }
 
@@ -141,6 +142,7 @@ function cloneState(state) {
     winner: null,
     pendingCapture: false,
     lastMill: [],
+    lastMove: state.lastMove ?? null,
   };
 }
 
@@ -184,6 +186,7 @@ function applyPlacement(state, to) {
   const next = cloneState(state);
   next.pieces[to] = player;
   next.placedCount[player] = state.placedCount[player] + 1;
+  next.lastMove = to;
   return finishTurnOrCapture(next, player, to);
 }
 
@@ -192,6 +195,7 @@ function applyMovement(state, from, to) {
   const next = cloneState(state);
   next.pieces[to] = player;
   next.pieces[from] = null;
+  next.lastMove = to;
   return finishTurnOrCapture(next, player, to);
 }
 

@@ -67,6 +67,21 @@ test('completing a mill triggers a pending capture without passing the turn', ()
   assert.deepEqual(legalCaptures(state).sort((a, b) => a - b), [12, 13]);
 });
 
+test('lastMove tracks the latest placement and is kept through the capture that follows a mill', () => {
+  let state = createInitialState();
+  assert.equal(state.lastMove, null);
+  state = move(state, null, 0);
+  assert.equal(state.lastMove, 0);
+  state = move(state, null, 12);
+  assert.equal(state.lastMove, 12);
+  state = move(state, null, 1);
+  state = move(state, null, 13);
+  state = move(state, null, 2); // A completes mill [0,1,2]
+  assert.equal(state.lastMove, 2);
+  state = move(state, null, 12); // A captures — the mill-making piece stays marked
+  assert.equal(state.lastMove, 2);
+});
+
 test('capturing during the placing phase removes the piece and marks the point dead', () => {
   let state = createInitialState();
   state = move(state, null, 0); // A (opening move)

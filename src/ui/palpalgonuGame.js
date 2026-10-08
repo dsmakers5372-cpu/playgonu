@@ -3,6 +3,7 @@ import { chooseAIMove } from '../engine/palpalgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el } from './svg.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
+import { playCaptureSound } from './sound.js';
 import { DRAW_AFTER_QUIET_MOVES } from '../engine/board.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 
@@ -67,6 +68,7 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
       history.push(game);
       game = move(game, aiMove.from, aiMove.to);
       stats.recordMove();
+      if (game.lastCapture.length > 0) playCaptureSound();
       renderBoard();
       renderToolbar();
       showWinBanner();
@@ -180,6 +182,7 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
       history.push(game);
       game = move(game, selected, index);
       stats.recordMove();
+      if (game.lastCapture.length > 0) playCaptureSound();
       selected = null;
       renderBoard();
       renderToolbar();
