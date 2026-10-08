@@ -12,6 +12,7 @@
 import { GameRoom } from './durable/GameRoom.js';
 import { Lobby } from './durable/Lobby.js';
 import { handleAdmin } from './server/admin.js';
+import { ensureSchema } from './server/schema.js';
 import { BLOG_LANGS, renderPost, renderIndex, injectIndexCards, gamePageFor, pickVideo, injectVideo, injectSitemap } from './server/site.js';
 
 export { GameRoom, Lobby };
@@ -87,6 +88,7 @@ export default {
 
     // Admin page API (sign-in, blog posts, videos).
     if (url.pathname === '/api/admin' || url.pathname.startsWith('/api/admin/')) {
+      await ensureSchema(env);
       return handleAdmin(request, env, url);
     }
 
@@ -107,24 +109,31 @@ export default {
       }
     }
 
-    if (request.method === 'GET' || request.method === 'HEAD') {
-      const blog = await serveBlog(request, env, url);
-      if (blog) return blog;
+    if ((request.method === 'GET' || request.method === 'HEAD') && env.DB) {
+      // A database problem must never take a page down — on any error the
+      // plain static page is served instead.
+      try {
+        await ensureSchema(env);
+        const blog = await serveBlog(request, env, url);
+        if (blog) return blog;
 
-      if (url.pathname === '/sitemap.xml') {
-        const res = await env.ASSETS.fetch(request);
-        return res.ok ? injectSitemap(res, await publishedPosts(env)) : res;
-      }
+        if (url.pathname === '/sitemap.xml') {
+          const res = await env.ASSETS.fetch(request);
+          return res.ok ? injectSitemap(res, await publishedPosts(env)) : res;
+        }
 
-      // Game pages: add the "watch how to play" video when the admin has
-      // linked one for that game.
-      const game = gamePageFor(url.pathname);
-      if (game && env.DB) {
-        const res = await env.ASSETS.fetch(request);
-        if (!res.ok || !(res.headers.get('Content-Type') || '').includes('text/html')) return res;
-        const { results } = await env.DB.prepare('SELECT * FROM videos WHERE game = ?').bind(game.game).all();
-        const video = pickVideo(results, game.lang);
-        return video ? injectVideo(res, video, game.lang) : res;
+        // Game pages: add the "watch how to play" video when the admin has
+        // linked one for that game.
+        const game = gamePageFor(url.pathname);
+        if (game) {
+          const { results } = await env.DB.prepare('SELECT * FROM videos WHERE game = ?').bind(game.game).all();
+          const video = pickVideo(results, game.lang);
+          const res = await env.ASSETS.fetch(request);
+          if (!video || !res.ok || !(res.headers.get('Content-Type') || '').includes('text/html')) return res;
+          return injectVideo(res, video, game.lang);
+        }
+      } catch (err) {
+        console.error('admin data unavailable, serving the static page', err);
       }
     }
 
