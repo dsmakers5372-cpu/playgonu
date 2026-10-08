@@ -309,10 +309,10 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
           // player is already seated at join time (the vsBot case, where
           // there's no later 'opponent-joined' message to rely on instead —
           // it'd arrive only after this 'joined' message already triggered
-          // the match). Otherwise, as the guest (color B), the room's
+          // the match). Otherwise, as the second person in, the room's
           // hostName is whoever created the room, i.e. our opponent.
           if (msg.opponentName) opponentName = msg.opponentName;
-          else if (msg.color === 'B') opponentName = msg.room.hostName;
+          else if (msg.room.playerCount === 2 && msg.room.hostName !== name) opponentName = msg.room.hostName;
           vsBot = !!msg.vsBot;
           players = msg.players ?? null;
           if (msg.role === 'player' && msg.room.playerCount < 2 && msg.room.isPublic) {

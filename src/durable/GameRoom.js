@@ -9,6 +9,7 @@ import * as gomoku from '../engine/gomoku.js';
 import * as chamgonuAI from '../engine/chamgonuAI.js';
 import * as gomokuAI from '../engine/gomokuAI.js';
 import { getVirtualPlayer, VIRTUAL_PLAYERS } from './virtualPlayers.js';
+import { botChatReply, botGameOverLine, isKorean } from './botChat.js';
 
 const ENGINES = { cham: chamgonu, gomoku };
 const AI = { cham: chamgonuAI, gomoku: gomokuAI };
@@ -159,6 +160,9 @@ export class GameRoom {
         engineState,
         status: 'waiting',
         vsBot: vp ? { name: vp.name, difficulty: vp.difficulty } : null,
+        // The room's language: a Korean title, a Korean-named virtual host, or
+        // a room made from a Korean page means Korean; anything else English.
+        lang: isKorean(msg.title) || (vp ? isKorean(vp.name) : msg.lang === 'ko') ? 'ko' : 'en',
       };
     }
 
@@ -176,8 +180,13 @@ export class GameRoom {
       return;
     }
 
-    const PLAYERS = ENGINES[this.room.gameType].PLAYERS;
-    const color = this.room.players.length === 0 ? PLAYERS.A : PLAYERS.B;
+    // Courtesy as on other Omok sites: whoever made the room plays second and
+    // the visitor gets the first move (Black / Red). Joining a virtual
+    // player's waiting room makes the human the visitor, so they open there.
+    const { PLAYERS, opponent } = ENGINES[this.room.gameType];
+    const color = this.room.players.length === 0
+      ? (this.room.vsBot ? PLAYERS.A : PLAYERS.B)
+      : opponent(this.room.players[0].color);
     this.room.players.push({ id: connId, name, color });
     this.sockets.set(ws, { id: connId, role: 'player', color, name });
 
@@ -217,7 +226,9 @@ export class GameRoom {
   async seatAutoOpponent() {
     if (!this.room || this.room.status !== 'waiting' || this.room.players.length !== 1 || this.room.vsBot) return;
     const host = this.room.players[0];
-    const pool = VIRTUAL_PLAYERS.filter((vp) => vp.name !== host.name);
+    // Someone who fits the room: a Korean-named player for a Korean room.
+    const sameLang = VIRTUAL_PLAYERS.filter((vp) => vp.name !== host.name && isKorean(vp.name) === (this.room.lang === 'ko'));
+    const pool = sameLang.length ? sameLang : VIRTUAL_PLAYERS.filter((vp) => vp.name !== host.name);
     const vp = pool[Math.floor(Math.random() * pool.length)];
     const { opponent } = ENGINES[this.room.gameType];
     this.room.vsBot = { name: vp.name, difficulty: 'master' };
@@ -306,6 +317,31 @@ export class GameRoom {
     const text = String(msg.text || '').trim().slice(0, CHAT_MAX_LEN);
     if (!text) return;
     this.broadcast({ type: 'chat', from: conn.name || 'Player', text, ts: Date.now() });
+
+    // A virtual opponent answers now and then (not every message), after a
+    // typing pause, in the room's language — and teases a chatterbox back to
+    // the game.
+    const bot = this.room.players.find((p) => p.isBot);
+    if (!bot || this.room.aiVsAi) return;
+    this.botChatState = this.botChatState || {};
+    const reply = botChatReply(text, this.botChatState, { roomLang: this.room.lang });
+    if (reply) this.botSays(bot, reply, 1500 + Math.random() * 2500);
+  }
+
+  botSays(bot, text, delay) {
+    setTimeout(() => {
+      if (!this.room || !this.room.players.includes(bot) || this.sockets.size === 0) return;
+      this.broadcast({ type: 'chat', from: bot.name, text, ts: Date.now() });
+    }, delay);
+  }
+
+  // Sometimes a "gg" when a game against a virtual opponent ends.
+  botAfterGame() {
+    const bot = this.room?.players.find((p) => p.isBot);
+    const winner = this.room?.engineState.winner;
+    if (!bot || this.room.aiVsAi || !winner || winner === 'draw') return;
+    const line = botGameOverLine(winner === bot.color, this.room.lang || (isKorean(bot.name) ? 'ko' : 'en'));
+    if (line) this.botSays(bot, line, 1800 + Math.random() * 1500);
   }
 
   async handleMove(ws, conn, msg) {
@@ -323,6 +359,7 @@ export class GameRoom {
     this.room.engineState = next;
     if (next.winner) this.room.status = 'finished';
     this.broadcast({ type: 'state', engineState: next, status: this.room.status });
+    if (this.room.status === 'finished') this.botAfterGame();
     if (this.room.vsBot && this.room.status === 'playing') await this.triggerBotMoves();
   }
 
@@ -364,6 +401,7 @@ export class GameRoom {
         this.room.engineState = next;
         if (next.winner) this.room.status = 'finished';
         this.broadcast({ type: 'state', engineState: next, status: this.room.status });
+        if (next.winner && !watch) this.botAfterGame();
       }
     } finally {
       this.botLoopRunning = false;

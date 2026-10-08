@@ -8,7 +8,9 @@ export function connectToRoom({ roomId, name, title, isPublic, allowSpectators =
   let closedByUs = false;
 
   ws.addEventListener('open', () => {
-    ws.send(JSON.stringify({ type: 'join', roomId, name, title, isPublic: !!isPublic, allowSpectators: !!allowSpectators, spectate: !!spectate, gameType, ruleset }));
+    // The page's language sets the room's language (a virtual opponent chats in it).
+    const lang = (document.documentElement.lang || 'en').slice(0, 2);
+    ws.send(JSON.stringify({ type: 'join', roomId, name, title, isPublic: !!isPublic, allowSpectators: !!allowSpectators, spectate: !!spectate, gameType, ruleset, lang }));
     handlers.onOpen?.();
   });
 
