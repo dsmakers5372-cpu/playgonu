@@ -181,6 +181,7 @@ npm test
   - **결과(2026-10-08 측정)**: master 80판 — 즉시승 7/7, 즉시차단 8/8, 열린3 대응 20/20, 엉뚱한 곳 0 / hard 200판 — 16/16, 20/20, 열린3 28/38→36/38 / normal 36/38 / easy는 차단 11/20(의도된 약함). `npm test` 156/156
   - **라이브(playgonu.com) 확인**: 봇전 2판 — 내 4목 즉시 차단(1.3초), 닫힌3은 정확히 무시하고 자기 열린4 → 5목 마무리, 깊이 5 구간 응답 2.1~6.3초. 커밋 `0b666e0` 푸시·배포 완료
 - [x] **OG 카드 문구 교체 (2026-10-08)** — "Free in browser 다른 멘트 없니.. 공짜인게 중요포인트는 아니잖아" → 사용자가 직접 지정한 "Master Mind Games / Cham-gonu & Gomoku"로 빨간 줄 교체. 설명문은 판 그림과 겹치던 것을 세 줄(25px)로 나눠 해결. [og-image.svg](og-image.svg) 수정 후 PNG 재생성
+- [x] **홈페이지 메인 카피 교체 — EN/KO (2026-10-08)** — "사이트의 메인카피도 바꿔", "한글.영어 다". OG 카드와 같은 메시지로 히어로 섹션 통일: EN 태그 "Korean traditional strategy games" / h1 "Master Mind Games — Cham-gonu & Gomoku" / 설명 "Capture, trap, and outthink your opponent — solo against the AI, or online against a real person. No install, no account." · KO 태그 "한국 전통 전략 게임" / h1 "두뇌 게임의 끝판왕 — 참고누 & 오목" / 설명 "잡고, 가두고, 수 싸움에서 이기세요 — ...". "무료/free"는 히어로에서 뺌. [index.html](index.html)·[ko/index.html](ko/index.html), 로컬 서버에서 두 페이지 렌더링 확인. `<title>`·meta description의 "free in your browser"는 아직 그대로(검색 결과 스니펫용 — 바꿀지 확인 필요)
 - [x] **favicon.ico 추가 (2026-10-08)** — 라이브 콘솔에서 페이지 로드마다 `/favicon.ico` 404가 찍혔음(브라우저가 `<link>`와 별개로 자동 요청). favicon-32.png를 favicon.ico로 복사해 해결(브라우저는 확장자와 무관하게 PNG 바이트를 읽음)
 ## 인프라 결정 (2026-10-07, 사용자 확정)
 
