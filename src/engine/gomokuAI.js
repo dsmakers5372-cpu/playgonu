@@ -214,11 +214,14 @@ const tacticalChooseAIMove = createMinimaxAI({
   depths: DIFFICULTY_DEPTH,
 });
 
+// `deepMidgame` is opt-in because only the online bot can afford it: it runs
+// on the server, while single-player runs on the browser's main thread,
+// where a multi-second depth-5 search would freeze the page.
 export function chooseAIMove(state, options) {
   const difficulty = options?.difficulty;
   if (difficulty === 'master') {
     const stoneCount = state.cells.filter(Boolean).length;
-    DIFFICULTY_DEPTH.master = stoneCount < MASTER_DEEP_STONE_THRESHOLD ? 4 : 5;
+    DIFFICULTY_DEPTH.master = options.deepMidgame && stoneCount >= MASTER_DEEP_STONE_THRESHOLD ? 5 : 4;
   }
   if (difficulty === 'hard' || difficulty === 'master') return tacticalChooseAIMove(state, options);
   return baseChooseAIMove(state, options);

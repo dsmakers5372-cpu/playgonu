@@ -182,6 +182,12 @@ npm test
   - **라이브(playgonu.com) 확인**: 봇전 2판 — 내 4목 즉시 차단(1.3초), 닫힌3은 정확히 무시하고 자기 열린4 → 5목 마무리, 깊이 5 구간 응답 2.1~6.3초. 커밋 `0b666e0` 푸시·배포 완료
 - [x] **OG 카드 문구 교체 (2026-10-08)** — "Free in browser 다른 멘트 없니.. 공짜인게 중요포인트는 아니잖아" → 사용자가 직접 지정한 "Master Mind Games / Cham-gonu & Gomoku"로 빨간 줄 교체. 설명문은 판 그림과 겹치던 것을 세 줄(25px)로 나눠 해결. [og-image.svg](og-image.svg) 수정 후 PNG 재생성
 - [x] **홈페이지 메인 카피 교체 — EN/KO (2026-10-08)** — "사이트의 메인카피도 바꿔", "한글.영어 다". OG 카드와 같은 메시지로 히어로 섹션 통일: EN 태그 "Korean traditional strategy games" / h1 "Master Mind Games — Cham-gonu & Gomoku" / 설명 "Capture, trap, and outthink your opponent — solo against the AI, or online against a real person. No install, no account." · KO 태그 "한국 전통 전략 게임" / h1 "두뇌 게임의 끝판왕 — 참고누 & 오목" / 설명 "잡고, 가두고, 수 싸움에서 이기세요 — ...". "무료/free"는 히어로에서 뺌. [index.html](index.html)·[ko/index.html](ko/index.html), 로컬 서버에서 두 페이지 렌더링 확인. 이어서 "브라우저.무료 이것도 빼.. 그냥 부가적 설명이잖니" → 게임 페이지 EN/KO 10개(index·gomoku·bakwi·daseotjul·palpal + ko/)의 meta description·og:description·twitter:description에서 "free in your browser / 브라우저에서 무료로 / 브라우저에서 바로" 제거(빈자리엔 "2-player local or vs AI" / "2인 대전·AI 대전 지원"), [llms.txt](llms.txt) 첫 줄 "free, browser-based"도 제거. 규칙 이름 "Freestyle", 하는 법 팁의 "free sandwich", 개인정보처리방침(사실관계 서술), 블로그 글 본문·제목은 의미가 달라 유지
+- [x] **전 게임 점검 — 참고누·줄고누·다섯줄·팔팔·바퀴·오목 (2026-10-08)** — "참고누와 기타 고누, 오목.. 게임상에 문제 없는지 전체 확인해"
+  - **엔진 자가대국**(난이도 조합 4종 × 4판 × 6게임, 판당 최대 300수): 불법수·엔진 예외·"둘 수 없는데 승자 없음" **0건**. AI 1수 최대 시간 — 참고누 10ms, 줄고누 81ms, 다섯줄 370ms, 팔팔 375ms, 바퀴 244ms, 오목(hard) 238ms
+  - **브라우저 실플레이**(클릭 테스터, EN 6 + KO 6 페이지 + 온라인 참고누 봇전): 전부 수 진행·AI 응수·승리 팝업·참고누 "전반 끝" 팝업 정상, 콘솔 오류 0, 18개 페이지 스크립트·링크 404 0
+  - **발견 1 — 오목 싱글플레이 master가 화면을 멈출 수 있었음**: 직전에 넣은 "돌 10개부터 깊이 5"가 싱글플레이에도 적용됐는데, 싱글플레이 AI는 브라우저 메인 스레드에서 돌아서 2~7초 동안 페이지가 굳음. 깊이 5는 서버에서 도는 온라인 봇만 쓰도록 `deepMidgame` 옵션으로 분리([src/durable/GameRoom.js](src/durable/GameRoom.js)에서만 켬), 싱글플레이 master는 깊이 4(0.65초) 유지
+  - **발견 2 — 줄고누 계열은 끝나지 않는 판이 많음(미수정, 사용자 결정 대기)**: 300수 안에 안 끝난 판 — 팔팔 13/16, 다섯줄 11/16, 바퀴 10/16, 줄고누 6/16. 무승부/반복 규칙이 없어서 서로 못 잡으면 영원히 왔다갔다 함
+- [x] **소리 끄기 버튼 (2026-10-08)** — "화면 소리 끄기도 있어야 겠다". [src/ui/sound.js](src/ui/sound.js)에 음소거 상태(`localStorage` `playgonu:muted`, 다음 방문에도 유지) + 헤더 언어 선택 옆 스피커 버튼을 자동으로 붙임 — 소리를 내는 페이지(참고누·바퀴·오목·온라인)에만 뜨고 소리 없는 페이지엔 안 뜸. EN "Turn sound off/on" / KO "소리 끄기/켜기"
 - [x] **favicon.ico 추가 (2026-10-08)** — 라이브 콘솔에서 페이지 로드마다 `/favicon.ico` 404가 찍혔음(브라우저가 `<link>`와 별개로 자동 요청). favicon-32.png를 favicon.ico로 복사해 해결(브라우저는 확장자와 무관하게 PNG 바이트를 읽음)
 ## 인프라 결정 (2026-10-07, 사용자 확정)
 

@@ -189,7 +189,7 @@ export class GameRoom {
     while (this.room.status === 'playing' && !this.room.engineState.winner && this.room.engineState.turn === bot.color) {
       const [min, max] = BOT_MOVE_DELAY_MS;
       await new Promise((resolve) => setTimeout(resolve, min + Math.random() * (max - min)));
-      const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: this.room.vsBot.difficulty });
+      const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: this.room.vsBot.difficulty, deepMidgame: true });
       if (!aiMove) break;
       let next;
       try {
