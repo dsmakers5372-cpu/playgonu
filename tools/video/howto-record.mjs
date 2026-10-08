@@ -12,7 +12,8 @@ import { spawn, spawnSync } from 'node:child_process';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import puppeteer from 'puppeteer-core';
 import { startServer } from './serve.mjs';
-import { runHowto } from './howto-overlay.js';
+import { runHowto, prepareBoard } from './howto-overlay.js';
+import { buildSoundtrack } from './sfx.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const args = {};
@@ -45,17 +46,46 @@ const points = episode.board.kind === 'cham'
 // ---- plan (seconds) ----------------------------------------------------------
 // Every scene is checked against the engine first, so a typo in a move list
 // fails here instead of halfway through a recording.
-const PLY = { move: 1.25, place: 0.9, capture: 3.0, fast: 0.32 };
-const readSecs = (t) => (lang === 'ko' ? 3.2 + [...t].length * 0.07 : 3.2 + t.split(/\s+/).length * 0.29);
-const cap = portrait ? (episode.portraitExplainCap ?? 9) : 12;
+// Brisk: a move every ~0.6s; a capture keeps 2.2s so its flip is seen.
+const PLY = { move: 0.6, place: 0.45, capture: 2.2, fast: 0.25 };
+const readSecs = (t) => (lang === 'ko' ? 1.6 + [...t].length * 0.05 : 1.6 + t.split(/\s+/).length * 0.2);
+const cap = portrait ? (episode.portraitExplainCap ?? 5.5) : 6;
 const plan = [];
-plan.push({ type: 'intro', dur: portrait ? 3.6 : 4.2, copy: episode.intro[lang] });
-episode.scenes.forEach((scene, si) => {
+const sceneStates = (scene) => {
   const states = [engine.createInitialState()];
   for (const [from, to] of scene.moves) states.push(engine.move(states[states.length - 1], from, to));
+  return states;
+};
+const plyKind = (states, scene, i) => {
+  const captured = states[i].pendingCapture || (states[i + 1].lastCapture && states[i + 1].lastCapture.length > 0);
+  return captured ? 'capture' : scene.moves[i][0] === null ? 'place' : 'move';
+};
+// The hook: the video opens straight on the board just before the game's
+// best moment (set up off camera), plays it under a headline, then cuts to
+// "learn it in a minute" and starts over from move one.
+let preMoves = [];
+if (episode.hook) {
+  const h = episode.hook;
+  const scene = episode.scenes[h.scene ?? 0];
+  const states = sceneStates(scene);
+  preMoves = scene.moves.slice(0, h.at);
+  plan.push({ type: 'caption', text: h.caption[lang], span: 1.8 + h.plies * PLY.capture });
+  plan.push({ type: 'hold', dur: 1.0 });
+  for (let i = h.at; i < h.at + h.plies; i++) {
+    const kind = plyKind(states, scene, i);
+    plan.push({ type: 'ply', move: scene.moves[i], dur: PLY[kind], capture: kind === 'capture' });
+  }
+  plan.push({ type: 'hold', dur: 0.8 });
+  plan.push({ type: 'caption', text: null });
+  plan.push({ type: 'cut', dur: 2.0, copy: h.after[lang], replay: [] });
+} else {
+  plan.push({ type: 'intro', dur: portrait ? 3.6 : 4.2, copy: episode.intro[lang] });
+}
+episode.scenes.forEach((scene, si) => {
+  const states = sceneStates(scene);
   const from = scene.from ?? 0;
   const to = scene.to ?? scene.moves.length;
-  if (from > 0 || si > 0) plan.push({ type: 'cut', dur: portrait ? 3.6 : 4.2, copy: scene.cut[lang], replay: scene.moves.slice(0, from) });
+  if (from > 0 || si > 0) plan.push({ type: 'cut', dur: 2.6, copy: scene.cut[lang], replay: scene.moves.slice(0, from) });
   const isFast = (i) => (scene.fast || []).some(([a, b]) => i >= a && i < b) || (portrait && (scene.fastPortrait || []).some(([a, b]) => i >= a && i < b));
   for (let i = from; i <= to; i++) {
     for (const ex of episode.explain.filter((e) => (e.scene ?? 0) === si && e.after === i)) {
@@ -64,18 +94,15 @@ episode.scenes.forEach((scene, si) => {
       plan.push({ type: 'explain', ex, copy, dur: Math.min(cap, readSecs(`${copy.title} ${copy.body}`)) });
     }
     if (i < to) {
-      const before = states[i];
-      const after = states[i + 1];
-      const captured = before.pendingCapture || (after.lastCapture && after.lastCapture.length > 0);
-      let kind = captured ? 'capture' : scene.moves[i][0] === null ? 'place' : 'move';
+      let kind = plyKind(states, scene, i);
       if (kind !== 'capture' && isFast(i)) kind = 'fast';
-      plan.push({ type: 'ply', move: scene.moves[i], dur: PLY[kind] * (portrait && kind === 'move' ? episode.portraitMoveScale ?? 1 : 1), fast: kind === 'fast' });
+      plan.push({ type: 'ply', move: scene.moves[i], dur: PLY[kind], fast: kind === 'fast', capture: kind === 'capture' });
     }
   }
-  if (si === episode.scenes.length - 1) plan.push({ type: 'hold', dur: 2.2 });
+  if (si === episode.scenes.length - 1) plan.push({ type: 'hold', dur: 1.8, showBanner: true });
 });
-plan.push({ type: 'outro', dur: 4.5, copy: episode.outro[lang] });
-const planned = plan.reduce((s, p) => s + p.dur, 0);
+plan.push({ type: 'outro', dur: 3.5, copy: episode.outro[lang] });
+const planned = plan.reduce((s, p) => s + (p.dur || 0), 0);
 console.log(`${name}: planned ${planned.toFixed(1)}s`);
 if (args.plan) process.exit(0);
 
@@ -104,6 +131,7 @@ await page.evaluate((z) => {
   document.querySelector('[data-board-frame]').scrollIntoView({ block: 'center' });
 }, ZOOM);
 await new Promise((r) => setTimeout(r, 800));
+if (preMoves.length) await page.evaluate(`(${prepareBoard.toString()})(${JSON.stringify(preMoves)})`);
 
 // ---- recorder ------------------------------------------------------------------
 const framesDir = path.join(outDir, `${name}-frames`);
@@ -151,7 +179,15 @@ const ts = (sec, sep) => {
   const ms = Math.max(0, Math.round(sec * 1000));
   return `${String(Math.floor(ms / 3600000)).padStart(2, '0')}:${String(Math.floor(ms / 60000) % 60).padStart(2, '0')}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}${sep}${String(ms % 1000).padStart(3, '0')}`;
 };
-const { marks } = result;
+const { marks, events } = result;
+// Soundtrack: the recorded cues as synthesised effects (sfx.mjs), muxed in.
+const wav = path.join(outDir, `${name}.wav`);
+buildSoundtrack(events, episodeEnd - episodeStart, wav);
+const withSound = path.join(outDir, `${name}.sound.mp4`);
+const mux = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-i', wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart', withSound], { stdio: 'inherit' });
+if (mux.status !== 0) throw new Error('ffmpeg mux failed');
+fs.renameSync(withSound, mp4);
+fs.unlinkSync(wav);
 fs.writeFileSync(path.join(outDir, `${name}.srt`), marks.map((m, i) => `${i + 1}\n${ts(m.start, ',')} --> ${ts(m.end, ',')}\n${m.title}\n${m.body}\n`).join('\n'));
 fs.writeFileSync(path.join(outDir, `${name}-narration.txt`), marks.map((m) => `[${ts(m.start, '.').slice(3, 8)} – ${ts(m.end, '.').slice(3, 8)}] ${m.title}\n${m.body}\n`).join('\n'));
 const probe = spawnSync('ffprobe', ['-v', 'error', '-show_entries', 'format=duration', '-of', 'csv=p=0', mp4], { encoding: 'utf8' });

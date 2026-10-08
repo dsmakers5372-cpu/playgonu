@@ -31,6 +31,9 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
     @keyframes pgDash { to { stroke-dashoffset: -24; } }
     @keyframes pgTap { from { transform: scale(.5); opacity: .75; } to { transform: scale(1.5); opacity: 0; } }
     #pg-fast { position: absolute; left: 50%; top: -18px; transform: translateX(-50%); z-index: 6; background: #2A2420; color: #fff; font: 800 14px "Work Sans", system-ui, sans-serif; letter-spacing: .04em; border-radius: 999px; padding: 6px 14px; opacity: 0; transition: opacity .25s; pointer-events: none; }
+    #pg-hook { position: absolute; left: 50%; top: 9%; z-index: 7; transform: translate(-50%, 0) scale(.6); opacity: 0; transition: opacity .2s, transform .35s cubic-bezier(.2,1.6,.4,1); background: #2A2420; color: #fff; font: 800 ${portrait ? 30 : 30}px "Noto Serif KR", Georgia, serif; padding: 12px 22px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.25); white-space: nowrap; pointer-events: none; }
+    #pg-hook.on { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    #pg-hook em { font-style: normal; color: #F3C969; }
     #pg-watermark { position: fixed; right: 14px; bottom: ${portrait ? 150 : 10}px; z-index: 70; font: 600 ${portrait ? 13 : 12}px "Work Sans", system-ui, sans-serif; color: rgba(42,36,32,.6); letter-spacing: .02em; pointer-events: none; background: rgba(246,241,230,.92); border-radius: 6px; padding: 2px 7px; }
   `;
   document.head.appendChild(style);
@@ -56,6 +59,27 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
   const tapLayer = layer('pg-tap');
   const fast = Object.assign(document.createElement('div'), { id: 'pg-fast', textContent: fastLabel });
   frame.appendChild(fast);
+  const hook = Object.assign(document.createElement('div'), { id: 'pg-hook' });
+  frame.appendChild(hook);
+
+  // Sound cues for the soundtrack (added after recording), in seconds from
+  // the start of the episode.
+  const events = [];
+  let t0 = performance.now();
+  const ev = (kind) => events.push({ kind, t: (performance.now() - t0) / 1000 });
+
+  // A capture zooms the board in on that point for a moment.
+  function zoomAt(i) {
+    const cs = getComputedStyle(frame);
+    const padL = parseFloat(cs.paddingLeft);
+    const padT = parseFloat(cs.paddingTop);
+    const inner = frame.clientWidth - padL - parseFloat(cs.paddingRight);
+    const [x, y] = points[i];
+    frame.style.transformOrigin = `${padL + (x / 420) * inner}px ${padT + (y / 420) * inner}px`;
+    frame.style.transition = 'transform .35s ease-out';
+    frame.style.transform = 'scale(1.16)';
+    setTimeout(() => { frame.style.transform = 'scale(1)'; }, 1400);
+  }
   // The board SVG fills the frame's content box, so the overlays copy the
   // frame's padding — exact under the page zoom used for recording.
   const placeLayers = () => {
@@ -164,15 +188,21 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
     return wait + 300;
   }
 
-  async function playMove([from, to], dur, isFast) {
-    const pick = isFast ? 110 : 520;
+  async function playMove([from, to], dur, isFast, isCapture) {
+    const pick = isFast ? 90 : 280;
     let used = 0;
     if (from !== null) {
       click(from, !isFast);
+      if (!isFast) ev('tap');
       await sleep(pick);
       used += pick;
     }
     click(to, !isFast);
+    ev(isCapture && from === null ? 'capture' : 'place');
+    if (isCapture) {
+      if (from !== null) setTimeout(() => ev('capture'), 120);
+      zoomAt(to);
+    }
     holdBanner();
     const end = performance.now() + Math.max(0, dur * 1000 - used);
     while (performance.now() < end) { holdBanner(); await sleep(50); }
@@ -180,20 +210,31 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
 
   return (async () => {
     const marks = [];
-    const t0 = performance.now();
+    t0 = performance.now();
     for (const seg of plan) {
       const at = (performance.now() - t0) / 1000;
       if (seg.type === 'intro' || seg.type === 'outro') {
         showCard(seg.copy, seg.type === 'outro');
+        if (seg.type === 'outro') ev('whoosh');
         marks.push({ kind: seg.type, start: at, end: at + seg.dur, title: seg.copy.title, body: seg.copy.body });
         await sleep(seg.dur * 1000 - (seg.type === 'intro' ? 500 : 0));
         if (seg.type === 'intro') { card.style.opacity = '0'; await sleep(500); }
+      } else if (seg.type === 'caption') {
+        if (seg.text) {
+          hook.innerHTML = seg.text;
+          hook.classList.add('on');
+          ev('pop');
+          marks.push({ kind: 'caption', start: at, end: at + (seg.span || 3), title: hook.textContent, body: '' });
+        } else {
+          hook.classList.remove('on');
+        }
       } else if (seg.type === 'cut') {
         // A new game behind a title card: start over and replay the setup
         // moves quickly, out of sight, then lift the card.
         showCard(seg.copy, false);
+        ev('whoosh');
         marks.push({ kind: 'cut', start: at, end: at + seg.dur, title: seg.copy.title, body: seg.copy.body });
-        await sleep(600);
+        await sleep(Math.min(600, seg.dur * 300));
         document.querySelector('[data-new-game]').click();
         await sleep(200);
         for (const m of seg.replay) {
@@ -208,7 +249,7 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
         await sleep(500);
       } else if (seg.type === 'ply') {
         fast.style.opacity = seg.fast ? '1' : '0';
-        await playMove(seg.move, seg.dur, seg.fast);
+        await playMove(seg.move, seg.dur, seg.fast, seg.capture);
         await closePhaseBanner(seg.fast ? 200 : portrait ? 1500 : 2600);
       } else if (seg.type === 'explain') {
         fast.style.opacity = '0';
@@ -221,6 +262,7 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
         annotate(seg.ex);
         await sleep(250);
         showBubble(seg.copy, seg.ex.tagTone === 'alert');
+        ev('pop');
         marks.push({ kind: 'explain', start: at, end: at + seg.dur, title: seg.copy.title, body: seg.copy.body });
         await sleep(Math.max(0, seg.dur * 1000 - 600));
         hideBubble();
@@ -228,10 +270,28 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
         await sleep(350);
       } else if (seg.type === 'hold') {
         fast.style.opacity = '0';
-        if (bannerHeld) winBanner().style.visibility = '';
+        if (seg.showBanner && bannerHeld && winBanner()) {
+          winBanner().style.visibility = '';
+          ev('win');
+        }
         await sleep(seg.dur * 1000);
       }
     }
-    return { marks, ended: !!winBanner() };
+    return { marks, events, ended: !!winBanner() };
+  })();
+}
+
+// Before recording: play the moves leading up to the hook, off camera.
+export function prepareBoard(moves) {
+  const click = (i) => document.querySelectorAll('[data-board-svg] .board-point')[i].dispatchEvent(new MouseEvent('click', { bubbles: true }));
+  return (async () => {
+    for (const [from, to] of moves) {
+      if (from !== null) { click(from); await new Promise((r) => setTimeout(r, 30)); }
+      click(to);
+      await new Promise((r) => setTimeout(r, 50));
+      const phase = document.querySelector('[data-phase-banner].is-visible [data-phase-banner-ok]');
+      if (phase) phase.click();
+    }
+    await new Promise((r) => setTimeout(r, 3200)); // let capture effects finish
   })();
 }
