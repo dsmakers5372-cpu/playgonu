@@ -48,7 +48,7 @@ const points = episode.board.kind === 'cham'
 // Every scene is checked against the engine first, so a typo in a move list
 // fails here instead of halfway through a recording.
 // Brisk: a move every ~0.6s; a capture keeps 2.2s so its flip is seen.
-const PLY = { move: 0.6, place: 0.45, capture: 2.2, fast: 0.25 };
+const PLY = { move: 0.6, place: 0.45, capture: portrait ? (episode.portraitCapture ?? 2.2) : 2.2, fast: 0.25 };
 const readSecs = (t) => (lang === 'ko' ? 1.6 + [...t].length * 0.05 : 1.6 + t.split(/\s+/).length * 0.2);
 const cap = portrait ? (episode.portraitExplainCap ?? 5.5) : 6;
 const plan = [];
@@ -70,9 +70,11 @@ if (episode.hook) {
   const scene = episode.scenes[h.scene ?? 0];
   const states = sceneStates(scene);
   preMoves = scene.moves.slice(0, h.at);
-  plan.push({ type: 'caption', text: h.caption[lang], span: 1.8 + h.plies * PLY.capture });
+  // A Short may open on a shorter version of the hook.
+  const hookPlies = portrait && h.portraitPlies ? h.portraitPlies : h.plies;
+  plan.push({ type: 'caption', text: h.caption[lang], span: 1.8 + hookPlies * PLY.capture });
   plan.push({ type: 'hold', dur: 1.0 });
-  for (let i = h.at; i < h.at + h.plies; i++) {
+  for (let i = h.at; i < h.at + hookPlies; i++) {
     const kind = plyKind(states, scene, i);
     plan.push({ type: 'ply', move: scene.moves[i], dur: PLY[kind], capture: kind === 'capture' });
   }
@@ -86,7 +88,7 @@ episode.scenes.forEach((scene, si) => {
   const states = sceneStates(scene);
   const from = scene.from ?? 0;
   const to = scene.to ?? scene.moves.length;
-  if (from > 0 || si > 0) plan.push({ type: 'cut', dur: 2.6, copy: scene.cut[lang], replay: scene.moves.slice(0, from) });
+  if (from > 0 || si > 0) plan.push({ type: 'cut', dur: 2.6, copy: scene.cut[lang], replay: scene.moves.slice(0, from), silent: portrait && scene.silentCutPortrait });
   const isFast = (i) => (scene.fast || []).some(([a, b]) => i >= a && i < b) || (portrait && (scene.fastPortrait || []).some(([a, b]) => i >= a && i < b));
   for (let i = from; i <= to; i++) {
     for (const ex of episode.explain.filter((e) => (e.scene ?? 0) === si && e.after === i)) {
@@ -113,13 +115,15 @@ if (voiced) {
   for (const seg of plan) {
     let text = null;
     if (seg.type === 'caption' && seg.text) text = seg.text;
-    else if (seg.type === 'explain' || seg.type === 'cut' || seg.type === 'intro' || seg.type === 'outro') text = [seg.copy.title, seg.copy.body].filter(Boolean).join('. ').replace(/([.!?])\./g, '$1');
+    else if (seg.type === 'explain' || (seg.type === 'cut' && !seg.silent) || seg.type === 'intro' || seg.type === 'outro') text = [seg.copy.title, seg.copy.body].filter(Boolean).join('. ').replace(/([.!?])\./g, '$1');
+    // Tight Shorts can read just the title on cards (the body stays on screen).
+    if (text && portrait && episode.portraitCardTitleOnly && (seg.type === 'cut' || seg.type === 'outro')) text = seg.copy.title;
     if (!text) continue;
     const { file, seconds } = await speak(text, lang);
     const id = `v${n++}`;
     voiceFiles[id] = file;
     seg.voice = id;
-    if (seg.type === 'explain') { seg.voiceDelay = 0.25; seg.dur = Math.max(seg.dur, seconds + 0.75); }
+    if (seg.type === 'explain') { seg.voiceDelay = 0.25; seg.dur = Math.max(seg.dur, seconds + (portrait ? 0.5 : 0.75)); }
     else if (seg.type === 'caption') {
       // The hook's line runs over the opening move; give it a beat first.
       const hold = plan[plan.indexOf(seg) + 1];

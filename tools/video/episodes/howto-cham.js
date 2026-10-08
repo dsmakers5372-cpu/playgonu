@@ -12,6 +12,8 @@ export default {
   engine: 'chamgonu',
   board: { kind: 'cham' },
   pieceR: 13,
+  portraitCapture: 1.8,
+  portraitCardTitleOnly: true,
   scenes: [
     {
       // Game 8 — the whole first half (28 actions: 24 placements + 4 captures).
@@ -23,6 +25,7 @@ export default {
       // resumes at the first move of the second half.
       moves: GAME_251,
       from: 29,
+      silentCutPortrait: true,
       cut: {
         ko: { title: '후반은 다른 판으로', body: '이제 말을 옮겨요' },
         en: { title: 'Second half, another game', body: 'Now the pieces move' },
@@ -33,6 +36,7 @@ export default {
     scene: 1,
     at: 35,
     plies: 5,
+    portraitPlies: 2,
     caption: { ko: '왔다 갔다만 해도 <em>계속</em> 잡는다?!', en: 'Just slide back and forth — and <em>keep</em> capturing?!' },
     after: {
       ko: { title: '참고누, 금방 배워요', body: '처음부터 같이 볼까요?' },
@@ -80,11 +84,28 @@ export default {
     },
     {
       scene: 1,
+      after: 31,
+      lines: [[16, 17, 18]],
+      rings: [{ color: 'red', points: [13] }],
+      tagTone: 'alert',
+      ko: { tag: '후반 잡기', title: '옮겨서 3개면 꼰!', body: '꼰을 만들 때마다 상대 돌 하나를 빼요.' },
+      en: { tag: 'Capture', title: 'Slide into three — a mill!', body: 'Every mill lets you remove one enemy piece.' },
+    },
+    {
+      scene: 1,
+      after: 33,
+      lines: [[0, 8, 16], [16, 17, 18]],
+      rings: [{ color: 'gold', points: [0, 8, 16, 17, 18] }],
+      ko: { tag: '알아두기', title: '3개 엮인 돌은 못 빼요', body: '꼰을 이룬 돌은 상대가 뺄 수 없어요.' },
+      en: { tag: 'Good to know', title: 'Pieces in a mill are safe', body: 'Your opponent can’t remove pieces that form a mill.' },
+    },
+    {
+      scene: 1,
       after: 43,
       rings: [{ color: 'blue', points: [20, 23] }],
       tagTone: 'alert',
-      ko: { tag: '승리', title: '2개 남기면 승리!', body: '가둬도 이겨요.' },
-      en: { tag: 'Win', title: 'Down to 2 — you win', body: 'Boxing them in wins too.' },
+      ko: { tag: '승리', title: '상대 돌이 2개가 되면 승리!', body: '가둬서 못 움직이게 해도 이겨요.' },
+      en: { tag: 'Win', title: 'Down to 2 pieces — you win!', body: 'Leaving them no move wins too.' },
     },
   ],
 };
