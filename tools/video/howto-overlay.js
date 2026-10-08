@@ -10,10 +10,13 @@
 // the stones being talked about — for big boards like Gomoku's 15×15.
 // `lineOpacity`: the glowing band drawn along a highlighted line — lighter on
 // boards with dark stones so their colour still shows.
-export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, doubleTap = false, explainZoom = 0, lineOpacity = 0.55 }) {
+// `tight`: a crowded board (Gomoku) — slimmer rings that don't cover the
+// neighbouring stones, and line bands blended so dark stones stay dark.
+export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, doubleTap = false, explainZoom = 0, lineOpacity = 0.55, tight = false }) {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const portrait = layout === 'portrait';
-  const ringR = pieceR + 9;
+  const ringR = pieceR + (tight ? 4 : 9);
+  const ringW = tight ? [3.5, 2.5] : [7, 4];
 
   const style = document.createElement('style');
   style.textContent = `
@@ -65,6 +68,10 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, d
     frame.appendChild(svg);
     return svg;
   };
+  // Line bands go on their own layer, multiplied onto the board: gold over
+  // empty wood, but a black stone stays black under it.
+  const band = layer('pg-band');
+  band.style.mixBlendMode = 'multiply';
   const annot = layer('pg-annot');
   const tapLayer = layer('pg-tap');
   const fast = Object.assign(document.createElement('div'), { id: 'pg-fast', textContent: fastLabel });
@@ -96,7 +103,7 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, d
     const cs = getComputedStyle(frame);
     const padL = parseFloat(cs.paddingLeft);
     const padR = parseFloat(cs.paddingRight);
-    for (const svg of [annot, tapLayer]) {
+    for (const svg of [band, annot, tapLayer]) {
       svg.style.cssText = `left:${padL}px;top:${parseFloat(cs.paddingTop)}px;width:calc(100% - ${padL + padR}px);height:auto;aspect-ratio:1/1;display:block;`;
     }
   };
@@ -133,14 +140,26 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, d
   const ringColor = { gold: '#E9B949', red: '#AC3B2A', blue: '#2C5F8A', dark: '#2A2420' };
   function annotate(ex) {
     let s = '';
+    let b = '';
     for (const line of ex.lines || []) {
       const [a, c] = [points[line[0]], points[line[line.length - 1]]];
-      s += `<line x1="${a[0]}" y1="${a[1]}" x2="${c[0]}" y2="${c[1]}" stroke="#F3C969" stroke-width="${pieceR + 5}" stroke-linecap="round" opacity="${lineOpacity}"/>`;
+      if (tight) {
+        // A gold capsule drawn around the stones — outline only, so the stones
+        // inside keep their colour.
+        const len = Math.hypot(c[0] - a[0], c[1] - a[1]) || 1;
+        const nx = -(c[1] - a[1]) / len;
+        const ny = (c[0] - a[0]) / len;
+        const rr = pieceR + 3.5;
+        const d = `M${a[0] + nx * rr} ${a[1] + ny * rr}L${c[0] + nx * rr} ${c[1] + ny * rr}A${rr} ${rr} 0 0 1 ${c[0] - nx * rr} ${c[1] - ny * rr}L${a[0] - nx * rr} ${a[1] - ny * rr}A${rr} ${rr} 0 0 1 ${a[0] + nx * rr} ${a[1] + ny * rr}Z`;
+        s += `<path class="dash" d="${d}" fill="none" stroke="#E9B949" stroke-width="3" stroke-dasharray="10 5"/>`;
+      } else {
+        s += `<line x1="${a[0]}" y1="${a[1]}" x2="${c[0]}" y2="${c[1]}" stroke="#F3C969" stroke-width="${pieceR + 5}" stroke-linecap="round" opacity="${lineOpacity}"/>`;
+      }
     }
     for (const ring of ex.rings || []) {
       for (const i of ring.points) {
         const [x, y] = points[i];
-        s += `<g class="ring"><circle cx="${x}" cy="${y}" r="${ringR}" fill="none" stroke="#fff" stroke-width="7" opacity=".9"/><circle cx="${x}" cy="${y}" r="${ringR}" fill="none" stroke="${ringColor[ring.color]}" stroke-width="4"/></g>`;
+        s += `<g class="ring"><circle cx="${x}" cy="${y}" r="${ringR}" fill="none" stroke="#fff" stroke-width="${ringW[0]}" opacity=".9"/><circle cx="${x}" cy="${y}" r="${ringR}" fill="none" stroke="${ringColor[ring.color]}" stroke-width="${ringW[1]}"/></g>`;
         // Two little sparkles circling the stone, so it twinkles.
         const sp = (a) => {
           const sx = x + Math.cos(a) * (ringR + 5);
@@ -172,6 +191,7 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, d
       s += `<path d="M${hx - ux * 11 + px * 9} ${hy - uy * 11 + py * 9}L${hx} ${hy}L${hx - ux * 11 - px * 9} ${hy - uy * 11 - py * 9}" fill="none" stroke="#E9B949" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>`;
     }
     annot.innerHTML = s;
+    band.innerHTML = b;
   }
 
   function tap(i) {
@@ -339,6 +359,7 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, d
         hideBubble();
         if (zoomed) { frame.style.transform = 'none'; await sleep(200); }
         annot.innerHTML = '';
+        band.innerHTML = '';
         await sleep(350);
       } else if (seg.type === 'countdown') {
         // Puzzle pause: a big 3 · 2 · 1 over the board, a tick each second.

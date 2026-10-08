@@ -13,7 +13,7 @@ export default {
  "pieceR": 11,
  "doubleTap": true,
  "explainZoom": 2.1,
- "lineOpacity": 0.22,
+ "tight": true,
  "init": {
   "ruleset": "renju"
  },

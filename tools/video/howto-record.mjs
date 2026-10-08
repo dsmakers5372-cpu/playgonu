@@ -187,7 +187,7 @@ cdp.on('Page.screencastFrame', (e) => {
 await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
 await new Promise((r) => setTimeout(r, 500));
 const episodeStart = Date.now() / 1000;
-const result = await page.evaluate(`(${runHowto.toString()})(${JSON.stringify({ plan, layout: portrait ? 'portrait' : 'landscape', watermark: 'playgonu.com', points, pieceR: episode.pieceR, fastLabel: lang === 'ko' ? '▶▶ 빠르게' : '▶▶ FAST', doubleTap: !!episode.doubleTap, explainZoom: episode.explainZoom || 0, lineOpacity: episode.lineOpacity ?? 0.55 })})`);
+const result = await page.evaluate(`(${runHowto.toString()})(${JSON.stringify({ plan, layout: portrait ? 'portrait' : 'landscape', watermark: 'playgonu.com', points, pieceR: episode.pieceR, fastLabel: lang === 'ko' ? '▶▶ 빠르게' : '▶▶ FAST', doubleTap: !!episode.doubleTap, explainZoom: episode.explainZoom || 0, lineOpacity: episode.lineOpacity ?? 0.55, tight: !!episode.tight })})`);
 const episodeEnd = Date.now() / 1000;
 await cdp.send('Page.stopScreencast');
 await browser.close();
