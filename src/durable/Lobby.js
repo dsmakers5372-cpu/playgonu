@@ -8,9 +8,12 @@
 // The list also always carries a rotating subset of VIRTUAL_PLAYERS so an
 // early, mostly-empty site still shows a populated "online now" dashboard —
 // see virtualPlayers.js for the rationale and rotation mechanics.
-import { pickVirtualRoster } from './virtualPlayers.js';
+import { pickVirtualLobby } from './virtualPlayers.js';
 
-const STALE_MS = 2 * 60 * 1000;
+// Matches GameRoom's idle limit: a room only pushes a listing when its state
+// changes, so a shorter window dropped public rooms that were simply still
+// waiting for an opponent. Rooms remove themselves on close anyway.
+const STALE_MS = 30 * 60 * 1000;
 
 export class Lobby {
   constructor(state, env) {
@@ -39,7 +42,9 @@ export class Lobby {
         this.rooms[body.roomId] = {
           gameType: body.gameType,
           hostName: body.hostName,
-          status: body.status,
+          guestName: body.guestName || null,
+          title: body.title || null,
+          status: body.status === 'waiting' ? 'waiting' : 'playing',
           updatedAt: Date.now(),
         };
       } else if (body.action === 'remove' && body.roomId) {
@@ -53,27 +58,46 @@ export class Lobby {
     const now = Date.now();
     let changed = false;
     for (const [id, r] of Object.entries(this.rooms)) {
-      if (now - r.updatedAt > STALE_MS || r.status !== 'waiting') {
+      if (now - r.updatedAt > STALE_MS) {
         delete this.rooms[id];
         changed = true;
       }
     }
     if (changed) await this.persist();
 
-    const list = Object.entries(this.rooms)
+    const real = Object.entries(this.rooms)
       .filter(([, r]) => !gameFilter || r.gameType === gameFilter)
       .map(([roomId, r]) => ({ roomId, ...r }))
       .sort((a, b) => b.updatedAt - a.updatedAt);
 
-    const virtual = pickVirtualRoster(gameFilter || 'cham').map((vp) => ({
+    const { waiting, playing } = pickVirtualLobby(gameFilter || 'cham');
+    const virtualWaiting = waiting.map((vp) => ({
       roomId: `vp-${vp.id}`,
       gameType: vp.gameType,
       hostName: vp.name,
+      title: vp.title,
       status: 'waiting',
       updatedAt: now,
       isVirtual: true,
     }));
+    const virtualPlaying = playing.map(([a, b]) => ({
+      roomId: `vpm-${a.id}-${b.id}`,
+      gameType: a.gameType,
+      hostName: a.name,
+      guestName: b.name,
+      status: 'playing',
+      updatedAt: now,
+      isVirtual: true,
+    }));
 
-    return new Response(JSON.stringify([...list, ...virtual]), { headers: { 'Content-Type': 'application/json' } });
+    // Open rooms first (people looking for a game want those), games in
+    // progress after — real rooms ahead of virtual ones within each group.
+    const list = [
+      ...real.filter((r) => r.status === 'waiting'),
+      ...virtualWaiting,
+      ...real.filter((r) => r.status !== 'waiting'),
+      ...virtualPlaying,
+    ];
+    return new Response(JSON.stringify(list), { headers: { 'Content-Type': 'application/json' } });
   }
 }

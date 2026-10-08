@@ -8,11 +8,16 @@ const STRINGS = {
     joinByLink: 'Waiting for your opponent to join via this link:',
     copy: 'Copy',
     copied: 'Copied!',
-    openRooms: 'Open public rooms',
+    openRooms: 'Rooms',
     noOpenRooms: 'No open public rooms right now — create one!',
     join: 'Join',
-    waitingHost: (name) => `${name}'s room — waiting...`,
+    waitingHost: (name) => `${name}'s room`,
     enterNameFirst: 'Enter your name first.',
+    roomTitlePlaceholder: 'Room name (optional)',
+    statusWaiting: 'Waiting',
+    statusPlaying: 'Playing',
+    publicCreated: 'Your public room is open — the game starts as soon as someone joins.',
+    cancelRoom: 'Cancel',
   },
   ko: {
     namePlaceholder: '이름',
@@ -21,11 +26,16 @@ const STRINGS = {
     joinByLink: '이 링크로 상대방이 들어오길 기다리는 중입니다:',
     copy: '복사',
     copied: '복사됨!',
-    openRooms: '공개된 방',
+    openRooms: '방 목록',
     noOpenRooms: '지금 열려있는 공개 방이 없습니다 — 새로 만들어보세요!',
     join: '참가',
-    waitingHost: (name) => `${name}님의 방 — 대기 중...`,
+    waitingHost: (name) => `${name}님의 방`,
     enterNameFirst: '먼저 이름을 입력해 주세요.',
+    roomTitlePlaceholder: '방 이름 (선택)',
+    statusWaiting: '대기 중',
+    statusPlaying: '플레이 중',
+    publicCreated: '공개 방을 만들었어요 — 누군가 들어오면 바로 시작됩니다.',
+    cancelRoom: '취소',
   },
 };
 
@@ -49,6 +59,13 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   nameInput.style.cssText = 'width:100%;box-sizing:border-box;padding:12px 16px;font-size:15px;';
   try { nameInput.value = localStorage.getItem('playgonu:name') || ''; } catch { /* ignore */ }
 
+  const titleInput = document.createElement('input');
+  titleInput.type = 'text';
+  titleInput.placeholder = t.roomTitlePlaceholder;
+  titleInput.maxLength = 30;
+  titleInput.className = 'pill';
+  titleInput.style.cssText = 'width:100%;box-sizing:border-box;padding:12px 16px;font-size:15px;';
+
   const btnRow = document.createElement('div');
   btnRow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;';
   const createPrivateBtn = document.createElement('button');
@@ -71,13 +88,19 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   lobbyRows.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
   lobbyList.append(lobbyHeading, lobbyRows);
 
-  wrap.append(nameInput, btnRow, statusArea, lobbyList);
+  wrap.append(nameInput, titleInput, btnRow, statusArea, lobbyList);
   root.appendChild(wrap);
 
   let pollTimer = null;
+  let myRoomId = null;
   function stopPolling() {
     if (pollTimer) clearInterval(pollTimer);
     pollTimer = null;
+  }
+  function startPolling() {
+    stopPolling();
+    refreshLobby();
+    pollTimer = setInterval(refreshLobby, 3000);
   }
 
   async function refreshLobby() {
@@ -88,32 +111,51 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     } catch { /* transient network hiccup — try again next tick */ }
   }
 
+  function statusBadge(waiting) {
+    const badge = document.createElement('span');
+    badge.style.cssText = 'display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--ink-soft);white-space:nowrap;';
+    const dot = document.createElement('span');
+    dot.style.cssText = `width:8px;height:8px;border-radius:50%;background:${waiting ? '#E0962B' : '#3C9A5F'};`;
+    badge.append(dot, document.createTextNode(waiting ? t.statusWaiting : t.statusPlaying));
+    return badge;
+  }
+
   function renderRooms(rooms) {
     lobbyRows.innerHTML = '';
-    if (rooms.length === 0) {
+    const visible = rooms.filter((r) => r.roomId !== myRoomId);
+    if (visible.length === 0) {
       const empty = document.createElement('p');
       empty.style.cssText = 'margin:0;font-size:13.5px;color:var(--ink-soft);';
       empty.textContent = t.noOpenRooms;
       lobbyRows.appendChild(empty);
       return;
     }
-    for (const r of rooms) {
+    for (const r of visible) {
+      const waiting = r.status === 'waiting';
       const row = document.createElement('div');
       row.className = 'card';
-      row.style.cssText = 'padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;';
+      row.style.cssText = `padding:12px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-left:4px solid ${waiting ? '#E0962B' : '#3C9A5F'};`;
       const label = document.createElement('span');
-      label.style.cssText = 'font-size:14px;font-weight:600;';
-      label.textContent = t.waitingHost(r.hostName);
-      const joinBtn = document.createElement('button');
-      joinBtn.className = 'btn-primary';
-      joinBtn.textContent = t.join;
-      // A virtual (bot) opponent's listed roomId is just a display id, not a
-      // live room — generate a fresh one per challenge so each match gets
-      // its own Durable Object instead of reusing a possibly-finished one.
-      joinBtn.addEventListener('click', () => {
-        startAsGuest(r.isVirtual ? `${r.roomId}-${generateRoomId()}` : r.roomId);
-      });
-      row.append(label, joinBtn);
+      label.style.cssText = `font-size:14px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;${waiting ? '' : 'color:var(--ink-soft);'}`;
+      if (!waiting) label.textContent = `${r.hostName} vs ${r.guestName || '…'}`;
+      else if (r.title) label.textContent = `${r.title} · ${r.hostName}`;
+      else label.textContent = t.waitingHost(r.hostName);
+      const right = document.createElement('div');
+      right.style.cssText = 'display:flex;align-items:center;gap:12px;flex:none;';
+      right.appendChild(statusBadge(waiting));
+      if (waiting) {
+        const joinBtn = document.createElement('button');
+        joinBtn.className = 'btn-primary';
+        joinBtn.textContent = t.join;
+        // A virtual (bot) opponent's listed roomId is just a display id, not a
+        // live room — generate a fresh one per challenge so each match gets
+        // its own Durable Object instead of reusing a possibly-finished one.
+        joinBtn.addEventListener('click', () => {
+          startAsGuest(r.isVirtual ? `${r.roomId}-${generateRoomId()}` : r.roomId);
+        });
+        right.appendChild(joinBtn);
+      }
+      row.append(label, right);
       lobbyRows.appendChild(row);
     }
   }
@@ -129,11 +171,17 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     return name;
   }
 
-  function connect(roomId, name, isPublic) {
-    stopPolling();
+  function connect(roomId, name, isPublic, title = null) {
     btnRow.style.display = 'none';
-    lobbyList.style.display = 'none';
+    titleInput.style.display = 'none';
     statusArea.style.display = 'flex';
+    // A public host keeps browsing the dashboard while waiting (their own
+    // room is filtered out of it); everyone else goes straight to the match.
+    if (!isPublic) {
+      stopPolling();
+      lobbyList.style.display = 'none';
+    }
+    myRoomId = roomId;
 
     let matched = false;
     let myColor = null;
@@ -145,6 +193,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       if (matched) return;
       if (roomInfo.playerCount === 2 || myRole === 'spectator') {
         matched = true;
+        stopPolling();
         onMatched({ roomClient: client, color: myColor, role: myRole, name, opponentName, vsBot, gameType, ruleset: roomInfo.ruleset });
       }
     }
@@ -152,6 +201,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     const client = connectToRoom({
       roomId,
       name,
+      title,
       isPublic,
       gameType,
       ruleset,
@@ -168,7 +218,31 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
           if (msg.opponentName) opponentName = msg.opponentName;
           else if (msg.color === 'B') opponentName = msg.room.hostName;
           vsBot = !!msg.vsBot;
-          if (msg.role === 'player' && msg.room.playerCount < 2) {
+          if (msg.role === 'player' && msg.room.playerCount < 2 && msg.room.isPublic) {
+            statusArea.innerHTML = '';
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.style.cssText = 'padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-left:4px solid #E0962B;';
+            const msgEl = document.createElement('span');
+            msgEl.style.cssText = 'font-size:14px;font-weight:600;';
+            msgEl.textContent = t.publicCreated;
+            const cancelBtn = document.createElement('button');
+            cancelBtn.className = 'btn';
+            cancelBtn.style.cssText = 'flex:none;white-space:nowrap;';
+            cancelBtn.textContent = t.cancelRoom;
+            cancelBtn.addEventListener('click', () => {
+              client.close();
+              myRoomId = null;
+              statusArea.innerHTML = '';
+              statusArea.style.display = 'none';
+              btnRow.style.display = 'flex';
+              titleInput.style.display = '';
+              lobbyList.style.display = 'flex';
+              startPolling();
+            });
+            card.append(msgEl, cancelBtn);
+            statusArea.appendChild(card);
+          } else if (msg.role === 'player' && msg.room.playerCount < 2) {
             statusArea.innerHTML = '';
             const waitingMsg = document.createElement('p');
             waitingMsg.style.cssText = 'margin:0;font-size:14px;color:var(--ink-soft);';
@@ -199,6 +273,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
         },
         onOpponentJoined(msg) {
           opponentName = msg.name;
+          if (msg.vsBot) vsBot = true;
           tryMatch(msg.room);
         },
         onState(msg) {
@@ -229,7 +304,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     if (!name) return;
     const params = new URLSearchParams(location.search);
     const roomId = params.get('room') || generateRoomId();
-    connect(roomId, name, isPublic);
+    connect(roomId, name, isPublic, titleInput.value.trim() || null);
   }
 
   function startAsGuest(roomId) {
@@ -246,6 +321,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   const incomingRoom = new URLSearchParams(location.search).get('room');
   if (incomingRoom) {
     btnRow.style.display = 'none';
+    titleInput.style.display = 'none';
     lobbyList.style.display = 'none';
     const joinHint = document.createElement('button');
     joinHint.className = 'btn-primary';
@@ -264,7 +340,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       fetch(`/api/lobby?game=${encodeURIComponent(gameType)}`)
         .then((res) => res.json())
         .then((rooms) => {
-          const virtual = rooms.filter((r) => r.isVirtual);
+          const virtual = rooms.filter((r) => r.isVirtual && r.status === 'waiting');
           if (virtual.length === 0) { refreshLobby(); pollTimer = setInterval(refreshLobby, 3000); return; }
           const pick = virtual[Math.floor(Math.random() * virtual.length)];
           startAsGuest(`${pick.roomId}-${generateRoomId()}`);

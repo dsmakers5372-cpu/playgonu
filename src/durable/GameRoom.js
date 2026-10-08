@@ -8,7 +8,7 @@ import * as chamgonu from '../engine/chamgonu.js';
 import * as gomoku from '../engine/gomoku.js';
 import * as chamgonuAI from '../engine/chamgonuAI.js';
 import * as gomokuAI from '../engine/gomokuAI.js';
-import { getVirtualPlayer } from './virtualPlayers.js';
+import { getVirtualPlayer, VIRTUAL_PLAYERS } from './virtualPlayers.js';
 
 const ENGINES = { cham: chamgonu, gomoku };
 const AI = { cham: chamgonuAI, gomoku: gomokuAI };
@@ -16,6 +16,9 @@ const MAX_PLAYERS = 2;
 const BOT_MOVE_DELAY_MS = [450, 950]; // feels like a person thinking, not an instant server reply
 const ROOM_IDLE_LIMIT_MS = 30 * 60 * 1000; // storage alarm cleans up long-abandoned rooms
 const CHAT_MAX_LEN = 200;
+// A public room nobody joins within this long gets a master-level virtual
+// opponent, so creating a room never means waiting indefinitely.
+const AUTO_OPPONENT_MS = 30 * 1000;
 
 function freshEngineState(gameType, ruleset) {
   const engine = ENGINES[gameType];
@@ -107,6 +110,7 @@ export class GameRoom {
         ruleset: msg.ruleset === 'renju' ? 'renju' : 'freestyle',
         isPublic: vp ? false : !!msg.isPublic,
         hostName: name,
+        title: String(msg.title || '').trim().slice(0, 30) || null,
         players: [],
         spectatorCount: 0,
         engineState,
@@ -149,12 +153,30 @@ export class GameRoom {
 
     if (this.room.players.length === MAX_PLAYERS) {
       this.room.status = 'playing';
-      await this.setLobbyListing(false);
+      // Public games stay on the dashboard as "playing"; private ones never list.
+      await this.setLobbyListing(this.room.isPublic);
       this.broadcast({ type: 'state', engineState: this.room.engineState, status: this.room.status });
       if (this.room.vsBot) await this.triggerBotMoves();
     } else if (this.room.isPublic) {
       await this.setLobbyListing(true);
+      clearTimeout(this.autoOpponentTimer);
+      this.autoOpponentTimer = setTimeout(() => this.seatAutoOpponent(), AUTO_OPPONENT_MS);
     }
+  }
+
+  async seatAutoOpponent() {
+    if (!this.room || this.room.status !== 'waiting' || this.room.players.length !== 1 || this.room.vsBot) return;
+    const host = this.room.players[0];
+    const pool = VIRTUAL_PLAYERS.filter((vp) => vp.name !== host.name);
+    const vp = pool[Math.floor(Math.random() * pool.length)];
+    const { opponent } = ENGINES[this.room.gameType];
+    this.room.vsBot = { name: vp.name, difficulty: 'master' };
+    this.room.players.push({ id: 'bot', name: vp.name, color: opponent(host.color), isBot: true });
+    this.room.status = 'playing';
+    this.broadcast({ type: 'opponent-joined', name: vp.name, room: this.publicRoomView(), vsBot: true });
+    await this.setLobbyListing(true);
+    this.broadcast({ type: 'state', engineState: this.room.engineState, status: this.room.status });
+    await this.triggerBotMoves();
   }
 
   // "Play again" restarts the game in this same room with the same opponent.
@@ -276,6 +298,8 @@ export class GameRoom {
           roomId: this.room.roomId,
           gameType: this.room.gameType,
           hostName: this.room.hostName,
+          guestName: this.room.players[1]?.name ?? null,
+          title: this.room.title,
           status: this.room.status,
         }),
       });
