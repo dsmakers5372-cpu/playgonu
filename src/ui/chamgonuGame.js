@@ -9,7 +9,7 @@ import {
 } from '../engine/chamgonu.js';
 import { chooseAIMove } from '../engine/chamgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el, animate, startAnimations, pegFlipEffect } from './svg.js';
+import { el, animate, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playCaptureSound } from './sound.js';
 
@@ -120,7 +120,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
   let selected = null;
   let history = [];
   let captureEffectIndex = null; // point a piece was just swept off of, briefly highlighted
-  let captureEffectPlayer = null; // whose piece it was, so the fade-out ghost is the right color
+  let captureEffectPlayer = null; // whose piece it was, so the flipping piece is the right color
   let captureEffectTimer = null;
   let captureEffectStart = 0;
   let aiEnabled = opponentModeSelect.value === 'ai';
@@ -160,7 +160,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
 
   // Slow and deliberate on purpose — the capture itself matters, so it
   // shouldn't flash by in under a second.
-  const CAPTURE_EFFECT_MS = 1700;
+  const CAPTURE_EFFECT_MS = CAPTURE_FLIP_MS + 100;
 
   function flashCapture(index, player) {
     captureEffectIndex = index;
@@ -310,13 +310,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
     if (captureEffectIndex !== null) {
       const { x, y } = POINT_PIXELS[captureEffectIndex];
       if (captureEffectPlayer) {
-        const colors = PLAYER_COLOR[captureEffectPlayer];
-        if (game.phase === 'placing' && game.deadForPlacement[captureEffectIndex]) {
-          svg.appendChild(pegFlipEffect(x, y, colors, captureEffectStart));
-        } else {
-          const ghost = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
-          svg.appendChild(animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.6s', fill: 'freeze' }, captureEffectStart));
-        }
+        svg.appendChild(captureFlipEffect(x, y, PLAYER_COLOR[captureEffectPlayer], captureEffectStart));
       }
       const ring = el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: '#AC3B2A', 'stroke-width': '3' });
       animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.6s', fill: 'freeze' }, captureEffectStart);

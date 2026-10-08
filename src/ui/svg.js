@@ -59,24 +59,34 @@ export function startAnimations(svg) {
   }
 }
 
-// A capture during placement turns the point into a dead "peg" (×). The
-// captured piece flips like a coin to a silver back, a few silver glints
-// burst out, and the silver disc fades to reveal the × drawn beneath it.
-export function pegFlipEffect(x, y, colors, startedAt) {
+// A captured piece doesn't just vanish: it pops up (so the eye goes to it),
+// flips over like a coin to a silver back, holds there while silver glints
+// burst out, then the silver disc fades away — revealing the × (dead point)
+// drawn beneath it during placement, or an empty point later on. About 2.7s
+// in all, slow on purpose so a capture is impossible to miss.
+export const CAPTURE_FLIP_MS = 2700;
+
+export function captureFlipEffect(x, y, colors, startedAt) {
   const g = el('g', {});
   const front = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
-  animateKeyframes(front, [{ transform: 'scaleX(1)' }, { transform: 'scaleX(0)' }], { duration: 280 }, startedAt);
-  const back = el('circle', { cx: x, cy: y, r: 13, fill: '#E6E9ED', stroke: '#8E98A3', 'stroke-width': '2' });
-  const shine = el('ellipse', { cx: x - 4, cy: y - 5, rx: 5, ry: 3, fill: '#FFFFFF', opacity: '.85' });
-  for (const node of [back, shine]) {
-    animateKeyframes(node, [
-      { transform: 'scaleX(0)', opacity: 1 },
-      { transform: 'scaleX(1)', opacity: 1, offset: 0.25 },
-      { transform: 'scaleX(1)', opacity: 1, offset: 0.62 },
-      { transform: 'scaleX(1) scale(0.85)', opacity: 0 },
-    ], { duration: 1100, delay: 280 }, startedAt);
-  }
-  g.append(front, back, shine);
+  animateKeyframes(front, [
+    { transform: 'scale(1) scaleX(1)' },
+    { transform: 'scale(1.25) scaleX(1)', offset: 0.3 },
+    { transform: 'scale(1.25) scaleX(1)', offset: 0.6 },
+    { transform: 'scale(1.25) scaleX(0)' },
+  ], { duration: 1000 }, startedAt);
+  const silver = el('g', {});
+  silver.append(
+    el('circle', { cx: x, cy: y, r: 13, fill: '#E6E9ED', stroke: '#8E98A3', 'stroke-width': '2' }),
+    el('ellipse', { cx: x - 4, cy: y - 5, rx: 5, ry: 3, fill: '#FFFFFF', opacity: '.85' }),
+  );
+  animateKeyframes(silver, [
+    { transform: 'scale(1.25) scaleX(0)', opacity: 1 },
+    { transform: 'scale(1.25) scaleX(1)', opacity: 1, offset: 0.24 },
+    { transform: 'scale(1.25) scaleX(1)', opacity: 1, offset: 0.65 },
+    { transform: 'scale(0.8) scaleX(1)', opacity: 0 },
+  ], { duration: 1700, delay: 1000 }, startedAt);
+  g.append(front, silver);
   for (let k = 0; k < 6; k++) {
     const angle = (Math.PI * 2 * k) / 6 + 0.35;
     const dx = Math.cos(angle) * 34;
@@ -92,7 +102,7 @@ export function pegFlipEffect(x, y, colors, startedAt) {
       { transform: 'translate(0,0) scale(0)', opacity: 0 },
       { transform: `translate(${dx * 0.6}px,${dy * 0.6}px) scale(1.2)`, opacity: 1, offset: 0.45 },
       { transform: `translate(${dx}px,${dy}px) scale(0.4)`, opacity: 0 },
-    ], { duration: 850, delay: 400 + k * 40 }, startedAt);
+    ], { duration: 950, delay: 1250 + k * 60 }, startedAt);
     g.appendChild(glint);
   }
   return g;

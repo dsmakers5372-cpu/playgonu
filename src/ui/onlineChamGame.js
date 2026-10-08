@@ -2,7 +2,7 @@ import { legalMovesFrom, legalPlacements, legalCaptures, BOARD_EDGES, PLAYERS } 
 import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el, animate, startAnimations, pegFlipEffect } from './svg.js';
+import { el, animate, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
 import { playPlaceSound, playCaptureSound } from './sound.js';
 
 
@@ -265,7 +265,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
   let captureEffectTimer = null;
   let captureEffectStart = 0;
   const MOVE_EFFECT_MS = 650;
-  const CAPTURE_EFFECT_MS = 1700;
+  const CAPTURE_EFFECT_MS = CAPTURE_FLIP_MS + 100;
 
   function flashMove(index) {
     moveEffectIndex = index;
@@ -376,13 +376,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
     if (captureEffectIndex !== null && captureEffectPlayer) {
       const { x, y } = POINT_PIXELS[captureEffectIndex];
       const colors = PLAYER_COLOR[captureEffectPlayer];
-      if (game.phase === 'placing' && game.deadForPlacement[captureEffectIndex]) {
-        svg.appendChild(pegFlipEffect(x, y, colors, captureEffectStart));
-      } else {
-        const ghost = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
-        animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.6s', fill: 'freeze' }, captureEffectStart);
-        svg.appendChild(ghost);
-      }
+      svg.appendChild(captureFlipEffect(x, y, colors, captureEffectStart));
       const ring = el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: colors.fill, 'stroke-width': '3' });
       animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.6s', fill: 'freeze' }, captureEffectStart);
       animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: '1.6s', fill: 'freeze' }, captureEffectStart);

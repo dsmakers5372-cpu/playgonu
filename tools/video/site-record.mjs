@@ -36,7 +36,7 @@ const states = [engine.createInitialState()];
 for (const [from, to] of episode.moves) states.push(engine.move(states[states.length - 1], from, to));
 
 // ---- plan (seconds) --------------------------------------------------------
-const PLY_DUR = { place: 0.9, capture: 1.9, slide: 1.1 }; // capture leaves time for the site's 1.6s fade-out
+const PLY_DUR = { place: 0.9, capture: 3.0, slide: 1.1 }; // capture leaves time for the site's 2.7s flip-and-fade
 const readSecs = (t) => (lang === 'ko' ? 3.4 + [...t].length * 0.072 : 3.4 + t.split(/\s+/).length * 0.3);
 const firstPly = shorts ? 26 : 0;
 const keepExplain = (after) => !shorts || [26, 29, 36, 57].includes(after);
@@ -53,7 +53,7 @@ for (let i = firstPly; i <= episode.moves.length; i++) {
   }
   if (i < episode.moves.length) {
     const kind = states[i].pendingCapture ? 'capture' : episode.moves[i][0] === null ? 'place' : 'slide';
-    const speed = shorts && !(i >= 29 && i < 36) ? 0.6 : 1;
+    const speed = shorts && kind !== 'capture' && !(i >= 29 && i < 36) ? 0.6 : 1; // never rush a capture
     plan.push({ type: 'ply', index: i, dur: PLY_DUR[kind] * speed });
   }
   if (i === episode.moves.length) plan.push({ type: 'hold', dur: 1.5 });
