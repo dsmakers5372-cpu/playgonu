@@ -1,4 +1,4 @@
-import { createGrid } from './board.js';
+import { createGrid, DRAW_AFTER_QUIET_MOVES } from './board.js';
 
 // 바퀴고누 (Bakwi-gonu, "wheel gonu") — confirmed by two independent sources
 // (namu.wiki, artplay.co.kr): a square grid with a "wheel" at each of the 4
@@ -41,7 +41,7 @@ export function createInitialState() {
   pieces[grid.toIndex(ROWS - 2, COLS - 1)] = PLAYERS.B;
   pieces[grid.toIndex(ROWS - 1, COLS - 2)] = PLAYERS.B;
   pieces[grid.toIndex(ROWS - 1, COLS - 1)] = PLAYERS.B;
-  return { pieces, turn: PLAYERS.A, winner: null, lastCapture: [] };
+  return { pieces, turn: PLAYERS.A, winner: null, lastCapture: [], quietMoves: 0 };
 }
 
 function countPieces(state, player) {
@@ -126,7 +126,9 @@ export function move(state, from, to) {
     return next;
   }
   next.turn = opp;
+  next.quietMoves = next.lastCapture.length > 0 ? 0 : (state.quietMoves ?? 0) + 1;
   if (!hasAnyLegalMove(next, opp)) next.winner = player;
+  else if (next.quietMoves >= DRAW_AFTER_QUIET_MOVES) next.winner = 'draw';
   return next;
 }
 

@@ -1,3 +1,8 @@
+// Jul-gonu-family games have no traditional draw rule, so two careful
+// players (or two AIs) can shuffle forever. This many consecutive moves
+// with no capture, counting both sides, ends the game as a draw.
+export const DRAW_AFTER_QUIET_MOVES = 40;
+
 export function createGrid(rows, cols) {
   const size = rows * cols;
 

@@ -1,4 +1,4 @@
-import { createGrid } from './board.js';
+import { createGrid, DRAW_AFTER_QUIET_MOVES } from './board.js';
 
 // 다섯줄고누 (Daseotjul-gonu, "five-line gonu") — namu.wiki's 고누 overview states
 // the 줄고누 family is named by its grid-line count ("4×4면 넉줄고누, 5×5면
@@ -21,7 +21,7 @@ export function createInitialState() {
     pieces[grid.toIndex(0, col)] = PLAYERS.A;
     pieces[grid.toIndex(ROWS - 1, col)] = PLAYERS.B;
   }
-  return { pieces, turn: PLAYERS.A, winner: null, lastCapture: [] };
+  return { pieces, turn: PLAYERS.A, winner: null, lastCapture: [], quietMoves: 0 };
 }
 
 export function legalMovesFrom(state, index) {
@@ -96,7 +96,9 @@ export function move(state, from, to) {
   }
 
   next.turn = opp;
+  next.quietMoves = next.lastCapture.length > 0 ? 0 : (state.quietMoves ?? 0) + 1;
   if (!hasAnyLegalMove(next, opp)) next.winner = player;
+  else if (next.quietMoves >= DRAW_AFTER_QUIET_MOVES) next.winner = 'draw';
   return next;
 }
 

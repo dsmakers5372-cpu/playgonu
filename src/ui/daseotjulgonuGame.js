@@ -3,6 +3,7 @@ import { chooseAIMove } from '../engine/daseotjulgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el } from './svg.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
+import { DRAW_AFTER_QUIET_MOVES } from '../engine/board.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 
 const AI_MOVE_DELAY_MS = 450;
@@ -133,7 +134,11 @@ export function mountDaseotjulgonuGame(root, { lang = 'en' } = {}) {
   function renderToolbar() {
     const theme = PLAYER_COLOR[game.turn];
     turnDot.style.background = theme.fill;
-    turnLabel.textContent = game.winner ? t.wins(t.playerName[game.winner]) : t.toMove(t.playerName[game.turn]);
+    const quietLeft = DRAW_AFTER_QUIET_MOVES - (game.quietMoves ?? 0);
+    if (game.winner === 'draw') turnLabel.textContent = t.draw;
+    else if (game.winner) turnLabel.textContent = t.wins(t.playerName[game.winner]);
+    else if (quietLeft <= 10) turnLabel.textContent = t.toMoveDrawSoon(t.playerName[game.turn], quietLeft);
+    else turnLabel.textContent = t.toMove(t.playerName[game.turn]);
     const redCaptured = PIECES_PER_PLAYER - game.pieces.filter((p) => p === PLAYERS.B).length;
     const blackCaptured = PIECES_PER_PLAYER - game.pieces.filter((p) => p === PLAYERS.A).length;
     capturedLabel.textContent = t.captured(redCaptured, blackCaptured);
@@ -143,7 +148,7 @@ export function mountDaseotjulgonuGame(root, { lang = 'en' } = {}) {
   function showWinBanner() {
     if (!game.winner) return;
     stats.stop();
-    winMessage.textContent = t.winsExclaim(t.playerName[game.winner]);
+    winMessage.textContent = game.winner === 'draw' ? t.drawExclaim(DRAW_AFTER_QUIET_MOVES) : t.winsExclaim(t.playerName[game.winner]);
     if (winMoves) winMoves.textContent = String(stats.moveCount);
     if (winTime) winTime.textContent = formatElapsed(stats.elapsedMs());
     winBanner.classList.add('is-visible');

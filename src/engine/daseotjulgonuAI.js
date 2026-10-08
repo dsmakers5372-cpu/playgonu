@@ -9,6 +9,7 @@ function countPieces(state, player) {
 
 function evaluate(state, perspective) {
   if (state.winner === perspective) return 1000;
+  if (state.winner === 'draw') return 0;
   if (state.winner) return -1000;
   const opp = opponent(perspective);
   const material = (countPieces(state, perspective) - countPieces(state, opp)) * 10;
