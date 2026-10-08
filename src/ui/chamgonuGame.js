@@ -9,7 +9,7 @@ import {
 } from '../engine/chamgonu.js';
 import { chooseAIMove } from '../engine/chamgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el, SVG_NS } from './svg.js';
+import { el, animate, startAnimations } from './svg.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playCaptureSound } from './sound.js';
 
@@ -80,12 +80,6 @@ const POINT_PIXELS = [
   { x: 153, y: 267 }, { x: 153, y: 210 },
 ];
 
-function animate(node, attrs) {
-  const anim = document.createElementNS(SVG_NS, 'animate');
-  for (const [key, value] of Object.entries(attrs)) anim.setAttribute(key, value);
-  node.appendChild(anim);
-  return node;
-}
 
 function statusText(lang, game) {
   const s = STRINGS[lang];
@@ -128,6 +122,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
   let captureEffectIndex = null; // point a piece was just swept off of, briefly highlighted
   let captureEffectPlayer = null; // whose piece it was, so the fade-out ghost is the right color
   let captureEffectTimer = null;
+  let captureEffectStart = 0;
   let aiEnabled = opponentModeSelect.value === 'ai';
   let aiPlayer = sideSelect && sideSelect.value === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
   const stats = createGameStats({ onTick: (ms) => { if (timerLabel) timerLabel.textContent = formatElapsed(ms); } });
@@ -165,11 +160,12 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
 
   // Slow and deliberate on purpose — the capture itself matters, so it
   // shouldn't flash by in under a second.
-  const CAPTURE_EFFECT_MS = 1300;
+  const CAPTURE_EFFECT_MS = 1700;
 
   function flashCapture(index, player) {
     captureEffectIndex = index;
     captureEffectPlayer = player;
+    captureEffectStart = performance.now();
     playCaptureSound();
     clearTimeout(captureEffectTimer);
     captureEffectTimer = setTimeout(() => {
@@ -316,11 +312,11 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
       if (captureEffectPlayer) {
         const colors = PLAYER_COLOR[captureEffectPlayer];
         const ghost = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
-        svg.appendChild(animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.1s', fill: 'freeze' }));
+        svg.appendChild(animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.6s', fill: 'freeze' }, captureEffectStart));
       }
       const ring = el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: '#AC3B2A', 'stroke-width': '3' });
-      animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.2s', fill: 'freeze' });
-      animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: '1.2s', fill: 'freeze' });
+      animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.6s', fill: 'freeze' }, captureEffectStart);
+      animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: '1.6s', fill: 'freeze' }, captureEffectStart);
       svg.appendChild(ring);
     }
 
@@ -330,6 +326,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
       hit.addEventListener('click', () => handlePointClick(index));
       svg.appendChild(hit);
     });
+    startAnimations(svg);
   }
 
   function renderToolbar() {

@@ -2,15 +2,9 @@ import { legalMovesFrom, legalPlacements, legalCaptures, BOARD_EDGES, PLAYERS } 
 import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el, SVG_NS } from './svg.js';
+import { el, animate, startAnimations } from './svg.js';
 import { playPlaceSound, playCaptureSound } from './sound.js';
 
-function animate(node, attrs) {
-  const anim = document.createElementNS(SVG_NS, 'animate');
-  for (const [key, value] of Object.entries(attrs)) anim.setAttribute(key, value);
-  node.appendChild(anim);
-  return node;
-}
 
 const PLAYER_COLOR = {
   [PLAYERS.A]: { fill: '#AC3B2A', stroke: '#7A2A1E' },
@@ -265,14 +259,17 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
   // is how a slide/capture gets reconstructed into something animatable.
   let moveEffectIndex = null; // point a piece just slid/placed onto
   let moveEffectTimer = null;
+  let moveEffectStart = 0;
   let captureEffectIndex = null; // point a piece was just captured from
   let captureEffectPlayer = null;
   let captureEffectTimer = null;
+  let captureEffectStart = 0;
   const MOVE_EFFECT_MS = 650;
-  const CAPTURE_EFFECT_MS = 1300;
+  const CAPTURE_EFFECT_MS = 1700;
 
   function flashMove(index) {
     moveEffectIndex = index;
+    moveEffectStart = performance.now();
     clearTimeout(moveEffectTimer);
     moveEffectTimer = setTimeout(() => { moveEffectIndex = null; renderBoard(); }, MOVE_EFFECT_MS);
   }
@@ -280,6 +277,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
   function flashCapture(index, player) {
     captureEffectIndex = index;
     captureEffectPlayer = player;
+    captureEffectStart = performance.now();
     clearTimeout(captureEffectTimer);
     captureEffectTimer = setTimeout(() => { captureEffectIndex = null; captureEffectPlayer = null; renderBoard(); }, CAPTURE_EFFECT_MS);
   }
@@ -359,15 +357,15 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       }
       const colors = PLAYER_COLOR[player];
       const piece = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
-      if (index === moveEffectIndex) animate(piece, { attributeName: 'r', values: '13;18;13', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+      if (index === moveEffectIndex) animate(piece, { attributeName: 'r', values: '13;18;13', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' }, moveEffectStart);
       svg.appendChild(piece);
       if (index === game.lastMove) {
         svg.appendChild(el('circle', { cx: x, cy: y, r: 4, fill: '#F6F1E6' }));
       }
       if (index === moveEffectIndex) {
         const ring = el('circle', { cx: x, cy: y, r: 13, fill: 'none', stroke: colors.fill, 'stroke-width': '3' });
-        animate(ring, { attributeName: 'r', from: '13', to: '24', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
-        animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+        animate(ring, { attributeName: 'r', from: '13', to: '24', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' }, moveEffectStart);
+        animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' }, moveEffectStart);
         svg.appendChild(ring);
       }
     });
@@ -379,11 +377,11 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       const { x, y } = POINT_PIXELS[captureEffectIndex];
       const colors = PLAYER_COLOR[captureEffectPlayer];
       const ghost = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
-      animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.1s', fill: 'freeze' });
+      animate(ghost, { attributeName: 'opacity', from: '1', to: '0', dur: '1.6s', fill: 'freeze' }, captureEffectStart);
       svg.appendChild(ghost);
       const ring = el('circle', { cx: x, cy: y, r: 10, fill: 'none', stroke: colors.fill, 'stroke-width': '3' });
-      animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.2s', fill: 'freeze' });
-      animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: '1.2s', fill: 'freeze' });
+      animate(ring, { attributeName: 'r', from: '10', to: '28', dur: '1.6s', fill: 'freeze' }, captureEffectStart);
+      animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: '1.6s', fill: 'freeze' }, captureEffectStart);
       svg.appendChild(ring);
     }
 
@@ -400,6 +398,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       hit.addEventListener('click', () => handlePointClick(index));
       svg.appendChild(hit);
     });
+    startAnimations(svg);
   }
 
   function renderToolbar() {

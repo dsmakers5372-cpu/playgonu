@@ -2,15 +2,9 @@ import { legalPlacements, forbiddenPoints, toIndex, toCoords, BOARD_SIZE, PLAYER
 import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el, SVG_NS } from './svg.js';
+import { el, animate, startAnimations } from './svg.js';
 import { playPlaceSound } from './sound.js';
 
-function animate(node, attrs) {
-  const anim = document.createElementNS(SVG_NS, 'animate');
-  for (const [key, value] of Object.entries(attrs)) anim.setAttribute(key, value);
-  node.appendChild(anim);
-  return node;
-}
 
 const MOVE_EFFECT_MS = 500;
 
@@ -240,6 +234,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   }
   let pulseIndex = null; // the last-placed stone, briefly highlighted
   let pulseTimer = null;
+  let pulseStart = 0;
 
   function isMyTurn() {
     return role === 'player' && game && game.turn === myColor && !game.winner;
@@ -290,15 +285,15 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
         svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.4, fill: 'none', stroke: '#F6F1E6', 'stroke-width': '1.4', opacity: '.8' }));
       }
       const piece = el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '1.4' });
-      if (index === pulseIndex) animate(piece, { attributeName: 'r', values: `${STEP * 0.38};${STEP * 0.52};${STEP * 0.38}`, dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+      if (index === pulseIndex) animate(piece, { attributeName: 'r', values: `${STEP * 0.38};${STEP * 0.52};${STEP * 0.38}`, dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' }, pulseStart);
       svg.appendChild(piece);
       if (index === game.lastMove) {
         svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.12, fill: player === PLAYERS.B ? '#3A332C' : '#F6F1E6' }));
       }
       if (index === pulseIndex) {
         const ring = el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: 'none', stroke: colors.fill, 'stroke-width': '2.5' });
-        animate(ring, { attributeName: 'r', from: String(STEP * 0.38), to: String(STEP * 0.75), dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
-        animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' });
+        animate(ring, { attributeName: 'r', from: String(STEP * 0.38), to: String(STEP * 0.75), dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' }, pulseStart);
+        animate(ring, { attributeName: 'opacity', from: '.9', to: '0', dur: `${MOVE_EFFECT_MS}ms`, fill: 'freeze' }, pulseStart);
         svg.appendChild(ring);
       }
     });
@@ -310,6 +305,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       hit.addEventListener('click', () => handlePointClick(index, legal));
       svg.appendChild(hit);
     });
+    startAnimations(svg);
   }
 
   function renderToolbar() {
@@ -388,6 +384,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       if (newCount > prevCount) playPlaceSound();
       if (game.lastMove !== null && game.lastMove !== prevLastMove) {
         pulseIndex = game.lastMove;
+        pulseStart = performance.now();
         clearTimeout(pulseTimer);
         pulseTimer = setTimeout(() => { pulseIndex = null; renderBoard(); }, MOVE_EFFECT_MS);
       }

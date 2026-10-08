@@ -74,7 +74,7 @@ export default {
     },
   ],
   outro: {
-    ko: { title: '직접 해보세요', body: 'playgonu.com 에서 마스터 AI와 참고누 한 판! 왕복 꼰, 먼저 만드는 쪽이 이깁니다.' },
-    en: { title: 'Your turn', body: 'Play Cham-gonu against the Master AI at playgonu.com. Whoever builds the running mill first wins.' },
+    ko: { title: '친구들과 즐거운 고누 한 판 어때요?', body: 'playgonu.com 에서 바로 시작하세요. 링크 하나로 친구를 초대할 수 있어요.' },
+    en: { title: 'How about a fun game of Gonu with friends?', body: 'Start right away at playgonu.com — invite a friend with a single link.' },
   },
 };

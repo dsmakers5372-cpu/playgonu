@@ -36,7 +36,7 @@ const states = [engine.createInitialState()];
 for (const [from, to] of episode.moves) states.push(engine.move(states[states.length - 1], from, to));
 
 // ---- plan (seconds) --------------------------------------------------------
-const PLY_DUR = { place: 0.9, capture: 1.45, slide: 1.1 };
+const PLY_DUR = { place: 0.9, capture: 1.9, slide: 1.1 }; // capture leaves time for the site's 1.6s fade-out
 const readSecs = (t) => (lang === 'ko' ? 3.4 + [...t].length * 0.072 : 3.4 + t.split(/\s+/).length * 0.3);
 const firstPly = shorts ? 26 : 0;
 const keepExplain = (after) => !shorts || [26, 29, 36, 57].includes(after);
