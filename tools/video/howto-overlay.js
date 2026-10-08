@@ -4,7 +4,13 @@
 // then pick the destination — and at the explain moments pauses with a
 // shutter flash, rings/arrows/lines drawn over the board and a speech bubble.
 // Returns a promise of caption marks (seconds from the start of the episode).
-export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel }) {
+// `doubleTap`: the page wants two taps per placement (Gomoku: preview, then
+// confirm), so every placement is tapped twice.
+// `explainZoom`: during an explanation, zoom the board (about this much) onto
+// the stones being talked about — for big boards like Gomoku's 15×15.
+// `lineOpacity`: the glowing band drawn along a highlighted line — lighter on
+// boards with dark stones so their colour still shows.
+export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel, doubleTap = false, explainZoom = 0, lineOpacity = 0.55 }) {
   const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
   const portrait = layout === 'portrait';
   const ringR = pieceR + 9;
@@ -24,7 +30,11 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
     #pg-bubble .title { font-size: ${portrait ? 23 : 24}px; font-weight: 800; line-height: 1.3; color: #2A2420; }
     #pg-bubble .body { font-size: ${portrait ? 16 : 16.5}px; line-height: 1.65; color: #5B524A; white-space: pre-line; }
     .pg-layer { position: absolute; pointer-events: none; z-index: 5; overflow: visible; }
-    #pg-annot .ring { animation: pgPulse 1.1s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    #pg-annot .ring { animation: pgPulse 1.1s ease-in-out infinite, pgGlow 1.1s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+    #pg-annot .spark { animation: pgSpin 2.4s linear infinite, pgTwinkle 1.2s ease-in-out infinite; transform-box: view-box; }
+    @keyframes pgGlow { 0%, 100% { filter: drop-shadow(0 0 1px #F3C969); } 50% { filter: drop-shadow(0 0 7px #F3C969) drop-shadow(0 0 3px #fff); } }
+    @keyframes pgSpin { to { transform: rotate(360deg); } }
+    @keyframes pgTwinkle { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
     #pg-annot .dash { animation: pgDash 1s linear infinite; }
     #pg-tap circle { animation: pgTap .55s ease-out forwards; transform-box: fill-box; transform-origin: center; }
     @keyframes pgPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
@@ -92,17 +102,53 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
   };
   placeLayers();
 
+  // Explanation close-up: slide and enlarge the board so the stones being
+  // talked about sit in the middle of the board's frame, like a zoomed shot.
+  function zoomOnto(ex) {
+    const pts = [
+      ...(ex.focus || []),
+      ...(ex.rings || []).flatMap((r) => r.points),
+      ...(ex.lines || []).flatMap((l) => [l[0], l[l.length - 1]]),
+      ...(ex.arrows || []).flatMap((a) => [a.from, a.to]),
+    ].map((i) => points[i]);
+    if (!pts.length) return false;
+    const xs = pts.map((p) => p[0]);
+    const ys = pts.map((p) => p[1]);
+    const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
+    const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const span = Math.max(Math.max(...xs) - Math.min(...xs), Math.max(...ys) - Math.min(...ys)) + 4 * pieceR + 40;
+    const z = Math.max(1, Math.min(explainZoom, 380 / span));
+    const cs = getComputedStyle(frame);
+    const padL = parseFloat(cs.paddingLeft);
+    const padT = parseFloat(cs.paddingTop);
+    const inner = frame.clientWidth - padL - parseFloat(cs.paddingRight);
+    const px = padL + (cx / 420) * inner;
+    const py = padT + (cy / 420) * inner;
+    frame.style.transformOrigin = '0 0';
+    frame.style.transition = 'transform .45s ease-out';
+    frame.style.transform = `translate(${frame.clientWidth / 2 - z * px}px, ${frame.clientHeight / 2 - z * py}px) scale(${z})`;
+    return true;
+  }
+
   const ringColor = { gold: '#E9B949', red: '#AC3B2A', blue: '#2C5F8A', dark: '#2A2420' };
   function annotate(ex) {
     let s = '';
     for (const line of ex.lines || []) {
       const [a, c] = [points[line[0]], points[line[line.length - 1]]];
-      s += `<line x1="${a[0]}" y1="${a[1]}" x2="${c[0]}" y2="${c[1]}" stroke="#F3C969" stroke-width="${pieceR + 5}" stroke-linecap="round" opacity=".55"/>`;
+      s += `<line x1="${a[0]}" y1="${a[1]}" x2="${c[0]}" y2="${c[1]}" stroke="#F3C969" stroke-width="${pieceR + 5}" stroke-linecap="round" opacity="${lineOpacity}"/>`;
     }
     for (const ring of ex.rings || []) {
       for (const i of ring.points) {
         const [x, y] = points[i];
         s += `<g class="ring"><circle cx="${x}" cy="${y}" r="${ringR}" fill="none" stroke="#fff" stroke-width="7" opacity=".9"/><circle cx="${x}" cy="${y}" r="${ringR}" fill="none" stroke="${ringColor[ring.color]}" stroke-width="4"/></g>`;
+        // Two little sparkles circling the stone, so it twinkles.
+        const sp = (a) => {
+          const sx = x + Math.cos(a) * (ringR + 5);
+          const sy = y + Math.sin(a) * (ringR + 5);
+          const k = Math.max(3, pieceR * 0.35);
+          return `<path d="M${sx} ${sy - k}L${sx + k * 0.3} ${sy - k * 0.3}L${sx + k} ${sy}L${sx + k * 0.3} ${sy + k * 0.3}L${sx} ${sy + k}L${sx - k * 0.3} ${sy + k * 0.3}L${sx - k} ${sy}L${sx - k * 0.3} ${sy - k * 0.3}Z" fill="#FFF6D8" stroke="#E9B949" stroke-width="1"/>`;
+        };
+        s += `<g class="spark" style="transform-origin:${x}px ${y}px">${sp(-0.8)}${sp(2.35)}</g>`;
       }
     }
     for (const arrow of ex.arrows || []) {
@@ -198,6 +244,11 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
       used += pick;
     }
     click(to, !isFast);
+    if (doubleTap && from === null) {
+      await sleep(isFast ? 60 : 160); // the site's preview stone shows for a moment
+      used += isFast ? 60 : 160;
+      click(to, false);
+    }
     ev(isCapture && from === null ? 'capture' : 'place');
     if (isCapture) {
       if (from !== null) setTimeout(() => ev('capture'), 120);
@@ -242,6 +293,7 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
         for (const m of seg.replay) {
           if (m[0] !== null) { click(m[0], false); await sleep(40); }
           click(m[1], false);
+          if (doubleTap && m[0] === null) { await sleep(20); click(m[1], false); }
           await sleep(60);
           await closePhaseBanner(50);
         }
@@ -262,14 +314,44 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
         flash.style.opacity = '0';
         placeLayers();
         annotate(seg.ex);
+        const zoomed = explainZoom ? zoomOnto(seg.ex) : false;
         await sleep(250);
         showBubble(seg.copy, seg.ex.tagTone === 'alert');
         ev('pop');
         marks.push({ kind: 'explain', start: at, end: at + seg.dur, title: seg.copy.title, body: seg.copy.body });
-        await sleep(Math.max(0, seg.dur * 1000 - 600));
+        // `poke`: tap a point the rules forbid, so the site's own warning shows.
+        let poked = 0;
+        if (seg.ex.poke !== undefined) {
+          await sleep(900);
+          click(seg.ex.poke);
+          ev('tap');
+          // The site's warning sits in the toolbar, under the zoomed board — so
+          // also shake a big red × on the point itself.
+          const [x, y] = points[seg.ex.poke];
+          const k = pieceR * 0.9;
+          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          g.innerHTML = `<circle cx="${x}" cy="${y}" r="${pieceR + 3}" fill="rgba(172,59,42,.18)"/><path d="M${x - k} ${y - k}L${x + k} ${y + k}M${x + k} ${y - k}L${x - k} ${y + k}" stroke="#AC3B2A" stroke-width="${Math.max(3, pieceR * 0.35)}" stroke-linecap="round"/>`;
+          annot.appendChild(g);
+          g.animate([{ transform: 'translateX(0)' }, { transform: 'translateX(-4px)' }, { transform: 'translateX(4px)' }, { transform: 'translateX(-3px)' }, { transform: 'translateX(0)' }], { duration: 420, iterations: 2 });
+          poked = 900;
+        }
+        await sleep(Math.max(0, seg.dur * 1000 - 600 - poked));
         hideBubble();
+        if (zoomed) { frame.style.transform = 'none'; await sleep(200); }
         annot.innerHTML = '';
         await sleep(350);
+      } else if (seg.type === 'countdown') {
+        // Puzzle pause: a big 3 · 2 · 1 over the board, a tick each second.
+        const n = Object.assign(document.createElement('div'), { id: 'pg-count' });
+        n.style.cssText = 'position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:8;font:800 120px "Work Sans",system-ui,sans-serif;color:#AC3B2A;text-shadow:0 4px 18px rgba(246,241,230,.95),0 0 3px #fff;pointer-events:none;';
+        frame.appendChild(n);
+        for (let k = seg.from || 3; k >= 1; k--) {
+          n.textContent = String(k);
+          n.animate([{ transform: 'translate(-50%,-50%) scale(1.5)', opacity: 0 }, { transform: 'translate(-50%,-50%) scale(1)', opacity: 1 }], { duration: 250, fill: 'forwards' });
+          ev('tap');
+          await sleep(1000);
+        }
+        n.remove();
       } else if (seg.type === 'hold') {
         fast.style.opacity = '0';
         if (seg.showBanner && bannerHeld && winBanner()) {
@@ -284,12 +366,13 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
 }
 
 // Before recording: play the moves leading up to the hook, off camera.
-export function prepareBoard(moves) {
+export function prepareBoard(moves, doubleTap = false) {
   const click = (i) => document.querySelectorAll('[data-board-svg] .board-point')[i].dispatchEvent(new MouseEvent('click', { bubbles: true }));
   return (async () => {
     for (const [from, to] of moves) {
       if (from !== null) { click(from); await new Promise((r) => setTimeout(r, 30)); }
       click(to);
+      if (doubleTap && from === null) { await new Promise((r) => setTimeout(r, 20)); click(to); }
       await new Promise((r) => setTimeout(r, 50));
       const phase = document.querySelector('[data-phase-banner].is-visible [data-phase-banner-ok]');
       if (phase) phase.click();

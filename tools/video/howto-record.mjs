@@ -53,7 +53,7 @@ const readSecs = (t) => (lang === 'ko' ? 1.6 + [...t].length * 0.05 : 1.6 + t.sp
 const cap = portrait ? (episode.portraitExplainCap ?? 5.5) : 6;
 const plan = [];
 const sceneStates = (scene) => {
-  const states = [engine.createInitialState()];
+  const states = [engine.createInitialState(episode.init)];
   for (const [from, to] of scene.moves) states.push(engine.move(states[states.length - 1], from, to));
   return states;
 };
@@ -89,6 +89,13 @@ episode.scenes.forEach((scene, si) => {
   const from = scene.from ?? 0;
   const to = scene.to ?? scene.moves.length;
   if (from > 0 || si > 0) plan.push({ type: 'cut', dur: 2.6, copy: scene.cut[lang], replay: scene.moves.slice(0, from), silent: portrait && scene.silentCutPortrait });
+  // A puzzle scene: ask, count down from 3, then play the answer.
+  if (scene.question) {
+    plan.push({ type: 'caption', text: scene.question[lang], span: 4.5 });
+    plan.push({ type: 'hold', dur: 0.6 });
+    plan.push({ type: 'countdown', dur: 3, from: 3 });
+    plan.push({ type: 'caption', text: null });
+  }
   const isFast = (i) => (scene.fast || []).some(([a, b]) => i >= a && i < b) || (portrait && (scene.fastPortrait || []).some(([a, b]) => i >= a && i < b));
   for (let i = from; i <= to; i++) {
     for (const ex of episode.explain.filter((e) => (e.scene ?? 0) === si && e.after === i)) {
@@ -151,17 +158,19 @@ await page.evaluateOnNewDocument(() => {
 });
 await page.goto(`http://127.0.0.1:${server.address().port}${lang === 'ko' ? '/ko' : ''}/${episode.page}`, { waitUntil: 'networkidle0' });
 await page.evaluate(() => document.fonts.ready);
-await page.evaluate((z) => {
+await page.evaluate((z, ruleset) => {
   document.documentElement.style.zoom = String(z);
   const select = document.querySelector('[data-opponent-mode]');
   select.value = 'local';
   select.dispatchEvent(new Event('change'));
   document.querySelector('[data-mode-local]')?.click(); // Cham-gonu asks "local or online?" first
+  const rules = document.querySelector('[data-ruleset]'); // Gomoku: freestyle or renju
+  if (rules && ruleset) { rules.value = ruleset; rules.dispatchEvent(new Event('change')); }
   document.querySelector('[data-new-game]').click();
   document.querySelector('[data-board-frame]').scrollIntoView({ block: 'center' });
-}, ZOOM);
+}, ZOOM, episode.init?.ruleset || null);
 await new Promise((r) => setTimeout(r, 800));
-if (preMoves.length) await page.evaluate(`(${prepareBoard.toString()})(${JSON.stringify(preMoves)})`);
+if (preMoves.length) await page.evaluate(`(${prepareBoard.toString()})(${JSON.stringify(preMoves)}, ${!!episode.doubleTap})`);
 
 // ---- recorder ------------------------------------------------------------------
 const framesDir = path.join(outDir, `${name}-frames`);
@@ -178,12 +187,12 @@ cdp.on('Page.screencastFrame', (e) => {
 await cdp.send('Page.startScreencast', { format: 'jpeg', quality: 92, maxWidth: W, maxHeight: H, everyNthFrame: 1 });
 await new Promise((r) => setTimeout(r, 500));
 const episodeStart = Date.now() / 1000;
-const result = await page.evaluate(`(${runHowto.toString()})(${JSON.stringify({ plan, layout: portrait ? 'portrait' : 'landscape', watermark: 'playgonu.com', points, pieceR: episode.pieceR, fastLabel: lang === 'ko' ? '▶▶ 빠르게' : '▶▶ FAST' })})`);
+const result = await page.evaluate(`(${runHowto.toString()})(${JSON.stringify({ plan, layout: portrait ? 'portrait' : 'landscape', watermark: 'playgonu.com', points, pieceR: episode.pieceR, fastLabel: lang === 'ko' ? '▶▶ 빠르게' : '▶▶ FAST', doubleTap: !!episode.doubleTap, explainZoom: episode.explainZoom || 0, lineOpacity: episode.lineOpacity ?? 0.55 })})`);
 const episodeEnd = Date.now() / 1000;
 await cdp.send('Page.stopScreencast');
 await browser.close();
 server.close();
-if (!result.ended) console.warn('WARNING: the game did not end with a win on the page — check the move list.');
+if (!result.ended && !episode.noWin) console.warn('WARNING: the game did not end with a win on the page — check the move list.');
 
 const mp4 = path.join(outDir, `${name}.mp4`);
 const firstIdx = Math.max(0, frames.findIndex((fr) => fr.ts > episodeStart) - 1);
