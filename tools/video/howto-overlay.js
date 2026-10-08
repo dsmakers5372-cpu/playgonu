@@ -213,6 +213,8 @@ export function runHowto({ plan, layout, watermark, points, pieceR, fastLabel })
     t0 = performance.now();
     for (const seg of plan) {
       const at = (performance.now() - t0) / 1000;
+      // Narration (when recorded with a voice): the line starts with its segment.
+      if (seg.voice) events.push({ kind: 'voice', id: seg.voice, t: at + (seg.voiceDelay || 0) });
       if (seg.type === 'intro' || seg.type === 'outro') {
         showCard(seg.copy, seg.type === 'outro');
         if (seg.type === 'outro') ev('whoosh');

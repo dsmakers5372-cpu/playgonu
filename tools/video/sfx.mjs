@@ -85,7 +85,9 @@ const SOUNDS = {
 const cache = {};
 const sound = (kind) => (cache[kind] ||= SOUNDS[kind]());
 
-export function buildSoundtrack(events, seconds, file) {
+// `voices` maps a narration id to its samples (mono, RATE); a 'voice' event
+// places that line, and the effects duck under it so the words stay clear.
+export function buildSoundtrack(events, seconds, file, voices = {}) {
   const n = Math.round(seconds * RATE);
   const mix = new Float32Array(n);
   for (const { kind, t } of events) {
@@ -94,6 +96,18 @@ export function buildSoundtrack(events, seconds, file) {
     const start = Math.round(t * RATE);
     for (let i = 0; i < s.length && start + i < n; i++) mix[start + i] += s[i];
   }
+  const duck = new Float32Array(n).fill(1);
+  const speech = new Float32Array(n);
+  for (const { kind, id, t } of events) {
+    if (kind !== 'voice' || !voices[id]) continue;
+    const v = voices[id];
+    const start = Math.round(t * RATE);
+    for (let i = 0; i < v.length && start + i < n; i++) {
+      speech[start + i] += v[i] * 1.15;
+      duck[start + i] = 0.45;
+    }
+  }
+  for (let i = 0; i < n; i++) mix[i] = mix[i] * duck[i] + speech[i];
   let peak = 0;
   for (const v of mix) peak = Math.max(peak, Math.abs(v));
   const gain = peak > 0.89 ? 0.89 / peak : 1;

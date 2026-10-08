@@ -14,6 +14,7 @@ import puppeteer from 'puppeteer-core';
 import { startServer } from './serve.mjs';
 import { runHowto, prepareBoard } from './howto-overlay.js';
 import { buildSoundtrack } from './sfx.mjs';
+import { apiKey, speak, wavToFloat } from './tts.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const args = {};
@@ -102,7 +103,32 @@ episode.scenes.forEach((scene, si) => {
   if (si === episode.scenes.length - 1) plan.push({ type: 'hold', dur: 1.8, showBanner: true });
 });
 plan.push({ type: 'outro', dur: 3.5, copy: episode.outro[lang] });
+// ---- narration ------------------------------------------------------------------
+// With an OpenAI key in .env (and no --no-voice), every caption, card and
+// explanation is read aloud; each segment is held at least as long as its line.
+const voiceFiles = {};
+const voiced = !args['no-voice'] && !!apiKey();
+if (voiced) {
+  let n = 0;
+  for (const seg of plan) {
+    let text = null;
+    if (seg.type === 'caption' && seg.text) text = seg.text;
+    else if (seg.type === 'explain' || seg.type === 'cut' || seg.type === 'intro' || seg.type === 'outro') text = [seg.copy.title, seg.copy.body].filter(Boolean).join('. ').replace(/([.!?])\./g, '$1');
+    if (!text) continue;
+    const { file, seconds } = await speak(text, lang);
+    const id = `v${n++}`;
+    voiceFiles[id] = file;
+    seg.voice = id;
+    if (seg.type === 'explain') { seg.voiceDelay = 0.25; seg.dur = Math.max(seg.dur, seconds + 0.75); }
+    else if (seg.type === 'caption') {
+      // The hook's line runs over the opening move; give it a beat first.
+      const hold = plan[plan.indexOf(seg) + 1];
+      if (hold?.type === 'hold') hold.dur = Math.max(hold.dur, seconds - 1.2);
+    } else seg.dur = Math.max(seg.dur, seconds + 0.6);
+  }
+}
 const planned = plan.reduce((s, p) => s + (p.dur || 0), 0);
+if (voiced) console.log(`${name}: narration ${Object.keys(voiceFiles).length} lines`);
 console.log(`${name}: planned ${planned.toFixed(1)}s`);
 if (args.plan) process.exit(0);
 
@@ -182,7 +208,8 @@ const ts = (sec, sep) => {
 const { marks, events } = result;
 // Soundtrack: the recorded cues as synthesised effects (sfx.mjs), muxed in.
 const wav = path.join(outDir, `${name}.wav`);
-buildSoundtrack(events, episodeEnd - episodeStart, wav);
+const voices = Object.fromEntries(Object.entries(voiceFiles).map(([id, file]) => [id, wavToFloat(fs.readFileSync(file), 48000)]));
+buildSoundtrack(events, episodeEnd - episodeStart, wav, voices);
 const withSound = path.join(outDir, `${name}.sound.mp4`);
 const mux = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-i', wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart', withSound], { stdio: 'inherit' });
 if (mux.status !== 0) throw new Error('ffmpeg mux failed');

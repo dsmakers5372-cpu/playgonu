@@ -31,7 +31,10 @@ export function runEpisode({ states, plan, layout, watermark, ui }) {
     #pg-annot .dash { animation: pgDash 1s linear infinite; }
     @keyframes pgPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.12); } }
     @keyframes pgDash { to { stroke-dashoffset: -24; } }
-    #pg-watermark { position: fixed; right: 14px; bottom: ${portrait ? 150 : 10}px; z-index: 70; font: 600 ${portrait ? 13 : 12}px "Work Sans", system-ui, sans-serif; color: rgba(42,36,32,.55); letter-spacing: .02em; pointer-events: none; }
+    #pg-hook { position: absolute; left: 50%; top: 9%; z-index: 7; transform: translate(-50%, 0) scale(.6); opacity: 0; transition: opacity .2s, transform .35s cubic-bezier(.2,1.6,.4,1); background: #2A2420; color: #fff; font: 800 30px "Noto Serif KR", Georgia, serif; padding: 12px 22px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.25); white-space: nowrap; pointer-events: none; }
+    #pg-hook.on { opacity: 1; transform: translate(-50%, 0) scale(1); }
+    #pg-hook em { font-style: normal; color: #F3C969; }
+    #pg-watermark { position: fixed; right: 14px; bottom: ${portrait ? 150 : 10}px; z-index: 70; font: 600 ${portrait ? 13 : 12}px "Work Sans", system-ui, sans-serif; color: rgba(42,36,32,.6); letter-spacing: .02em; pointer-events: none; background: rgba(246,241,230,.92); border-radius: 6px; padding: 2px 7px; }
   `;
   document.head.appendChild(style);
 
@@ -48,6 +51,27 @@ export function runEpisode({ states, plan, layout, watermark, ui }) {
   annot.id = 'pg-annot';
   annot.setAttribute('viewBox', '0 0 420 420');
   frame.appendChild(annot);
+  const hook = Object.assign(document.createElement('div'), { id: 'pg-hook' });
+  frame.appendChild(hook);
+
+  // Sound cues for the soundtrack (added after recording), in seconds from
+  // the start of the episode.
+  const events = [];
+  let t0 = performance.now();
+  const ev = (kind) => events.push({ kind, t: (performance.now() - t0) / 1000 });
+
+  // A capture zooms the board in on that point for a moment.
+  function zoomAt(i) {
+    const cs = getComputedStyle(frame);
+    const padL = parseFloat(cs.paddingLeft);
+    const padT = parseFloat(cs.paddingTop);
+    const inner = frame.clientWidth - padL - parseFloat(cs.paddingRight);
+    const [x, y] = POINTS[i];
+    frame.style.transformOrigin = `${padL + (x / 420) * inner}px ${padT + (y / 420) * inner}px`;
+    frame.style.transition = 'transform .35s ease-out';
+    frame.style.transform = 'scale(1.16)';
+    setTimeout(() => { frame.style.transform = 'scale(1)'; }, 1400);
+  }
   // The board SVG fills the frame's content box (`.board-frame svg { width:
   // 100% }`), so the overlay copies the frame's padding instead of measuring
   // pixels — that stays exact under the page zoom used for recording.
@@ -108,23 +132,49 @@ export function runEpisode({ states, plan, layout, watermark, ui }) {
 
   return (async () => {
     const marks = [];
-    const t0 = performance.now();
+    t0 = performance.now();
     for (const seg of plan) {
       const at = (performance.now() - t0) / 1000;
-      if (seg.type === 'intro' || seg.type === 'outro') {
+      // Narration (when recorded with a voice): the line starts with its segment.
+      if (seg.voice) events.push({ kind: 'voice', id: seg.voice, t: at + (seg.voiceDelay || 0) });
+      if (seg.type === 'caption') {
+        if (seg.text) {
+          hook.innerHTML = seg.text;
+          hook.classList.add('on');
+          ev('pop');
+          marks.push({ kind: 'caption', start: at, end: at + (seg.span || 3), title: hook.textContent, body: '' });
+        } else {
+          hook.classList.remove('on');
+        }
+      } else if (seg.type === 'cut') {
+        // Back to the start of the game behind a title card.
+        showCard(seg.copy, false);
+        ev('whoosh');
+        marks.push({ kind: 'cut', start: at, end: at + seg.dur, title: seg.copy.title, body: seg.copy.body });
+        await sleep(300);
+        window.__feedState(seg.state, 'playing');
+        await sleep(Math.max(0, seg.dur * 1000 - 800));
+        card.style.opacity = '0';
+        await sleep(500);
+      } else if (seg.type === 'intro' || seg.type === 'outro') {
         showCard(seg.copy, seg.type === 'outro');
+        if (seg.type === 'outro') ev('whoosh');
         marks.push({ kind: seg.type, start: at, end: at + seg.dur, title: seg.copy.title, body: seg.copy.body });
         await sleep(seg.dur * 1000 - (seg.type === 'intro' ? 500 : 0));
         if (seg.type === 'intro') { card.style.opacity = '0'; await sleep(500); }
       } else if (seg.type === 'ply') {
         const next = states[seg.index + 1];
         window.__feedState(next, next.winner ? 'finished' : 'playing');
+        if (!window.__snap) {
+          ev(seg.capture && seg.from === null ? 'capture' : 'place');
+          if (seg.capture) zoomAt(seg.to);
+        }
         await sleep(seg.dur * 1000);
         // The site's own "first half over" popup appears here; let it be read,
         // then press OK like a player would.
         const phaseBanner = document.querySelector('[data-phase-banner].is-visible');
         if (phaseBanner) {
-          await sleep(window.__snap ? 200 : 2600);
+          await sleep(window.__snap ? 200 : 1500);
           phaseBanner.querySelector('[data-phase-banner-ok]')?.click();
           await sleep(400);
         }
@@ -140,6 +190,7 @@ export function runEpisode({ states, plan, layout, watermark, ui }) {
         annotate(seg.ex);
         await sleep(250);
         showBubble(seg.copy, seg.ex.tagTone === 'alert');
+        ev('pop');
         marks.push({ kind: 'explain', after: seg.at, start: at, end: at + seg.dur, title: seg.copy.title, body: seg.copy.body });
         if (window.__snap) {
           // Guide screenshots carry their caption in the page text, so the
@@ -155,9 +206,10 @@ export function runEpisode({ states, plan, layout, watermark, ui }) {
         await sleep(350);
         if (banner) banner.style.visibility = '';
       } else if (seg.type === 'hold') {
+        if (seg.win) ev('win');
         await sleep(seg.dur * 1000);
       }
     }
-    return marks;
+    return { marks, events };
   })();
 }

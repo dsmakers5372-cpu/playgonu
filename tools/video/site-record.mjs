@@ -15,6 +15,8 @@ import puppeteer from 'puppeteer-core';
 import { startServer } from './serve.mjs';
 import { installHarness } from './site-harness.js';
 import { runEpisode } from './site-overlay.js';
+import { buildSoundtrack } from './sfx.mjs';
+import { apiKey, speak, wavToFloat } from './tts.mjs';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const args = {};
@@ -36,30 +38,69 @@ const states = [engine.createInitialState()];
 for (const [from, to] of episode.moves) states.push(engine.move(states[states.length - 1], from, to));
 
 // ---- plan (seconds) --------------------------------------------------------
-const PLY_DUR = { place: 0.9, capture: 3.0, slide: 1.1 }; // capture leaves time for the site's 2.7s flip-and-fade
-const readSecs = (t) => (lang === 'ko' ? 3.4 + [...t].length * 0.072 : 3.4 + t.split(/\s+/).length * 0.3);
+// Brisk: a slide every ~0.6s; a capture keeps 2.2s so its flip is seen.
+const PLY_DUR = { place: 0.45, capture: 2.2, slide: 0.6 };
+const readSecs = (t) => (lang === 'ko' ? 1.8 + [...t].length * 0.055 : 1.8 + t.split(/\s+/).length * 0.22);
 const firstPly = shorts ? 26 : 0;
 const keepExplain = (after) => !shorts || [26, 29, 36, 57].includes(after);
 const explainAt = new Map(episode.explain.map((e) => [e.after, e]));
 const plan = [];
+const plyKind = (i) => (states[i].pendingCapture ? 'capture' : episode.moves[i][0] === null ? 'place' : 'slide');
+const plySeg = (i) => {
+  const kind = plyKind(i);
+  return { type: 'ply', index: i, dur: PLY_DUR[kind], capture: kind === 'capture', from: episode.moves[i][0], to: episode.moves[i][1] };
+};
 const introCopy = (shorts && episode.shortsIntro ? episode.shortsIntro : episode.intro)[lang];
-plan.push({ type: 'intro', dur: shorts ? 3.4 : 5, copy: introCopy });
+// The hook: open on the game's best moment with a headline, then rewind
+// (behind a title card) to where the story starts.
+const hook = !stillsMode && episode.hook;
+if (hook) {
+  plan.push({ type: 'caption', text: hook.caption[lang], span: 1.8 + hook.plies * 1.6 });
+  plan.push({ type: 'hold', dur: 1.0 });
+  for (let i = hook.at; i < hook.at + hook.plies; i++) plan.push(plySeg(i));
+  plan.push({ type: 'hold', dur: 0.8 });
+  plan.push({ type: 'caption', text: null });
+  plan.push({ type: 'cut', dur: 3.2, copy: introCopy, state: states[firstPly] });
+} else {
+  plan.push({ type: 'intro', dur: shorts ? 3.4 : 5, copy: introCopy });
+}
 // Shorts open mid-game: jump straight to the first kept position.
 for (let i = firstPly; i <= episode.moves.length; i++) {
   const ex = explainAt.get(i);
   if (ex && keepExplain(i)) {
     const copy = ex[lang];
-    plan.push({ type: 'explain', at: i, ex, copy, dur: Math.min(shorts ? 7.5 : 13, readSecs(`${copy.title} ${copy.body}`)) });
+    plan.push({ type: 'explain', at: i, ex, copy, dur: Math.min(shorts ? 6.5 : 8, readSecs(`${copy.title} ${copy.body}`)) });
   }
-  if (i < episode.moves.length) {
-    const kind = states[i].pendingCapture ? 'capture' : episode.moves[i][0] === null ? 'place' : 'slide';
-    const speed = shorts && kind !== 'capture' && !(i >= 29 && i < 36) ? 0.5 : 1; // never rush a capture
-    plan.push({ type: 'ply', index: i, dur: PLY_DUR[kind] * speed });
-  }
-  if (i === episode.moves.length) plan.push({ type: 'hold', dur: shorts ? 1 : 1.5 });
+  if (i < episode.moves.length) plan.push(plySeg(i));
+  if (i === episode.moves.length) plan.push({ type: 'hold', dur: 1.5, win: true });
 }
-plan.push({ type: 'outro', dur: shorts ? 4 : 5.5, copy: episode.outro[lang] });
+plan.push({ type: 'outro', dur: 3.5, copy: episode.outro[lang] });
 if (stillsMode) for (const seg of plan) if (seg.type === 'ply' || seg.type === 'intro' || seg.type === 'outro' || seg.type === 'hold') seg.dur = 0.12;
+
+// Narration, as in howto-record.mjs: each caption, card and explanation is
+// read aloud (OpenAI voice) when .env has a key; segments stretch to fit.
+const voiceFiles = {};
+if (!stillsMode && !args['no-voice'] && apiKey()) {
+  let n = 0;
+  for (const seg of plan) {
+    let text = null;
+    if (seg.type === 'caption' && seg.text) text = seg.text;
+    else if (seg.type === 'explain' || seg.type === 'cut' || seg.type === 'intro' || seg.type === 'outro') text = [seg.copy.title, seg.copy.body].filter(Boolean).join('. ').replace(/([.!?])\./g, '$1');
+    if (!text) continue;
+    const { file, seconds } = await speak(text, lang);
+    const id = `v${n++}`;
+    voiceFiles[id] = file;
+    seg.voice = id;
+    if (seg.type === 'explain') { seg.voiceDelay = 0.25; seg.dur = Math.max(seg.dur, seconds + 0.75); }
+    else if (seg.type === 'caption') {
+      const hold = plan[plan.indexOf(seg) + 1];
+      if (hold?.type === 'hold') hold.dur = Math.max(hold.dur, seconds - 1.2);
+    } else seg.dur = Math.max(seg.dur, seconds + 0.6);
+  }
+  console.log(`${name}: narration ${n} lines`);
+}
+console.log(`${name}: planned ${plan.reduce((s, p) => s + (p.dur || 0), 0).toFixed(1)}s`);
+if (args.plan) process.exit(0);
 
 // ---- browser ----------------------------------------------------------------
 const CHROME = ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'].find((p) => fs.existsSync(p));
@@ -68,7 +109,7 @@ const server = await startServer(0);
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, protocolTimeout: 0, args: ['--hide-scrollbars', '--autoplay-policy=no-user-gesture-required'] }); // the whole episode runs inside one evaluate, longer than the 180s default
 const page = await browser.newPage();
 await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
-const startState = states[firstPly];
+const startState = states[hook ? hook.at : firstPly];
 const harness = {
   storage: {
     'playgonu:name': episode.names.me,
@@ -121,7 +162,7 @@ if (!stillsMode) {
   await new Promise((r) => setTimeout(r, 500));
 }
 const episodeStart = Date.now() / 1000;
-const marks = await page.evaluate(`(${runEpisode.toString()})(${JSON.stringify({ states, plan, layout: portrait ? 'portrait' : 'landscape', watermark: 'playgonu.com' })})`);
+const { marks, events } = await page.evaluate(`(${runEpisode.toString()})(${JSON.stringify({ states, plan, layout: portrait ? 'portrait' : 'landscape', watermark: 'playgonu.com' })})`);
 const episodeEnd = Date.now() / 1000;
 if (cdp) await cdp.send('Page.stopScreencast');
 await browser.close();
@@ -156,6 +197,15 @@ if (stillsMode) {
   if (ffResult.status !== 0) throw new Error('ffmpeg failed');
   fs.rmSync(framesDir, { recursive: true, force: true });
   console.log(`frames: ${kept.length} over ${(episodeEnd - episodeStart).toFixed(1)}s`);
+  // Soundtrack: synthesised effects (sfx.mjs) plus narration when recorded.
+  const wav = path.join(outDir, `${name}.wav`);
+  const voices = Object.fromEntries(Object.entries(voiceFiles).map(([id, file]) => [id, wavToFloat(fs.readFileSync(file), 48000)]));
+  buildSoundtrack(events, episodeEnd - episodeStart, wav, voices);
+  const withSound = path.join(outDir, `${name}.sound.mp4`);
+  const mux = spawnSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', mp4, '-i', wav, '-map', '0:v', '-map', '1:a', '-c:v', 'copy', '-c:a', 'aac', '-b:a', '160k', '-shortest', '-movflags', '+faststart', withSound], { stdio: 'inherit' });
+  if (mux.status !== 0) throw new Error('ffmpeg mux failed');
+  fs.renameSync(withSound, mp4);
+  fs.unlinkSync(wav);
   const ts = (sec, sep) => {
     const ms = Math.max(0, Math.round(sec * 1000));
     return `${String(Math.floor(ms / 3600000)).padStart(2, '0')}:${String(Math.floor(ms / 60000) % 60).padStart(2, '0')}:${String(Math.floor(ms / 1000) % 60).padStart(2, '0')}${sep}${String(ms % 1000).padStart(3, '0')}`;
