@@ -65,7 +65,7 @@ if (stillsMode) for (const seg of plan) if (seg.type === 'ply' || seg.type === '
 const CHROME = ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'].find((p) => fs.existsSync(p));
 const [W, H, ZOOM] = portrait ? [1080, 1920, 2] : [1920, 1080, 1.5];
 const server = await startServer(0);
-const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, args: ['--hide-scrollbars', '--autoplay-policy=no-user-gesture-required'] });
+const browser = await puppeteer.launch({ executablePath: CHROME, headless: true, protocolTimeout: 0, args: ['--hide-scrollbars', '--autoplay-policy=no-user-gesture-required'] }); // the whole episode runs inside one evaluate, longer than the 180s default
 const page = await browser.newPage();
 await page.setViewport({ width: W, height: H, deviceScaleFactor: 1 });
 const startState = states[firstPly];
