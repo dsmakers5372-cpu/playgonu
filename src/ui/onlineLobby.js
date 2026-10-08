@@ -1,5 +1,9 @@
 import { connectToRoom, generateRoomId } from '../net/roomClient.js';
 
+// Every poll is a Worker + Durable Object request against the daily/monthly
+// quota, so the room list refreshes at a calm pace rather than near-live.
+const LOBBY_POLL_MS = 10000;
+
 const STRINGS = {
   en: {
     namePlaceholder: 'Your name',
@@ -177,7 +181,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   function startPolling() {
     stopPolling();
     refreshLobby();
-    pollTimer = setInterval(refreshLobby, 3000);
+    pollTimer = setInterval(refreshLobby, LOBBY_POLL_MS);
   }
 
   async function refreshLobby() {
@@ -455,18 +459,18 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
         .then((res) => res.json())
         .then((rooms) => {
           const virtual = rooms.filter((r) => r.isVirtual && r.status === 'waiting');
-          if (virtual.length === 0) { refreshLobby(); pollTimer = setInterval(refreshLobby, 3000); return; }
+          if (virtual.length === 0) { refreshLobby(); pollTimer = setInterval(refreshLobby, LOBBY_POLL_MS); return; }
           const pick = virtual[Math.floor(Math.random() * virtual.length)];
           startAsGuest(`${pick.roomId}-${generateRoomId()}`);
         })
-        .catch(() => { refreshLobby(); pollTimer = setInterval(refreshLobby, 3000); });
+        .catch(() => { refreshLobby(); pollTimer = setInterval(refreshLobby, LOBBY_POLL_MS); });
     } else {
       refreshLobby();
-      pollTimer = setInterval(refreshLobby, 3000);
+      pollTimer = setInterval(refreshLobby, LOBBY_POLL_MS);
     }
   } else {
     refreshLobby();
-    pollTimer = setInterval(refreshLobby, 3000);
+    pollTimer = setInterval(refreshLobby, LOBBY_POLL_MS);
   }
 
   return { stopPolling };
