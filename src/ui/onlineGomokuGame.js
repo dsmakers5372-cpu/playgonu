@@ -154,6 +154,13 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   let resultRecorded = false;
   let wasVsBot = false;
   let opponentGone = false;
+
+  // Spectators have no color of their own, so the label names both sides.
+  function showPlayers(players) {
+    if (!players) return;
+    const byColor = Object.fromEntries(players.map((p) => [p.color, p.name]));
+    youLabel.textContent = `${PLAYER_NAME[lang].A} ${byColor.A ?? ""} · ${PLAYER_NAME[lang].B} ${byColor.B ?? ""}`;
+  }
   let pulseIndex = null; // the last-placed stone, briefly highlighted
   let pulseTimer = null;
 
@@ -291,6 +298,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
         panel.addSystemMessage(t.gameStarted(myColor));
         panel.startTimer();
       }
+      if (role === 'spectator') showPlayers(info.players);
       onMatchStart?.();
     },
     onState(engineState) {
@@ -328,6 +336,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       panel?.addSystemMessage(t.rematchAsked(msg.name));
     },
     onRematchStart(msg) {
+      showPlayers(msg.players);
       if (msg.color) myColor = msg.color;
       game = msg.engineState;
       resultRecorded = false;

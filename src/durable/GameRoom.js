@@ -19,12 +19,37 @@ const CHAT_MAX_LEN = 200;
 // A public room nobody joins within this long gets a master-level virtual
 // opponent, so creating a room never means waiting indefinitely.
 const AUTO_OPPONENT_MS = 30 * 1000;
+// AI-vs-AI "watch" rooms (the lobby's virtual games in progress) only run
+// while someone is watching, at a pace a spectator can follow, and start a
+// new game a few seconds after one ends.
+const WATCH_MOVE_DELAY_MS = [1100, 2300];
+const WATCH_RESTART_MS = 6000;
+const WATCH_DIFFICULTY = 'hard';
+const LISTING_HEARTBEAT_MS = 60 * 1000; // keeps a public room's lobby entry from going stale (Lobby STALE_MS)
 
 function freshEngineState(gameType, ruleset) {
   const engine = ENGINES[gameType];
   return gameType === 'gomoku'
     ? engine.createInitialState({ ruleset: ruleset === 'renju' ? 'renju' : 'freestyle' })
     : engine.createInitialState();
+}
+
+// A watch room should look like a game that was already under way when the
+// spectator walked in, so it starts from a short AI-played opening.
+function simulatedOpening(gameType, ruleset) {
+  const engine = ENGINES[gameType];
+  const ai = AI[gameType];
+  for (let attempt = 0; attempt < 5; attempt++) {
+    let state = freshEngineState(gameType, ruleset);
+    const plies = (gameType === 'gomoku' ? 8 : 10) + Math.floor(Math.random() * 8);
+    for (let i = 0; i < plies && !state.winner; i++) {
+      const m = ai.chooseAIMove(state, { difficulty: 'normal' });
+      if (!m) break;
+      state = engine.move(state, m.from ?? null, m.to);
+    }
+    if (!state.winner) return state;
+  }
+  return freshEngineState(gameType, ruleset);
 }
 
 export class GameRoom {
@@ -96,6 +121,17 @@ export class GameRoom {
     const roomId = String(msg.roomId || '').slice(0, 64);
     if (!roomId) return this.send(ws, { type: 'error', message: 'Missing room id' });
 
+    if (!this.room && roomId.startsWith('vpm-')) {
+      this.createWatchRoom(roomId, msg);
+    }
+    // Someone trying to watch a room that's gone must not end up hosting a
+    // brand-new empty room under its id.
+    if (!this.room && msg.spectate) {
+      this.send(ws, { type: 'error', code: 'room-gone', message: 'This game has already ended' });
+      ws.close(1000, 'room gone');
+      return;
+    }
+
     if (!this.room) {
       const gameType = ENGINES[msg.gameType] ? msg.gameType : 'cham';
       const engineState = freshEngineState(gameType, msg.ruleset);
@@ -111,6 +147,7 @@ export class GameRoom {
         isPublic: vp ? false : !!msg.isPublic,
         hostName: name,
         title: String(msg.title || '').trim().slice(0, 30) || null,
+        allowSpectators: msg.allowSpectators !== false,
         players: [],
         spectatorCount: 0,
         engineState,
@@ -120,9 +157,16 @@ export class GameRoom {
     }
 
     if (this.room.players.length >= MAX_PLAYERS) {
+      if (!this.room.allowSpectators) {
+        this.send(ws, { type: 'error', message: 'Spectating is turned off for this room' });
+        ws.close(1000, 'spectating disabled');
+        return;
+      }
       this.sockets.set(ws, { id: connId, role: 'spectator', name });
       this.room.spectatorCount++;
-      this.send(ws, { type: 'joined', role: 'spectator', room: this.publicRoomView(), engineState: this.room.engineState });
+      const players = this.room.players.map((p) => ({ name: p.name, color: p.color }));
+      this.send(ws, { type: 'joined', role: 'spectator', room: this.publicRoomView(), engineState: this.room.engineState, players });
+      if (this.room.aiVsAi) this.triggerBotMoves();
       return;
     }
 
@@ -132,7 +176,7 @@ export class GameRoom {
     this.sockets.set(ws, { id: connId, role: 'player', color, name });
 
     if (this.room.vsBot && this.room.players.length === 1) {
-      this.room.players.push({ id: 'bot', name: this.room.vsBot.name, color: PLAYERS.B, isBot: true });
+      this.room.players.push({ id: 'bot', name: this.room.vsBot.name, color: PLAYERS.B, isBot: true, difficulty: this.room.vsBot.difficulty });
     }
 
     // Include the opponent's name directly when one is already seated (the
@@ -171,7 +215,7 @@ export class GameRoom {
     const vp = pool[Math.floor(Math.random() * pool.length)];
     const { opponent } = ENGINES[this.room.gameType];
     this.room.vsBot = { name: vp.name, difficulty: 'master' };
-    this.room.players.push({ id: 'bot', name: vp.name, color: opponent(host.color), isBot: true });
+    this.room.players.push({ id: 'bot', name: vp.name, color: opponent(host.color), isBot: true, difficulty: 'master' });
     this.room.status = 'playing';
     this.broadcast({ type: 'opponent-joined', name: vp.name, room: this.publicRoomView(), vsBot: true });
     await this.setLobbyListing(true);
@@ -210,8 +254,49 @@ export class GameRoom {
     if (this.room.vsBot) await this.triggerBotMoves();
   }
 
+  // A room id like "vpm-v012-v087-K3PQ9X2A" is a spectator opening one of
+  // the lobby's virtual games in progress: both seats are bots, the game
+  // starts from a played-in opening, and it only runs while watched.
+  createWatchRoom(roomId, msg) {
+    const [, idA, idB] = roomId.split('-');
+    const a = getVirtualPlayer(idA);
+    const b = getVirtualPlayer(idB);
+    if (!a || !b || a === b) return;
+    const gameType = ENGINES[msg.gameType] ? msg.gameType : 'cham';
+    const { PLAYERS } = ENGINES[gameType];
+    this.room = {
+      roomId,
+      gameType,
+      ruleset: 'freestyle',
+      isPublic: false,
+      hostName: a.name,
+      title: null,
+      allowSpectators: true,
+      aiVsAi: true,
+      players: [
+        { id: 'bot-a', name: a.name, color: PLAYERS.A, isBot: true, difficulty: WATCH_DIFFICULTY },
+        { id: 'bot-b', name: b.name, color: PLAYERS.B, isBot: true, difficulty: WATCH_DIFFICULTY },
+      ],
+      spectatorCount: 0,
+      engineState: simulatedOpening(gameType, 'freestyle'),
+      status: 'playing',
+      vsBot: null,
+    };
+  }
+
+  restartWatchGame() {
+    if (!this.room?.aiVsAi || this.room.status !== 'finished' || this.sockets.size === 0) return;
+    const { opponent } = ENGINES[this.room.gameType];
+    for (const p of this.room.players) p.color = opponent(p.color);
+    this.room.engineState = simulatedOpening(this.room.gameType, this.room.ruleset);
+    this.room.status = 'playing';
+    const players = this.room.players.map((p) => ({ name: p.name, color: p.color }));
+    this.broadcast({ type: 'rematch-start', color: null, engineState: this.room.engineState, status: this.room.status, players });
+    this.triggerBotMoves();
+  }
+
   handleChat(conn, msg) {
-    if (!this.room) return;
+    if (!this.room || conn.role !== 'player') return;
     const text = String(msg.text || '').trim().slice(0, CHAT_MAX_LEN);
     if (!text) return;
     this.broadcast({ type: 'chat', from: conn.name || 'Player', text, ts: Date.now() });
@@ -235,29 +320,43 @@ export class GameRoom {
     if (this.room.vsBot && this.room.status === 'playing') await this.triggerBotMoves();
   }
 
-  // Plays the bot's side forward until it's the human's turn again (a
-  // single human move can hand the turn to the bot more than once in a
-  // row — e.g. Cham-gonu keeps the same player on the move after a mill
-  // capture — so this loops rather than making just one bot move).
+  // Plays bot moves until it's a human's turn again (a single human move can
+  // hand the turn to the bot more than once in a row — e.g. Cham-gonu keeps
+  // the same player on the move after a mill capture). In an AI-vs-AI watch
+  // room both seats are bots, so it plays the whole game — but stops as soon
+  // as the last spectator leaves.
   async triggerBotMoves() {
+    if (this.botLoopRunning) return;
     const ai = AI[this.room.gameType];
     const engine = ENGINES[this.room.gameType];
-    const bot = this.room.players.find((p) => p.isBot);
-    if (!ai || !bot) return;
-    while (this.room.status === 'playing' && !this.room.engineState.winner && this.room.engineState.turn === bot.color) {
-      const [min, max] = BOT_MOVE_DELAY_MS;
-      await new Promise((resolve) => setTimeout(resolve, min + Math.random() * (max - min)));
-      const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: this.room.vsBot.difficulty, deepMidgame: true });
-      if (!aiMove) break;
-      let next;
-      try {
-        next = engine.move(this.room.engineState, aiMove.from ?? null, aiMove.to);
-      } catch {
-        break;
+    if (!ai) return;
+    const watch = !!this.room.aiVsAi;
+    this.botLoopRunning = true;
+    try {
+      while (this.room.status === 'playing' && !this.room.engineState.winner) {
+        const mover = this.room.players.find((p) => p.color === this.room.engineState.turn);
+        if (!mover?.isBot) break;
+        if (watch && this.sockets.size === 0) break;
+        const [min, max] = watch ? WATCH_MOVE_DELAY_MS : BOT_MOVE_DELAY_MS;
+        await new Promise((resolve) => setTimeout(resolve, min + Math.random() * (max - min)));
+        if (watch && this.sockets.size === 0) break;
+        const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: mover.difficulty, deepMidgame: !watch });
+        if (!aiMove) break;
+        let next;
+        try {
+          next = engine.move(this.room.engineState, aiMove.from ?? null, aiMove.to);
+        } catch {
+          break;
+        }
+        this.room.engineState = next;
+        if (next.winner) this.room.status = 'finished';
+        this.broadcast({ type: 'state', engineState: next, status: this.room.status });
       }
-      this.room.engineState = next;
-      if (next.winner) this.room.status = 'finished';
-      this.broadcast({ type: 'state', engineState: next, status: this.room.status });
+    } finally {
+      this.botLoopRunning = false;
+    }
+    if (watch && this.room.status === 'finished' && this.sockets.size > 0) {
+      setTimeout(() => this.restartWatchGame(), WATCH_RESTART_MS);
     }
   }
 
@@ -288,6 +387,12 @@ export class GameRoom {
 
   async setLobbyListing(listed) {
     if (!this.env.LOBBY || !this.room) return;
+    if (listed && !this.listingHeartbeat) {
+      this.listingHeartbeat = setInterval(() => this.setLobbyListing(true), LISTING_HEARTBEAT_MS);
+    } else if (!listed && this.listingHeartbeat) {
+      clearInterval(this.listingHeartbeat);
+      this.listingHeartbeat = null;
+    }
     const id = this.env.LOBBY.idFromName('global');
     const stub = this.env.LOBBY.get(id);
     try {
@@ -300,6 +405,7 @@ export class GameRoom {
           hostName: this.room.hostName,
           guestName: this.room.players[1]?.name ?? null,
           title: this.room.title,
+          allowSpectators: this.room.allowSpectators,
           status: this.room.status,
         }),
       });

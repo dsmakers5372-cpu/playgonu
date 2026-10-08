@@ -18,6 +18,9 @@ const STRINGS = {
     statusPlaying: 'Playing',
     publicCreated: 'Your public room is open — the game starts as soon as someone joins.',
     cancelRoom: 'Cancel',
+    allowSpectators: 'Allow spectators',
+    watch: 'Watch',
+    roomGone: 'That game has already ended.',
   },
   ko: {
     namePlaceholder: '이름',
@@ -36,6 +39,9 @@ const STRINGS = {
     statusPlaying: '플레이 중',
     publicCreated: '공개 방을 만들었어요 — 누군가 들어오면 바로 시작됩니다.',
     cancelRoom: '취소',
+    allowSpectators: '관전 허용',
+    watch: '관전',
+    roomGone: '이미 끝난 대국이에요.',
   },
 };
 
@@ -66,6 +72,14 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   titleInput.className = 'pill';
   titleInput.style.cssText = 'width:100%;box-sizing:border-box;padding:12px 16px;font-size:15px;';
 
+  const spectateLabel = document.createElement('label');
+  spectateLabel.style.cssText = 'display:inline-flex;align-items:center;gap:8px;font-size:14px;font-weight:600;cursor:pointer;';
+  const spectateCheck = document.createElement('input');
+  spectateCheck.type = 'checkbox';
+  spectateCheck.checked = true;
+  spectateCheck.style.cssText = 'width:18px;height:18px;cursor:pointer;';
+  spectateLabel.append(spectateCheck, document.createTextNode(t.allowSpectators));
+
   const btnRow = document.createElement('div');
   btnRow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;';
   const createPrivateBtn = document.createElement('button');
@@ -88,7 +102,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   lobbyRows.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
   lobbyList.append(lobbyHeading, lobbyRows);
 
-  wrap.append(nameInput, titleInput, btnRow, statusArea, lobbyList);
+  wrap.append(nameInput, titleInput, spectateLabel, btnRow, statusArea, lobbyList);
   root.appendChild(wrap);
 
   let pollTimer = null;
@@ -143,6 +157,17 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       const right = document.createElement('div');
       right.style.cssText = 'display:flex;align-items:center;gap:12px;flex:none;';
       right.appendChild(statusBadge(waiting));
+      if (!waiting && r.allowSpectators !== false) {
+        const watchBtn = document.createElement('button');
+        watchBtn.className = 'btn';
+        watchBtn.textContent = t.watch;
+        // A virtual game in progress is only a listing until someone watches
+        // it — a fresh suffix gives each spectator their own live AI game.
+        watchBtn.addEventListener('click', () => {
+          startAsSpectator(r.isVirtual ? `${r.roomId}-${generateRoomId()}` : r.roomId);
+        });
+        right.appendChild(watchBtn);
+      }
       if (waiting) {
         const joinBtn = document.createElement('button');
         joinBtn.className = 'btn-primary';
@@ -171,9 +196,10 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     return name;
   }
 
-  function connect(roomId, name, isPublic, title = null) {
+  function connect(roomId, name, isPublic, title = null, allowSpectators = true, spectate = false) {
     btnRow.style.display = 'none';
     titleInput.style.display = 'none';
+    spectateLabel.style.display = 'none';
     statusArea.style.display = 'flex';
     // A public host keeps browsing the dashboard while waiting (their own
     // room is filtered out of it); everyone else goes straight to the match.
@@ -188,13 +214,14 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     let myRole = null;
     let opponentName = null;
     let vsBot = false;
+    let players = null;
 
     function tryMatch(roomInfo) {
       if (matched) return;
       if (roomInfo.playerCount === 2 || myRole === 'spectator') {
         matched = true;
         stopPolling();
-        onMatched({ roomClient: client, color: myColor, role: myRole, name, opponentName, vsBot, gameType, ruleset: roomInfo.ruleset });
+        onMatched({ roomClient: client, color: myColor, role: myRole, name, opponentName, vsBot, players, gameType, ruleset: roomInfo.ruleset });
       }
     }
 
@@ -203,6 +230,8 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       name,
       title,
       isPublic,
+      allowSpectators,
+      spectate,
       gameType,
       ruleset,
       handlers: {
@@ -218,6 +247,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
           if (msg.opponentName) opponentName = msg.opponentName;
           else if (msg.color === 'B') opponentName = msg.room.hostName;
           vsBot = !!msg.vsBot;
+          players = msg.players ?? null;
           if (msg.role === 'player' && msg.room.playerCount < 2 && msg.room.isPublic) {
             statusArea.innerHTML = '';
             const card = document.createElement('div');
@@ -232,13 +262,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
             cancelBtn.textContent = t.cancelRoom;
             cancelBtn.addEventListener('click', () => {
               client.close();
-              myRoomId = null;
-              statusArea.innerHTML = '';
-              statusArea.style.display = 'none';
-              btnRow.style.display = 'flex';
-              titleInput.style.display = '';
-              lobbyList.style.display = 'flex';
-              startPolling();
+              backToLobby(null);
             });
             card.append(msgEl, cancelBtn);
             statusArea.appendChild(card);
@@ -292,6 +316,10 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
           onRematchStart?.(msg);
         },
         onError(msg) {
+          if (msg.code === 'room-gone') {
+            backToLobby(t.roomGone);
+            return;
+          }
           console.error('[online]', msg.message);
         },
       },
@@ -304,13 +332,35 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     if (!name) return;
     const params = new URLSearchParams(location.search);
     const roomId = params.get('room') || generateRoomId();
-    connect(roomId, name, isPublic, titleInput.value.trim() || null);
+    connect(roomId, name, isPublic, titleInput.value.trim() || null, spectateCheck.checked);
   }
 
   function startAsGuest(roomId) {
     const name = requireName();
     if (!name) return;
     connect(roomId, name, false);
+  }
+
+  // Spectators never play or chat, so a name is optional for them.
+  function startAsSpectator(roomId) {
+    connect(roomId, nameInput.value.trim() || 'Spectator', false, null, true, true);
+  }
+
+  function backToLobby(notice) {
+    myRoomId = null;
+    statusArea.innerHTML = '';
+    statusArea.style.display = notice ? 'flex' : 'none';
+    if (notice) {
+      const p = document.createElement('p');
+      p.style.cssText = 'margin:0;font-size:14px;color:var(--ink-soft);';
+      p.textContent = notice;
+      statusArea.appendChild(p);
+    }
+    btnRow.style.display = 'flex';
+    titleInput.style.display = '';
+    spectateLabel.style.display = 'inline-flex';
+    lobbyList.style.display = 'flex';
+    startPolling();
   }
 
   createPrivateBtn.addEventListener('click', () => startAsHost(false));
@@ -322,6 +372,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   if (incomingRoom) {
     btnRow.style.display = 'none';
     titleInput.style.display = 'none';
+    spectateLabel.style.display = 'none';
     lobbyList.style.display = 'none';
     const joinHint = document.createElement('button');
     joinHint.className = 'btn-primary';

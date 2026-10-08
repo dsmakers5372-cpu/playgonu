@@ -10,10 +10,10 @@
 // see virtualPlayers.js for the rationale and rotation mechanics.
 import { pickVirtualLobby } from './virtualPlayers.js';
 
-// Matches GameRoom's idle limit: a room only pushes a listing when its state
-// changes, so a shorter window dropped public rooms that were simply still
-// waiting for an opponent. Rooms remove themselves on close anyway.
-const STALE_MS = 30 * 60 * 1000;
+// Live rooms re-send their listing every minute (GameRoom LISTING_HEARTBEAT_MS),
+// so anything silent for 3 minutes is a room that no longer exists — e.g.
+// every room is reset by a deploy without getting to remove itself.
+const STALE_MS = 3 * 60 * 1000;
 
 export class Lobby {
   constructor(state, env) {
@@ -44,6 +44,7 @@ export class Lobby {
           hostName: body.hostName,
           guestName: body.guestName || null,
           title: body.title || null,
+          allowSpectators: body.allowSpectators !== false,
           status: body.status === 'waiting' ? 'waiting' : 'playing',
           updatedAt: Date.now(),
         };
@@ -86,6 +87,7 @@ export class Lobby {
       hostName: a.name,
       guestName: b.name,
       status: 'playing',
+      allowSpectators: true,
       updatedAt: now,
       isVirtual: true,
     }));

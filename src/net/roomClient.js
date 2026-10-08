@@ -2,13 +2,13 @@
 // both Cham-gonu and Gomoku's online mode. One room = one Durable Object on
 // the server (src/durable/GameRoom.js); this just connects, (re)sends the
 // join message, and dispatches incoming messages to the caller's handlers.
-export function connectToRoom({ roomId, name, title, isPublic, gameType, ruleset, handlers }) {
+export function connectToRoom({ roomId, name, title, isPublic, allowSpectators = true, spectate = false, gameType, ruleset, handlers }) {
   const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
   const ws = new WebSocket(`${protocol}//${location.host}/ws/room/${encodeURIComponent(roomId)}`);
   let closedByUs = false;
 
   ws.addEventListener('open', () => {
-    ws.send(JSON.stringify({ type: 'join', roomId, name, title, isPublic: !!isPublic, gameType, ruleset }));
+    ws.send(JSON.stringify({ type: 'join', roomId, name, title, isPublic: !!isPublic, allowSpectators: !!allowSpectators, spectate: !!spectate, gameType, ruleset }));
     handlers.onOpen?.();
   });
 
