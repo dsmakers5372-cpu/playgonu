@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>관리자 — 플레이고누</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+<style>
+  body { background: var(--paper, #F6F1E6); }
+  .admin { max-width: 1100px; margin: 0 auto; padding: 32px 24px 80px; display: flex; flex-direction: column; gap: 22px; }
+  .admin h1 { margin: 0; font-size: 26px; }
+  .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+  .grow { flex: 1; }
+  .tabs { display: flex; gap: 8px; }
+  .tabs button { all: unset; cursor: pointer; padding: 8px 16px; border-radius: 999px; font-weight: 700; border: 1.5px solid var(--line, #D9CDB5); }
+  .tabs button[aria-selected="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .panel { background: #fff; border: 1.5px solid var(--line, #D9CDB5); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 14px; }
+  label { display: flex; flex-direction: column; gap: 6px; font-size: 13px; font-weight: 700; color: var(--ink-soft); }
+  input[type=text], input[type=password], input[type=date], select, textarea { font: inherit; font-size: 15px; padding: 9px 11px; border: 1.5px solid var(--line, #D9CDB5); border-radius: 10px; background: #fff; color: var(--ink); }
+  textarea { min-height: 460px; resize: vertical; font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 14px; line-height: 1.6; }
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 9px 8px; border-bottom: 1px solid #EEE6D6; vertical-align: middle; }
+  th { font-size: 12px; color: var(--muted); }
+  .pill-on { color: #fff; background: #2F6E6A; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+  .pill-off { color: var(--muted); background: #EEE6D6; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 700; }
+  .editor { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .preview { border: 1.5px dashed var(--line, #D9CDB5); border-radius: 12px; padding: 16px 18px; max-height: 560px; overflow: auto; background: #FBF8F1; }
+  .msg { font-size: 14px; font-weight: 700; }
+  .msg.err { color: var(--red); }
+  .msg.ok { color: #2F6E6A; }
+  .help { font-size: 12.5px; line-height: 1.7; color: var(--muted); }
+  .help code { background: #EEE6D6; padding: 1px 5px; border-radius: 5px; }
+  [data-view="videos"] td:nth-child(-n+4) { white-space: nowrap; }
+  .vid-thumb { width: 96px; aspect-ratio: 16/9; object-fit: cover; border-radius: 6px; background: #EEE6D6; }
+  [hidden] { display: none !important; }
+  @media (max-width: 820px) { .editor { grid-template-columns: 1fr; } }
+</style>
+<style>
+  /* Same post styles as the published page (src/server/site.js MD_CSS). */
+  .md-body { display: flex; flex-direction: column; gap: 18px; font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); }
+  .md-body p, .md-body ul, .md-body ol, .md-body blockquote, .md-body figure { margin: 0; }
+  .md-body h2 { font-family: "Noto Serif KR", Georgia, serif; font-size: 22px; margin: 10px 0 0; color: var(--ink); }
+  .md-body h3 { font-size: 18px; margin: 6px 0 0; color: var(--ink); }
+  .md-body ul, .md-body ol { padding-left: 22px; display: flex; flex-direction: column; gap: 6px; }
+  .md-body blockquote { border-left: 4px solid var(--red); padding: 4px 0 4px 16px; color: var(--ink); }
+  .md-body figure img { width: 100%; border-radius: 12px; display: block; }
+  .md-body figcaption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  .md-body pre { background: #2A2420; color: #F6F1E6; padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 13.5px; }
+  .pg-video { position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; overflow: hidden; background: #2A2420; }
+  .pg-video__play { all: unset; position: absolute; inset: 0; display: block; }
+  .pg-video__play img { width: 100%; height: 100%; object-fit: cover; display: block; }
+</style>
+</head>
+<body>
+<main class="admin">
+  <div class="row">
+    <h1 class="serif grow">플레이고누 관리자</h1>
+    <a href="/ko/" class="btn">사이트 보기</a>
+    <button class="btn" data-logout hidden>로그아웃</button>
+  </div>
+
+  <section class="panel" data-login hidden>
+    <form class="row" data-login-form>
+      <label class="grow">비밀번호<input type="password" name="password" autocomplete="current-password" required></label>
+      <button class="btn-primary" type="submit" style="align-self:flex-end;">로그인</button>
+    </form>
+    <div class="msg err" data-login-msg></div>
+  </section>
+
+  <div data-app hidden>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-tab="posts">블로그</button>
+      <button role="tab" aria-selected="false" data-tab="videos">유튜브 영상</button>
+    </div>
+
+    <section class="panel" data-view="posts" style="margin-top:16px;">
+      <div class="row">
+        <button class="btn-primary" data-new-post>새 글 쓰기</button>
+        <input type="text" class="grow" data-import-path placeholder="기존 글 불러와 고치기 — 예: /blog/what-is-gonu.html 또는 /ko/blog/글주소.html">
+        <button class="btn" data-import>불러오기</button>
+      </div>
+      <div class="msg" data-posts-msg></div>
+      <table>
+        <thead><tr><th>언어</th><th>제목</th><th>주소</th><th>공개</th><th>수정일</th><th></th></tr></thead>
+        <tbody data-post-rows></tbody>
+      </table>
+    </section>
+
+    <section class="panel" data-view="editor" hidden style="margin-top:16px;">
+      <div class="row">
+        <label>언어<select name="lang"><option value="ko">한국어</option><option value="en">English</option></select></label>
+        <label class="grow">주소(slug) — 영문·한글·숫자·하이픈<input type="text" name="slug" placeholder="how-to-play-cham-gonu"></label>
+        <label>태그<input type="text" name="tag" placeholder="게임 방법"></label>
+      </div>
+      <label>제목<input type="text" name="title"></label>
+      <label>요약 (검색 결과와 목록 카드에 나와요)<input type="text" name="description"></label>
+      <div class="editor">
+        <label>본문<textarea name="body" spellcheck="false"></textarea></label>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          <span style="font-size:13px;font-weight:700;color:var(--ink-soft);">미리보기</span>
+          <div class="preview md-body" data-preview></div>
+        </div>
+      </div>
+      <p class="help">
+        쓰는 법: <code>## 소제목</code> · <code>### 작은 제목</code> · 빈 줄로 문단 나누기 · <code>**굵게**</code> · <code>*기울임*</code> ·
+        <code>[링크 글자](/ko/jul.html)</code> · <code>- 목록</code> · <code>1. 번호 목록</code> · <code>&gt; 인용</code> ·
+        이미지 한 줄 <code>![설명](/images/파일.webp)</code> · 유튜브 한 줄 <code>{{youtube 주소}}</code>
+      </p>
+      <div class="row">
+        <label style="flex-direction:row;align-items:center;gap:8px;"><input type="checkbox" name="published"> 공개</label>
+        <span class="grow"></span>
+        <a class="btn" data-view-link target="_blank" rel="noopener" hidden>글 보기</a>
+        <button class="btn" data-delete hidden>삭제</button>
+        <button class="btn" data-cancel>목록으로</button>
+        <button class="btn-primary" data-save>저장</button>
+      </div>
+      <div class="msg" data-editor-msg></div>
+    </section>
+
+    <section class="panel" data-view="videos" hidden style="margin-top:16px;">
+      <p class="help" style="margin:0;">
+        게임 페이지의 규칙 상자 아래에 <b>롱폼</b> 영상이 보여요. 한국어 페이지는 한국어 영상, 다른 언어 페이지는 영어 영상을 보여줘요(없으면 있는 쪽).
+        숏츠는 여기 기록만 해두는 용도예요. 주소는 유튜브 링크를 그대로 붙여넣으면 돼요.
+      </p>
+      <div class="msg" data-videos-msg></div>
+      <table>
+        <thead><tr><th></th><th>게임</th><th>언어</th><th>종류</th><th>유튜브 주소</th><th>제목</th><th>올린 날</th><th></th></tr></thead>
+        <tbody data-video-rows></tbody>
+      </table>
+    </section>
+  </div>
+</main>
+<script type="module" src="/src/ui/admin.js"></script>
+</body>
+</html>

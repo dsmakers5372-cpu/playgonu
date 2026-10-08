@@ -5,7 +5,19 @@
   "assets": {
     "directory": "./",
     "binding": "ASSETS",
-    "not_found_handling": "404-page"
+    "not_found_handling": "404-page",
+    // Pages the Worker handles before the static file: language redirect,
+    // admin-written blog posts, the game pages' video card, the sitemap.
+    // Scripts, styles and images stay served straight from the edge (they
+    // don't count as Worker requests).
+    "run_worker_first": [
+      "/", "/index.html",
+      "/jul*", "/daseotjul*", "/palpal*", "/bakwi*", "/gomoku*", "/howto*", "/online*", "/cham-strategy*",
+      "/blog", "/blog/*",
+      "/ko", "/ko/*", "/es", "/es/*", "/ja", "/ja/*", "/zh", "/zh/*",
+      "/sitemap.xml",
+      "/api/*"
+    ]
   },
   "durable_objects": {
     "bindings": [
@@ -15,5 +27,11 @@
   },
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["GameRoom", "Lobby"] }
+  ],
+  // Admin data (blog posts, video links). Create once with
+  // `npx wrangler d1 create playgonu`, put the printed id here, then
+  // `npx wrangler d1 migrations apply playgonu --remote`.
+  "d1_databases": [
+    { "binding": "DB", "database_name": "playgonu", "database_id": "REPLACE_WITH_D1_DATABASE_ID", "migrations_dir": "migrations" }
   ]
 }

@@ -7,3 +7,10 @@ CLAUDE.md
 wrangler.jsonc
 src/worker.js
 tools/
+migrations/
+.dev.vars
+.dev.vars.*
+.gitignore
+src/server/admin.js
+src/server/auth.js
+src/server/site.js

@@ -11,8 +11,48 @@
 
 import { GameRoom } from './durable/GameRoom.js';
 import { Lobby } from './durable/Lobby.js';
+import { handleAdmin } from './server/admin.js';
+import { BLOG_LANGS, renderPost, renderIndex, injectIndexCards, gamePageFor, pickVideo, injectVideo, injectSitemap } from './server/site.js';
 
 export { GameRoom, Lobby };
+
+// Pages that exist in every language folder — the only ones a first-time
+// visitor is sent to their own language for (the blog is mostly English, so
+// /blog/... must not be bounced to a /ko/blog/... that doesn't exist).
+const LOCALIZED_PAGES = new Set(['', 'index', 'jul', 'daseotjul', 'palpal', 'bakwi', 'gomoku', 'howto', 'online', 'cham-strategy']);
+const isLocalizedPage = (pathname) => {
+  const parts = pathname.split('/').filter(Boolean);
+  return parts.length <= 1 && LOCALIZED_PAGES.has((parts[0] || '').replace(/\.html$/, ''));
+};
+
+const htmlResponse = (html, status = 200) => new Response(html, { status, headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'public, max-age=0, must-revalidate' } });
+
+async function publishedPosts(env, lang) {
+  if (!env.DB) return [];
+  const q = lang
+    ? env.DB.prepare('SELECT * FROM posts WHERE published = 1 AND lang = ? ORDER BY created_at DESC').bind(lang)
+    : env.DB.prepare('SELECT * FROM posts WHERE published = 1 ORDER BY created_at DESC');
+  return (await q.all()).results;
+}
+
+// Blog pages: an admin-written (D1) post wins over a static file with the same
+// address; the static index gets the admin's posts added to it.
+async function serveBlog(request, env, url) {
+  const m = url.pathname.match(/^\/(?:(ko)\/)?blog(?:\/(.*))?$/);
+  if (!m) return null;
+  const lang = m[1] || 'en';
+  const rest = decodeURIComponent(m[2] || '').replace(/\.html$/, '');
+  if (!rest || rest === 'index') {
+    const res = await env.ASSETS.fetch(request);
+    const posts = await publishedPosts(env, lang);
+    if (res.status === 404 && posts.length) return htmlResponse(renderIndex(lang, posts));
+    if (!res.ok || !(res.headers.get('Content-Type') || '').includes('text/html')) return res;
+    return injectIndexCards(res, posts);
+  }
+  if (rest.includes('/') || !env.DB) return null;
+  const post = await env.DB.prepare('SELECT * FROM posts WHERE slug = ? AND lang = ? AND published = 1').bind(rest.toLowerCase(), lang).first();
+  return post ? htmlResponse(renderPost({ ...post, lang: BLOG_LANGS[lang] ? lang : 'en' })) : null;
+}
 
 // Traditional-Chinese regions (TW, HK, MO) stay on English until there's a
 // Traditional Chinese version — Simplified would read as foreign there.
@@ -45,7 +85,12 @@ export default {
       return env.LOBBY.get(id).fetch(request);
     }
 
-    if (!ASSET_PATH.test(url.pathname)) {
+    // Admin page API (sign-in, blog posts, videos).
+    if (url.pathname === '/api/admin' || url.pathname.startsWith('/api/admin/')) {
+      return handleAdmin(request, env, url);
+    }
+
+    if (!ASSET_PATH.test(url.pathname) && isLocalizedPage(url.pathname.replace(/^\/(ko|es|ja|zh)(?=\/|$)/, ''))) {
       const cookie = request.headers.get('Cookie') || '';
       const hasChoice = /(?:^|;\s*)pg_lang=/.test(cookie);
       if (!hasChoice) {
@@ -59,6 +104,27 @@ export default {
             return Response.redirect(target.toString(), 302);
           }
         }
+      }
+    }
+
+    if (request.method === 'GET' || request.method === 'HEAD') {
+      const blog = await serveBlog(request, env, url);
+      if (blog) return blog;
+
+      if (url.pathname === '/sitemap.xml') {
+        const res = await env.ASSETS.fetch(request);
+        return res.ok ? injectSitemap(res, await publishedPosts(env)) : res;
+      }
+
+      // Game pages: add the "watch how to play" video when the admin has
+      // linked one for that game.
+      const game = gamePageFor(url.pathname);
+      if (game && env.DB) {
+        const res = await env.ASSETS.fetch(request);
+        if (!res.ok || !(res.headers.get('Content-Type') || '').includes('text/html')) return res;
+        const { results } = await env.DB.prepare('SELECT * FROM videos WHERE game = ?').bind(game.game).all();
+        const video = pickVideo(results, game.lang);
+        return video ? injectVideo(res, video, game.lang) : res;
       }
     }
 

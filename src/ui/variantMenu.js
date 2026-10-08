@@ -37,8 +37,11 @@ export function mountVariantMenu(container, { lang: requestedLang = 'en', curren
   }
   if (!onCurrentVariant) placeholder.selected = true;
 
+  // Game pages sit one level above the blog, so from a blog post the
+  // relative link has to step up out of /blog/ first.
+  const base = /\/blog\//.test(location.pathname) ? '../' : '';
   select.addEventListener('change', () => {
-    if (select.value) location.href = select.value;
+    if (select.value) location.href = base + select.value;
   });
 
   container.appendChild(select);
