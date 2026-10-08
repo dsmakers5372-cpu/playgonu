@@ -35,6 +35,6 @@
   // `npx wrangler d1 create playgonu`, put the printed id here, then
   // `npx wrangler d1 migrations apply playgonu --remote`.
   "d1_databases": [
-    { "binding": "DB", "database_name": "playgonu", "database_id": "REPLACE_WITH_D1_DATABASE_ID", "migrations_dir": "migrations" }
+    { "binding": "DB", "database_name": "playgonu", "database_id": "98f162dc-b4d8-4bcc-882d-1578c8b09c37", "migrations_dir": "migrations" }
   ]
 }
