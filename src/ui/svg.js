@@ -66,9 +66,11 @@ export function startAnimations(svg) {
 // in all, slow on purpose so a capture is impossible to miss.
 export const CAPTURE_FLIP_MS = 2700;
 
-export function captureFlipEffect(x, y, colors, startedAt) {
+// `r` is the board's piece radius; everything scales with it.
+export function captureFlipEffect(x, y, colors, startedAt, r = 13) {
+  const k = r / 13;
   const g = el('g', {});
-  const front = el('circle', { cx: x, cy: y, r: 13, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
+  const front = el('circle', { cx: x, cy: y, r, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '2' });
   animateKeyframes(front, [
     { transform: 'scale(1) scaleX(1)' },
     { transform: 'scale(1.25) scaleX(1)', offset: 0.3 },
@@ -77,8 +79,8 @@ export function captureFlipEffect(x, y, colors, startedAt) {
   ], { duration: 1000 }, startedAt);
   const silver = el('g', {});
   silver.append(
-    el('circle', { cx: x, cy: y, r: 13, fill: '#E6E9ED', stroke: '#8E98A3', 'stroke-width': '2' }),
-    el('ellipse', { cx: x - 4, cy: y - 5, rx: 5, ry: 3, fill: '#FFFFFF', opacity: '.85' }),
+    el('circle', { cx: x, cy: y, r, fill: '#E6E9ED', stroke: '#8E98A3', 'stroke-width': '2' }),
+    el('ellipse', { cx: x - 4 * k, cy: y - 5 * k, rx: 5 * k, ry: 3 * k, fill: '#FFFFFF', opacity: '.85' }),
   );
   animateKeyframes(silver, [
     { transform: 'scale(1.25) scaleX(0)', opacity: 1 },
@@ -89,9 +91,9 @@ export function captureFlipEffect(x, y, colors, startedAt) {
   g.append(front, silver);
   for (let k = 0; k < 6; k++) {
     const angle = (Math.PI * 2 * k) / 6 + 0.35;
-    const dx = Math.cos(angle) * 34;
-    const dy = Math.sin(angle) * 34;
-    const s = 7.5;
+    const dx = Math.cos(angle) * 34 * k;
+    const dy = Math.sin(angle) * 34 * k;
+    const s = 7.5 * Math.max(k, 0.75);
     const glint = el('path', {
       d: `M${x} ${y - s}L${x + s * 0.3} ${y - s * 0.3}L${x + s} ${y}L${x + s * 0.3} ${y + s * 0.3}L${x} ${y + s}L${x - s * 0.3} ${y + s * 0.3}L${x - s} ${y}L${x - s * 0.3} ${y - s * 0.3}Z`,
       fill: k % 2 ? '#FFFFFF' : '#C9D1DA',

@@ -1,7 +1,7 @@
 import { createInitialState, legalMovesFrom, move, palpalgonuGrid, PLAYERS } from '../engine/palpalgonu.js';
 import { chooseAIMove } from '../engine/palpalgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
-import { el } from './svg.js';
+import { el, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
 import { playCaptureSound } from './sound.js';
 import { DRAW_AFTER_QUIET_MOVES } from '../engine/board.js';
@@ -47,6 +47,20 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
   let game = createInitialState();
   let selected = null;
   let history = [];
+  // Pieces just captured: drawn flipping over to silver and fading out, so a
+  // capture is seen rather than the piece simply vanishing.
+  let captureEffect = null;
+  let captureEffectTimer = null;
+  function flashCaptures(prev, next) {
+    if (!next.lastCapture || next.lastCapture.length === 0) return;
+    captureEffect = { points: next.lastCapture.slice(), player: prev.turn === PLAYERS.A ? PLAYERS.B : PLAYERS.A, start: performance.now() };
+    clearTimeout(captureEffectTimer);
+    captureEffectTimer = setTimeout(() => { captureEffect = null; renderBoard(); }, CAPTURE_FLIP_MS + 100);
+  }
+  function clearCaptureEffect() {
+    captureEffect = null;
+    clearTimeout(captureEffectTimer);
+  }
   let aiEnabled = opponentModeSelect.value === 'ai';
   let aiPlayer = sideSelect && sideSelect.value === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
   const stats = createGameStats({ onTick: (ms) => { if (timerLabel) timerLabel.textContent = formatElapsed(ms); } });
@@ -67,6 +81,7 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
       if (!aiMove) return;
       history.push(game);
       game = move(game, aiMove.from, aiMove.to);
+      flashCaptures(history[history.length - 1], game);
       stats.recordMove();
       if (game.lastCapture.length > 0) playCaptureSound();
       renderBoard();
@@ -125,12 +140,20 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
       svg.appendChild(el('circle', { cx: x, cy: y, r: 8, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '1.4' }));
     });
 
+    if (captureEffect) {
+      for (const index of captureEffect.points) {
+        const { x, y } = pointPixel(index);
+        svg.appendChild(captureFlipEffect(x, y, PLAYER_COLOR[captureEffect.player], captureEffect.start, 8));
+      }
+    }
+
     game.pieces.forEach((_, index) => {
       const { x, y } = pointPixel(index);
       const hit = el('circle', { cx: x, cy: y, r: 13, fill: 'transparent', class: 'board-point' });
       hit.addEventListener('click', () => handlePointClick(index));
       svg.appendChild(hit);
     });
+    startAnimations(svg);
   }
 
   function renderToolbar() {
@@ -181,6 +204,7 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
     if (legalTargets().includes(index)) {
       history.push(game);
       game = move(game, selected, index);
+      flashCaptures(history[history.length - 1], game);
       stats.recordMove();
       if (game.lastCapture.length > 0) playCaptureSound();
       selected = null;
@@ -196,6 +220,7 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
   }
 
   function newGame() {
+    clearCaptureEffect();
     game = createInitialState();
     selected = null;
     history = [];
@@ -208,6 +233,7 @@ export function mountPalpalgonuGame(root, { lang = 'en' } = {}) {
   }
 
   function undo() {
+    clearCaptureEffect();
     if (history.length === 0) return;
     game = history.pop();
     let undone = 1;
