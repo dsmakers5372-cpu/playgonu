@@ -3,6 +3,7 @@ import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { mountShadowStone } from './shadowStone.js';
+import { mountTapModeSelect, currentTapMode } from './tapMode.js';
 import { el, animate, startAnimations } from './svg.js';
 import { playPlaceSound } from './sound.js';
 
@@ -238,6 +239,11 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   let pulseStart = 0;
 
   const hover = { index: null };
+  // Touch in "safe" tap mode: the first tap shows a faint stone, a second tap
+  // on the same point sends the move (tapMode.js). A mouse places in one click.
+  let previewIndex = null;
+  let lastPointerType = 'mouse';
+  svg.addEventListener('pointerdown', (e) => { lastPointerType = e.pointerType || 'mouse'; });
 
   function isMyTurn() {
     return role === 'player' && game && game.turn === myColor && !game.winner;
@@ -301,11 +307,19 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       }
     });
 
+    // A preview only lives during your own move (cleared once the turn passes or a new game starts).
+    if (!isMyTurn()) previewIndex = null;
+    if (previewIndex !== null && game.cells[previewIndex] === null) {
+      const { x, y } = pointPixel(previewIndex);
+      const colors = PLAYER_COLOR[myColor];
+      svg.appendChild(el('circle', { cx: x, cy: y, r: STEP * 0.38, fill: colors.fill, stroke: colors.stroke, 'stroke-width': '1.4', opacity: '.4' }));
+    }
+
     const legal = isMyTurn() ? new Set(legalPlacements(game)) : null;
     const shadow = mountShadowStone(svg, {
       r: STEP * 0.38,
       pointPixel,
-      canPlace: (index) => isMyTurn() && game.cells[index] === null && (!legal || legal.has(index)),
+      canPlace: (index) => isMyTurn() && game.cells[index] === null && index !== previewIndex && (!legal || legal.has(index)),
       colors: () => (myColor === PLAYERS.A ? { ...PLAYER_COLOR[myColor], stroke: '#F6F1E6' } : PLAYER_COLOR[myColor]),
       hover,
     });
@@ -340,6 +354,12 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     if (!isMyTurn()) return;
     if (game.cells[index] !== null) return;
     if (legalSet && !legalSet.has(index)) return;
+    if (lastPointerType !== 'mouse' && currentTapMode() === 'safe' && previewIndex !== index) {
+      previewIndex = index;
+      renderBoard();
+      return;
+    }
+    previewIndex = null;
     roomClient.sendMove(null, index);
   }
 
@@ -367,6 +387,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
       lobbyRoot.style.display = 'none';
       gameRoot.style.display = 'block';
       renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });
+      mountTapModeSelect(swatchRow.parentElement, lang);
       applyTheme(getStoredTheme());
       if (role === 'player') {
         const opponentColor = myColor === PLAYERS.A ? PLAYERS.B : PLAYERS.A;

@@ -13,6 +13,7 @@ import { chooseAIMove } from '../engine/gomokuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el } from './svg.js';
 import { mountShadowStone } from './shadowStone.js';
+import { mountTapModeSelect, currentTapMode } from './tapMode.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playPlaceSound } from './sound.js';
 
@@ -115,10 +116,11 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
 
   let game = createInitialState({ ruleset: rulesetSelect ? rulesetSelect.value : RULESETS.FREESTYLE });
   let history = [];
-  // On a dense 15x15 board, a mis-tap is easy on mobile — the first tap on
-  // a point just previews a faint stone there; tapping that same point
-  // again is what actually commits the move. A mouse sees a shadow stone
-  // while hovering instead, so one click places the stone.
+  // On a dense 15x15 board, a mis-tap is easy on mobile — in the default
+  // "safe" tap mode the first tap on a point just previews a faint stone
+  // there and tapping that same point again commits the move; "fast" mode
+  // places on the first tap (tapMode.js). A mouse sees a shadow stone while
+  // hovering instead, so one click places the stone.
   let previewIndex = null;
   const hover = { index: null };
   let lastPointerType = 'mouse';
@@ -286,7 +288,7 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
       showFoulNote();
       return;
     }
-    if (lastPointerType === 'mouse' || previewIndex === index) {
+    if (lastPointerType === 'mouse' || currentTapMode() === 'fast' || previewIndex === index) {
       previewIndex = null;
       applyAction(index);
       return;
@@ -363,6 +365,7 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
   }
 
   renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });
+  mountTapModeSelect(swatchRow.parentElement, lang);
   applyTheme(getStoredTheme());
   renderToolbar();
   stats.start();
