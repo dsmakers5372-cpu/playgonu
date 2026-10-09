@@ -67,6 +67,12 @@ const COUNTRY_DEFAULT_LANG = {
   ...Object.fromEntries(SPANISH_COUNTRIES.map((c) => [c, 'es'])),
 };
 const ASSET_PATH = /\.(js|css|svg|png|jpg|jpeg|webp|ico|json|woff2?|txt|xml)$/;
+// Search engines and link-preview fetchers are never sent elsewhere by
+// country: a crawler must see the address it asked for (Naver's checker in
+// Korea was being bounced from / to /ko/), and every language version is
+// already linked through hreflang.
+// (App names like NAVER or KAKAOTALK alone are in-app browsers of real people.)
+const CRAWLER_UA = /bot|crawl|spider|slurp|yeti|daumoa|google|bing|yandex|baidu|facebookexternalhit|kakaotalk-scrap|whatsapp/i;
 
 export default {
   async fetch(request, env) {
@@ -102,7 +108,8 @@ export default {
     if (!ASSET_PATH.test(url.pathname) && isLocalizedPage(url.pathname.replace(/^\/(ko|es|ja|zh)(?=\/|$)/, ''))) {
       const cookie = request.headers.get('Cookie') || '';
       const hasChoice = /(?:^|;\s*)pg_lang=/.test(cookie);
-      if (!hasChoice) {
+      const isCrawler = CRAWLER_UA.test(request.headers.get('User-Agent') || '');
+      if (!hasChoice && !isCrawler) {
         const country = request.cf && request.cf.country;
         const lang = country && COUNTRY_DEFAULT_LANG[country];
         if (lang && lang !== 'en') {
