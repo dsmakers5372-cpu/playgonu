@@ -9,8 +9,12 @@ src/worker.js
 tools/
 migrations/
 .dev.vars
+.wrangler/
 .dev.vars.*
 .gitignore
 src/server/admin.js
 src/server/auth.js
 src/server/site.js
+src/server/account.js
+src/server/users.js
+src/server/mail.js

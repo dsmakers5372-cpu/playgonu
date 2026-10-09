@@ -1,4 +1,5 @@
 import { connectToRoom, generateRoomId } from '../net/roomClient.js';
+import { fetchMe, accountUrl } from './accountClient.js';
 
 // Every poll is a Worker + Durable Object request against the daily/monthly
 // quota, so the room list refreshes at a calm pace rather than near-live.
@@ -25,6 +26,10 @@ const STRINGS = {
     allowSpectators: 'Allow spectators',
     watch: 'Watch',
     roomGone: 'That game has already ended.',
+    accountGuest: 'Sign in to save your online record.',
+    accountSignIn: 'Sign in / Sign up',
+    accountSaving: (n) => `Signed in as ${n} — your results are saved.`,
+    accountMine: 'My account',
   },
   ko: {
     namePlaceholder: '이름',
@@ -46,6 +51,10 @@ const STRINGS = {
     allowSpectators: '관전 허용',
     watch: '관전',
     roomGone: '이미 끝난 대국이에요.',
+    accountGuest: '로그인하면 온라인 전적이 저장돼요.',
+    accountSignIn: '로그인 / 가입',
+    accountSaving: (n) => `${n}님으로 로그인 — 전적이 저장돼요.`,
+    accountMine: '내 계정',
   },
   es: {
     namePlaceholder: 'Tu nombre',
@@ -67,6 +76,10 @@ const STRINGS = {
     allowSpectators: 'Permitir espectadores',
     watch: 'Ver',
     roomGone: 'Esa partida ya terminó.',
+    accountGuest: 'Inicia sesión para guardar tu historial en línea.',
+    accountSignIn: 'Entrar / Registrarse',
+    accountSaving: (n) => `Sesión de ${n}: tus resultados se guardan.`,
+    accountMine: 'Mi cuenta',
   },
   ja: {
     namePlaceholder: '名前',
@@ -88,6 +101,10 @@ const STRINGS = {
     allowSpectators: '観戦を許可',
     watch: '観戦',
     roomGone: 'その対局はすでに終了しています。',
+    accountGuest: 'ログインするとオンライン戦績が保存されます。',
+    accountSignIn: 'ログイン / 登録',
+    accountSaving: (n) => `${n} でログイン中 — 戦績が保存されます。`,
+    accountMine: 'マイアカウント',
   },
   zh: {
     namePlaceholder: '你的名字',
@@ -109,6 +126,10 @@ const STRINGS = {
     allowSpectators: '允许观战',
     watch: '观战',
     roomGone: '该对局已经结束。',
+    accountGuest: '登录后会保存你的在线战绩。',
+    accountSignIn: '登录 / 注册',
+    accountSaving: (n) => `已登录为 ${n}——战绩会被保存。`,
+    accountMine: '我的账号',
   },
 };
 
@@ -169,7 +190,25 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   lobbyRows.style.cssText = 'display:flex;flex-direction:column;gap:10px;';
   lobbyList.append(lobbyHeading, lobbyRows);
 
-  wrap.append(nameInput, titleInput, spectateLabel, btnRow, statusArea, lobbyList);
+  // Optional account: a guest is told what signing in adds; a signed-in
+  // player plays under their nickname unless they've typed another name.
+  const accountLine = document.createElement('div');
+  accountLine.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;font-size:13px;color:var(--muted);margin-top:-10px;';
+  const accountText = document.createElement('span');
+  const accountLink = document.createElement('a');
+  accountLink.href = accountUrl(lang);
+  accountLink.style.cssText = 'color:var(--ink-soft);font-weight:700;text-decoration:underline;';
+  accountText.textContent = t.accountGuest;
+  accountLink.textContent = t.accountSignIn;
+  accountLine.append(accountText, accountLink);
+  fetchMe().then((me) => {
+    if (!me) return;
+    accountText.textContent = t.accountSaving(me.nickname);
+    accountLink.textContent = t.accountMine;
+    if (!nameInput.value.trim()) nameInput.value = me.nickname;
+  });
+
+  wrap.append(nameInput, accountLine, titleInput, spectateLabel, btnRow, statusArea, lobbyList);
   root.appendChild(wrap);
 
   let pollTimer = null;

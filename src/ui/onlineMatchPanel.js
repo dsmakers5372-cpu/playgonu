@@ -8,6 +8,8 @@
 // name, their chat text — is untrusted input and is always written via
 // .textContent, never innerHTML, even though today's players are casual
 // opponents rather than attackers.
+import { fetchMe } from './accountClient.js';
+
 const STRINGS = {
   en: {
     chatTitle: 'Chat',
@@ -155,6 +157,14 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
     tbody.append(youRow, oppRow);
   }
   renderStatsRows(loadStats(gameType));
+  // Signed in: the table shows the record saved on the server (the room adds
+  // each finished game to it); a guest's record stays in this browser.
+  let accountStats = null;
+  fetchMe().then((me) => {
+    if (!me?.stats?.[gameType]) return;
+    accountStats = { ...me.stats[gameType] };
+    renderStatsRows(accountStats);
+  });
 
   const chatCard = document.createElement('div');
   chatCard.className = 'card';
@@ -266,6 +276,11 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
     onSendChat(fn) { onSendChat = fn; },
     // outcome: 'win' | 'loss' | 'draw'
     recordResult(outcome) {
+      if (accountStats) {
+        accountStats[outcome === 'win' ? 'wins' : outcome === 'loss' ? 'losses' : 'draws'] += 1;
+        renderStatsRows(accountStats);
+        return;
+      }
       const stats = loadStats(gameType);
       if (outcome === 'win') stats.wins += 1;
       else if (outcome === 'loss') stats.losses += 1;

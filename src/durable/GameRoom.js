@@ -10,6 +10,8 @@ import * as chamgonuAI from '../engine/chamgonuAI.js';
 import * as gomokuAI from '../engine/gomokuAI.js';
 import { getVirtualPlayer, VIRTUAL_PLAYERS } from './virtualPlayers.js';
 import { botChatReply, botGameOverLine, isKorean } from './botChat.js';
+import { sessionUser, addResult } from '../server/users.js';
+import { ensureSchema } from '../server/schema.js';
 
 const ENGINES = { cham: chamgonu, gomoku };
 const AI = { cham: chamgonuAI, gomoku: gomokuAI };
@@ -71,10 +73,17 @@ export class GameRoom {
     if (request.headers.get('Upgrade') !== 'websocket') {
       return new Response('Expected WebSocket', { status: 400 });
     }
+    // A signed-in player's results go to their account. The browser sends the
+    // pg_user cookie with this same-site WebSocket request.
+    let uid = null;
+    try {
+      await ensureSchema(this.env);
+      uid = (await sessionUser(request, this.env))?.id ?? null;
+    } catch { /* no account data — play on as a guest */ }
     const pair = new WebSocketPair();
     const [client, server] = Object.values(pair);
     server.accept();
-    this.attach(server);
+    this.attach(server, uid);
     await this.state.storage.setAlarm(Date.now() + ROOM_IDLE_LIMIT_MS);
     return new Response(null, { status: 101, webSocket: client });
   }
@@ -88,8 +97,9 @@ export class GameRoom {
     if (this.room) await this.setLobbyListing(false);
   }
 
-  attach(ws) {
+  attach(ws, uid = null) {
     const connId = crypto.randomUUID();
+    if (uid) this.accountOf = { ...this.accountOf, [connId]: uid };
     ws.addEventListener('message', (evt) => this.onMessage(ws, connId, evt));
     ws.addEventListener('close', () => this.onClose(ws));
     ws.addEventListener('error', () => this.onClose(ws));
@@ -264,6 +274,7 @@ export class GameRoom {
     }
     this.room.engineState = freshEngineState(this.room.gameType, this.room.ruleset);
     this.room.status = 'playing';
+    this.room.resultsRecorded = false;
     await this.state.storage.setAlarm(Date.now() + ROOM_IDLE_LIMIT_MS);
     for (const [sock, c] of this.sockets) {
       this.send(sock, { type: 'rematch-start', color: c.role === 'player' ? c.color : null, engineState: this.room.engineState, status: this.room.status });
@@ -335,6 +346,19 @@ export class GameRoom {
     }, delay);
   }
 
+  // Adds a finished game to each signed-in player's saved record, once.
+  recordResults() {
+    const winner = this.room?.engineState.winner;
+    if (!winner || this.room.aiVsAi || this.room.resultsRecorded) return;
+    this.room.resultsRecorded = true;
+    for (const p of this.room.players) {
+      const uid = this.accountOf?.[p.id];
+      if (!uid) continue;
+      const outcome = winner === 'draw' ? 'draw' : winner === p.color ? 'win' : 'loss';
+      addResult(this.env, uid, this.room.gameType, outcome).catch((err) => console.error('result not saved', err));
+    }
+  }
+
   // Sometimes a "gg" when a game against a virtual opponent ends.
   botAfterGame() {
     const bot = this.room?.players.find((p) => p.isBot);
@@ -359,7 +383,10 @@ export class GameRoom {
     this.room.engineState = next;
     if (next.winner) this.room.status = 'finished';
     this.broadcast({ type: 'state', engineState: next, status: this.room.status });
-    if (this.room.status === 'finished') this.botAfterGame();
+    if (this.room.status === 'finished') {
+      this.recordResults();
+      this.botAfterGame();
+    }
     if (this.room.vsBot && this.room.status === 'playing') await this.triggerBotMoves();
   }
 
@@ -401,7 +428,10 @@ export class GameRoom {
         this.room.engineState = next;
         if (next.winner) this.room.status = 'finished';
         this.broadcast({ type: 'state', engineState: next, status: this.room.status });
-        if (next.winner && !watch) this.botAfterGame();
+        if (next.winner && !watch) {
+          this.recordResults();
+          this.botAfterGame();
+        }
       }
     } finally {
       this.botLoopRunning = false;
@@ -414,6 +444,7 @@ export class GameRoom {
   onClose(ws) {
     const conn = this.sockets.get(ws);
     this.sockets.delete(ws);
+    if (conn && this.accountOf) delete this.accountOf[conn.id];
     if (!conn || !this.room) return;
     if (conn.role === 'player') {
       this.room.players = this.room.players.filter((p) => p.id !== conn.id);

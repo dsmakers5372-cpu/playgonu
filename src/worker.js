@@ -12,6 +12,7 @@
 import { GameRoom } from './durable/GameRoom.js';
 import { Lobby } from './durable/Lobby.js';
 import { handleAdmin } from './server/admin.js';
+import { handleAccount } from './server/account.js';
 import { ensureSchema } from './server/schema.js';
 import { BLOG_LANGS, renderPost, renderIndex, injectIndexCards, gamePageFor, pickVideo, injectVideo, injectSitemap } from './server/site.js';
 
@@ -90,6 +91,12 @@ export default {
     if (url.pathname === '/api/admin' || url.pathname.startsWith('/api/admin/')) {
       await ensureSchema(env);
       return handleAdmin(request, env, url);
+    }
+
+    // Optional player accounts (sign-up, sign-in, saved online record).
+    if (url.pathname === '/api/account' || url.pathname.startsWith('/api/account/')) {
+      await ensureSchema(env);
+      return handleAccount(request, env, url);
     }
 
     if (!ASSET_PATH.test(url.pathname) && isLocalizedPage(url.pathname.replace(/^\/(ko|es|ja|zh)(?=\/|$)/, ''))) {
