@@ -1,7 +1,22 @@
-// Jul-gonu-family games have no traditional draw rule, so two careful
-// players (or two AIs) can shuffle forever. This many consecutive moves
-// with no capture, counting both sides, ends the game as a draw.
-export const DRAW_AFTER_QUIET_MOVES = 40;
+// Jul-gonu-family games have no rule for a game that stops going anywhere,
+// so two careful players (or two AIs) could shuffle forever. After this many
+// consecutive moves with no capture (both sides counted) the game is decided
+// on pieces left — "상대편 말을 많이 없애는 편이 이긴다" for 줄고누 in the
+// Encyclopedia of Korean Culture (encykorea.aks.ac.kr/Article/E0003367); an
+// equal count is a draw.
+export const QUIET_MOVE_LIMIT = 40;
+
+// The winner when the quiet-move limit is reached: whoever has more pieces
+// left, or 'draw' on an equal count.
+export function decideByCount(pieces, a, b) {
+  let na = 0;
+  let nb = 0;
+  for (const p of pieces) {
+    if (p === a) na++;
+    else if (p === b) nb++;
+  }
+  return na > nb ? a : nb > na ? b : 'draw';
+}
 
 export function createGrid(rows, cols) {
   const size = rows * cols;

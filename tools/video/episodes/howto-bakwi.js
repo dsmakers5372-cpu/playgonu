@@ -56,8 +56,8 @@ export default {
       arrows: [{ from: 12, to: 4 }],
       rings: [{ color: 'dark', points: [4] }],
       tagTone: 'alert',
-      ko: { tag: '승리', title: '다 잡으면 승리!', body: '가둬도 이겨요 · 40수 동안 못 잡으면 무승부' },
-      en: { tag: 'Win', title: 'Capture them all — you win', body: 'Boxing them in wins too · 40 moves with no capture is a draw' },
+      ko: { tag: '승리', title: '다 잡으면 승리!', body: '가둬도 이겨요 · 40수 동안 못 잡으면 말 많은 쪽 승리' },
+      en: { tag: 'Win', title: 'Capture them all — you win', body: 'Boxing them in wins too · 40 moves with no capture: more pieces wins' },
     },
   ],
 };

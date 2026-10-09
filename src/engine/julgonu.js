@@ -1,4 +1,4 @@
-import { createGrid, DRAW_AFTER_QUIET_MOVES } from './board.js';
+import { createGrid, QUIET_MOVE_LIMIT, decideByCount } from './board.js';
 
 export const PLAYERS = Object.freeze({ A: 'A', B: 'B' });
 
@@ -98,7 +98,10 @@ export function move(state, from, to) {
   next.turn = opp;
   next.quietMoves = next.lastCapture.length > 0 ? 0 : (state.quietMoves ?? 0) + 1;
   if (!hasAnyLegalMove(next, opp)) next.winner = player;
-  else if (next.quietMoves >= DRAW_AFTER_QUIET_MOVES) next.winner = 'draw';
+  else if (next.quietMoves >= QUIET_MOVE_LIMIT) {
+    next.winner = decideByCount(next.pieces, PLAYERS.A, PLAYERS.B);
+    next.decidedByCount = true;
+  }
   return next;
 }
 

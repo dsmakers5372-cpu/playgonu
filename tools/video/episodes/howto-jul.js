@@ -58,8 +58,8 @@ export default {
       lines: [[2, 6, 10], [8, 9, 10]],
       rings: [{ color: 'gold', points: [10] }],
       tagTone: 'alert',
-      ko: { tag: '승리', title: '1개 남기면 승리!', body: '가둬도 이겨요 · 40수 동안 못 잡으면 무승부' },
-      en: { tag: 'Win', title: 'Leave them 1 piece — you win', body: 'Boxing them in wins too · 40 moves with no capture is a draw' },
+      ko: { tag: '승리', title: '1개 남기면 승리!', body: '가둬도 이겨요 · 40수 동안 못 잡으면 말 많은 쪽 승리' },
+      en: { tag: 'Win', title: 'Leave them 1 piece — you win', body: 'Boxing them in wins too · 40 moves with no capture: more pieces wins' },
     },
   ],
 };

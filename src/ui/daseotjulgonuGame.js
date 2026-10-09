@@ -4,7 +4,7 @@ import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThem
 import { el, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
 import { playCaptureSound } from './sound.js';
-import { DRAW_AFTER_QUIET_MOVES } from '../engine/board.js';
+import { QUIET_MOVE_LIMIT } from '../engine/board.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 
 const AI_MOVE_DELAY_MS = 450;
@@ -159,10 +159,10 @@ export function mountDaseotjulgonuGame(root, { lang = 'en' } = {}) {
   function renderToolbar() {
     const theme = PLAYER_COLOR[game.turn];
     turnDot.style.background = theme.fill;
-    const quietLeft = DRAW_AFTER_QUIET_MOVES - (game.quietMoves ?? 0);
+    const quietLeft = QUIET_MOVE_LIMIT - (game.quietMoves ?? 0);
     if (game.winner === 'draw') turnLabel.textContent = t.draw;
     else if (game.winner) turnLabel.textContent = t.wins(t.playerName[game.winner]);
-    else if (quietLeft <= 10) turnLabel.textContent = t.toMoveDrawSoon(t.playerName[game.turn], quietLeft);
+    else if (quietLeft <= 10) turnLabel.textContent = t.toMoveLimitSoon(t.playerName[game.turn], quietLeft);
     else turnLabel.textContent = t.toMove(t.playerName[game.turn]);
     const redCaptured = PIECES_PER_PLAYER - game.pieces.filter((p) => p === PLAYERS.B).length;
     const blackCaptured = PIECES_PER_PLAYER - game.pieces.filter((p) => p === PLAYERS.A).length;
@@ -173,7 +173,9 @@ export function mountDaseotjulgonuGame(root, { lang = 'en' } = {}) {
   function showWinBanner() {
     if (!game.winner) return;
     stats.stop();
-    winMessage.textContent = game.winner === 'draw' ? t.drawExclaim(DRAW_AFTER_QUIET_MOVES) : t.winsExclaim(t.playerName[game.winner]);
+    winMessage.textContent = game.winner === 'draw' ? t.drawExclaim(QUIET_MOVE_LIMIT)
+      : game.decidedByCount ? t.countWinExclaim(t.playerName[game.winner], QUIET_MOVE_LIMIT)
+      : t.winsExclaim(t.playerName[game.winner]);
     if (winMoves) winMoves.textContent = String(stats.moveCount);
     if (winTime) winTime.textContent = formatElapsed(stats.elapsedMs());
     winBanner.classList.add('is-visible');

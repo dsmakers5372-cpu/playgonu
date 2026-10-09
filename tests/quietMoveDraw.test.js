@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { DRAW_AFTER_QUIET_MOVES } from '../src/engine/board.js';
+import { QUIET_MOVE_LIMIT, decideByCount } from '../src/engine/board.js';
 import * as julgonu from '../src/engine/julgonu.js';
 import * as daseotjulgonu from '../src/engine/daseotjulgonu.js';
 import * as palpalgonu from '../src/engine/palpalgonu.js';
@@ -18,15 +18,16 @@ function quietMove(engine, state) {
 }
 
 for (const [name, engine] of Object.entries(ENGINES)) {
-  test(`${name}: ${DRAW_AFTER_QUIET_MOVES} consecutive moves without a capture is a draw`, () => {
+  test(`${name}: ${QUIET_MOVE_LIMIT} quiet moves with equal pieces is a draw`, () => {
     let state = engine.createInitialState();
-    for (let i = 1; i <= DRAW_AFTER_QUIET_MOVES; i++) {
+    for (let i = 1; i <= QUIET_MOVE_LIMIT; i++) {
       state = quietMove(engine, state);
       assert.ok(state, `no quiet move available at ply ${i}`);
       assert.equal(state.quietMoves, i);
-      if (i < DRAW_AFTER_QUIET_MOVES) assert.equal(state.winner, null, `game ended early at ply ${i}`);
+      if (i < QUIET_MOVE_LIMIT) assert.equal(state.winner, null, `game ended early at ply ${i}`);
     }
     assert.equal(state.winner, 'draw');
+    assert.equal(state.decidedByCount, true);
     assert.throws(() => engine.move(state, 0, 1), /Game already over/);
   });
 }
@@ -44,4 +45,23 @@ test('julgonu: a capture resets the quiet-move count', () => {
   assert.deepEqual(next.lastCapture, [4]);
   assert.equal(next.quietMoves, 0);
   assert.equal(next.winner, null);
+});
+
+test('decideByCount: more pieces wins, equal is a draw', () => {
+  assert.equal(decideByCount(['A', 'A', null, 'B'], 'A', 'B'), 'A');
+  assert.equal(decideByCount(['B', null, 'B', 'A'], 'A', 'B'), 'B');
+  assert.equal(decideByCount(['A', 'B', null], 'A', 'B'), 'draw');
+});
+
+test('bakwigonu: at the quiet-move limit the side with more pieces wins', () => {
+  const { PLAYERS } = bakwigonu;
+  const pieces = new Array(16).fill(null);
+  pieces[0] = PLAYERS.A; // top-left wheel
+  pieces[15] = PLAYERS.A; // bottom-right wheel
+  pieces[9] = PLAYERS.B; // (2,1) — an inner point no wheel can reach
+  const state = { pieces, turn: PLAYERS.B, winner: null, lastCapture: [], quietMoves: QUIET_MOVE_LIMIT - 1 };
+  const next = bakwigonu.move(state, 9, 10);
+  assert.deepEqual(next.lastCapture, []);
+  assert.equal(next.winner, PLAYERS.A);
+  assert.equal(next.decidedByCount, true);
 });
