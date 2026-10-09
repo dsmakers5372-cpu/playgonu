@@ -66,6 +66,7 @@ const COUNTRY_DEFAULT_LANG = {
   SG: 'zh',
   ...Object.fromEntries(SPANISH_COUNTRIES.map((c) => [c, 'es'])),
 };
+const NAVER_VERIFY_FILE = 'naverbd0efa119b0b2e6a78d4705717de8922.html';
 const ASSET_PATH = /\.(js|css|svg|png|jpg|jpeg|webp|ico|json|woff2?|txt|xml)$/;
 // Search engines and link-preview fetchers are never sent elsewhere by
 // country: a crawler must see the address it asked for (Naver's checker in
@@ -77,6 +78,12 @@ const CRAWLER_UA = /bot|crawl|spider|slurp|yeti|daumoa|google|bing|yandex|baidu|
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+
+    // Naver Search Advisor ownership check: answered at exactly this address,
+    // since a static .html file would be redirected to its extensionless path.
+    if (url.pathname === `/${NAVER_VERIFY_FILE}`) {
+      return new Response(`naver-site-verification: ${NAVER_VERIFY_FILE}`, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
+    }
 
     // Online-battle room — one Durable Object instance per room id, created
     // lazily on first connection.
