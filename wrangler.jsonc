@@ -30,10 +30,9 @@
   ],
   // The admin sign-in ID (not secret). The password is the secret
   // ADMIN_PASSWORD — set it in the dashboard, never in this file.
-  // Player accounts also need two secrets set in the dashboard: SESSION_SECRET
-  // (any long random text — signs the sign-in cookie) and RESEND_API_KEY
-  // (sends the confirm / reset emails from MAIL_FROM, a Resend-verified domain).
-  "vars": { "ADMIN_USER": "playgonu", "MAIL_FROM": "PlayGonu <no-reply@playgonu.com>" },
+  // Player accounts (ID + password) also need the secret SESSION_SECRET —
+  // any long random text; it signs the sign-in cookie.
+  "vars": { "ADMIN_USER": "playgonu" },
   // Admin data (blog posts, video links). Create once with
   // `npx wrangler d1 create playgonu`, put the printed id here, then
   // `npx wrangler d1 migrations apply playgonu --remote`.

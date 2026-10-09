@@ -13,10 +13,9 @@ const STATEMENTS = [
   `CREATE TABLE IF NOT EXISTS login_attempts (ip TEXT PRIMARY KEY, window_start INTEGER NOT NULL, count INTEGER NOT NULL)`,
   // Player accounts — keep in sync with migrations/0002_accounts.sql.
   `CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT, email TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL, nickname TEXT NOT NULL,
-    lang TEXT NOT NULL DEFAULT 'en', verified INTEGER NOT NULL DEFAULT 0, session_ver INTEGER NOT NULL DEFAULT 1,
+    id INTEGER PRIMARY KEY AUTOINCREMENT, username TEXT NOT NULL, username_key TEXT NOT NULL UNIQUE, password_hash TEXT NOT NULL,
+    lang TEXT NOT NULL DEFAULT 'en', session_ver INTEGER NOT NULL DEFAULT 1,
     local_imported INTEGER NOT NULL DEFAULT 0, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)`,
-  `CREATE TABLE IF NOT EXISTS user_tokens (token_hash TEXT PRIMARY KEY, user_id INTEGER NOT NULL, kind TEXT NOT NULL, expires_at INTEGER NOT NULL)`,
   `CREATE TABLE IF NOT EXISTS user_stats (
     user_id INTEGER NOT NULL, game TEXT NOT NULL, wins INTEGER NOT NULL DEFAULT 0, draws INTEGER NOT NULL DEFAULT 0,
     losses INTEGER NOT NULL DEFAULT 0, updated_at TEXT NOT NULL, PRIMARY KEY (user_id, game))`,

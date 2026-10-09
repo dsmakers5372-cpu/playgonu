@@ -191,7 +191,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   lobbyList.append(lobbyHeading, lobbyRows);
 
   // Optional account: a guest is told what signing in adds; a signed-in
-  // player plays under their nickname unless they've typed another name.
+  // player plays under their account ID unless they've typed another name.
   const accountLine = document.createElement('div');
   accountLine.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;font-size:13px;color:var(--muted);margin-top:-10px;';
   const accountText = document.createElement('span');
@@ -203,9 +203,9 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   accountLine.append(accountText, accountLink);
   fetchMe().then((me) => {
     if (!me) return;
-    accountText.textContent = t.accountSaving(me.nickname);
+    accountText.textContent = t.accountSaving(me.username);
     accountLink.textContent = t.accountMine;
-    if (!nameInput.value.trim()) nameInput.value = me.nickname;
+    if (!nameInput.value.trim()) nameInput.value = me.username;
   });
 
   wrap.append(nameInput, accountLine, titleInput, spectateLabel, btnRow, statusArea, lobbyList);

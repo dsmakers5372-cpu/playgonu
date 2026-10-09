@@ -1,8 +1,6 @@
 # Copy to .dev.vars for `wrangler dev` (.dev.vars is git-ignored — never commit it).
 ADMIN_PASSWORD=change-me
 SESSION_SECRET=any-long-random-text
-# RESEND_API_KEY= — leave unset locally: account emails are printed to the
-# wrangler terminal as "[dev mail] verify → <link>" instead of being sent.
 
 # Throwaway test account for checking /account/ on the local dev database only:
-# devplayer@example.com / gonu-dev-test-2026
+# ID devplayer / password gonu-dev-test-2026

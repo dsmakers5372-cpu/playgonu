@@ -1,11 +1,12 @@
-// Player accounts (optional): email + password. Playing never needs one —
-// an account only keeps the online win/draw/loss record on the server.
+// Player accounts (optional): an ID and a password — no email. Playing never
+// needs one; an account only keeps the online win/draw/loss record on the
+// server.
 //
 // Passwords are stored as PBKDF2-SHA256 hashes (Workers' Web Crypto allows at
 // most 100,000 iterations). A signed-in player carries a signed, HttpOnly
 // cookie `pg_user` = "uid.ver.exp.sig"; the HMAC key comes from the Worker
 // secret SESSION_SECRET, and `ver` must match users.session_ver, so changing
-// or resetting a password signs out every other device.
+// the password signs out every other device.
 
 export const LANGS = ['en', 'ko', 'es', 'ja', 'zh'];
 export const STAT_GAMES = ['cham', 'gomoku'];
@@ -24,21 +25,14 @@ function equalBytes(a, b) {
   return diff === 0;
 }
 
-export async function sha256Hex(text) {
-  const d = new Uint8Array(await crypto.subtle.digest('SHA-256', enc.encode(text)));
-  return [...d].map((x) => x.toString(16).padStart(2, '0')).join('');
-}
-
 // ---- input checks ---------------------------------------------------------------
-export function cleanEmail(v) {
-  const email = String(v || '').trim().toLowerCase();
-  return email.length <= 254 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ? email : null;
+// IDs: 2–20 letters (any script), digits or "_". Matched case-insensitively,
+// so "Gonu" and "gonu" are the same ID; shown as typed.
+export function cleanUsername(v) {
+  const name = String(v || '').trim().normalize('NFC');
+  return [...name].length >= 2 && [...name].length <= 20 && /^[\p{L}\p{N}_]+$/u.test(name) ? name : null;
 }
-
-export function cleanNickname(v) {
-  const name = String(v || '').trim().replace(/\s+/g, ' ');
-  return name.length >= 2 && name.length <= 20 && /^[\p{L}\p{N} _.-]+$/u.test(name) ? name : null;
-}
+export const usernameKey = (name) => name.toLowerCase();
 
 export const passwordOk = (v) => typeof v === 'string' && v.length >= 8 && v.length <= 128;
 export const cleanLang = (v) => (LANGS.includes(v) ? v : 'en');
@@ -62,15 +56,12 @@ export async function verifyPassword(password, stored) {
   return equalBytes(got, fromB64url(hash));
 }
 
-// Spends the same time as a real check, so "no such email" and "wrong
+// Spends the same time as a real check, so "no such ID" and "wrong
 // password" can't be told apart by how long sign-in takes.
 export async function burnPasswordCheck(password) {
   await pbkdf2(String(password), new Uint8Array(16), PBKDF2_ITERATIONS);
   return false;
 }
-
-// ---- one-time tokens (email links) ----------------------------------------------
-export const newToken = () => b64url(crypto.getRandomValues(new Uint8Array(32)));
 
 // ---- sessions -------------------------------------------------------------------
 async function sessionKey(secret) {
@@ -105,13 +96,13 @@ export function readUserCookie(request) {
 export const userCookie = (token, secure) => `${COOKIE}=${encodeURIComponent(token)}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${SESSION_SECONDS}${secure ? '; Secure' : ''}`;
 export const clearedUserCookie = (secure) => `${COOKIE}=; Path=/; HttpOnly; SameSite=Lax; Max-Age=0${secure ? '; Secure' : ''}`;
 
-// The signed-in, email-confirmed user behind this request, or null.
+// The signed-in user behind this request, or null.
 export async function sessionUser(request, env) {
   if (!env.DB || !env.SESSION_SECRET) return null;
   const s = await readUserSession(readUserCookie(request), env.SESSION_SECRET);
   if (!s) return null;
   const user = await env.DB.prepare('SELECT * FROM users WHERE id = ?').bind(s.uid).first();
-  return user && user.verified && user.session_ver === s.ver ? user : null;
+  return user && user.session_ver === s.ver ? user : null;
 }
 
 // ---- rate limits ----------------------------------------------------------------
