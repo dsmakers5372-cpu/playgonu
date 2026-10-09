@@ -64,15 +64,23 @@ function makesFour(cells, idx, player) {
 // alpha-beta better cutoffs since the strongest-looking moves go first.
 const MAX_CANDIDATES = 20;
 
-function candidateMoves(state, player) {
-  const legal = allLegalMoves(state, player);
-  if (legal.length === 0) return [];
-  const legalSet = new Set(legal.map((m) => m.to));
+// Renju forbidden-point checks are costly, so legality is only tested for
+// the few cells near stones that the search will actually look at.
+function isLegalFor(state, idx, player) {
+  if (state.cells[idx] !== null) return false;
+  if (state.ruleset !== 'renju' || player !== PLAYERS.A) return true;
+  const trial = state.cells.slice();
+  trial[idx] = player;
+  return analyzeMove(trial, idx, player, state.ruleset).legal;
+}
 
+function candidateMoves(state, player) {
+  if (state.winner || player !== state.turn) return [];
   const hasStones = state.cells.some((cell) => cell !== null);
   if (!hasStones) {
+    const legal = allLegalMoves(state, player);
     const center = toIndex(Math.floor(BOARD_SIZE / 2), Math.floor(BOARD_SIZE / 2));
-    return legalSet.has(center) ? [{ from: null, to: center }] : legal;
+    return legal.some((m) => m.to === center) ? [{ from: null, to: center }] : legal;
   }
 
   const density = new Map(); // candidate index -> nearby-stone count
@@ -85,12 +93,13 @@ function candidateMoves(state, player) {
         const c = col + dc;
         if (!inBounds(r, c)) continue;
         const idx = toIndex(r, c);
-        if (!legalSet.has(idx)) continue;
+        if (state.cells[idx] !== null) continue;
         density.set(idx, (density.get(idx) || 0) + 1);
       }
     }
   }
-  if (density.size === 0) return legal;
+  for (const idx of [...density.keys()]) if (!isLegalFor(state, idx, player)) density.delete(idx);
+  if (density.size === 0) return allLegalMoves(state, player);
 
   // The density cap alone can prune away a move that actually wins right
   // now, or one that stops the opponent from winning next turn — a few

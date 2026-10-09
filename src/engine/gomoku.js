@@ -66,16 +66,102 @@ function axisRun(cells, row, col, dr, dc, player) {
   return { length: runCells.length, openStart, openEnd, cells: runCells };
 }
 
+// Points on the line through (row, col) along (dr, dc) where one more black
+// stone would make exactly five *including* (row, col) — the "five points"
+// of a four. Offsets are counted from (row, col).
+function fivePoints(cells, row, col, dr, dc, player) {
+  const points = [];
+  for (let k = -4; k <= 4; k++) {
+    if (k === 0) continue;
+    const r = row + k * dr;
+    const c = col + k * dc;
+    if (!inBounds(r, c) || cells[toIndex(r, c)] !== null) continue;
+    cells[toIndex(r, c)] = player;
+    const run = axisRun(cells, r, c, dr, dc, player);
+    cells[toIndex(r, c)] = null;
+    // Exactly five (an overline doesn't count) and the run reaches (row, col).
+    if (run.length === WIN_LENGTH && run.cells.includes(toIndex(row, col))) points.push(k);
+  }
+  return points;
+}
+
+// How many fours the stone at (row, col) makes along one line: an open
+// ("straight") four ●●●● with both ends free is one four; two separate fives
+// reachable in the same line (●●●_●_●●● with the stone in the middle) is two.
+function foursOnLine(cells, row, col, dr, dc, player) {
+  const pts = fivePoints(cells, row, col, dr, dc, player);
+  if (pts.length === 2 && Math.abs(pts[0] - pts[1]) === WIN_LENGTH) return 1;
+  return Math.min(pts.length, 2);
+}
+
+// Is there a "three" through (row, col) along this line — a shape one more
+// stone turns into an open four, including broken shapes (●●_●, ●_●●)? Per
+// the RIF rules the stone completing that open four must itself be a legal
+// move, which is checked one level deep.
+function threeOnLine(cells, row, col, dr, dc, player, depth) {
+  for (let k = -4; k <= 4; k++) {
+    if (k === 0) continue;
+    const r = row + k * dr;
+    const c = col + k * dc;
+    if (!inBounds(r, c) || cells[toIndex(r, c)] !== null) continue;
+    const q = toIndex(r, c);
+    cells[q] = player;
+    const pts = fivePoints(cells, row, col, dr, dc, player);
+    const openFour = pts.some((a) => pts.some((b) => b - a === WIN_LENGTH));
+    const ok = openFour && (depth <= 0 || renjuFoul(cells, q, player, depth - 1) === null);
+    cells[q] = null;
+    if (ok) return true;
+  }
+  return false;
+}
+
+// For black's stone just placed at index (cells includes it): 'overline' |
+// 'double-four' | 'double-three' | null. Five-in-a-row is handled earlier.
+function renjuFoul(cells, index, player, depth = 1) {
+  const { row, col } = toCoords(index);
+  const runs = DIRS4.map(({ dr, dc }) => axisRun(cells, row, col, dr, dc, player));
+  if (runs.some((r) => r.length >= 6)) return 'overline';
+  if (runs.some((r) => r.length === WIN_LENGTH)) return null;
+  // Only lines with another black stone within reach can make a three or a
+  // four; a single such line can still hold two fours (●●●_●_●●●) but never
+  // two threes, so the (costly) three check needs at least two lines.
+  const lines = DIRS4.filter(({ dr, dc }) => {
+    for (let k = -4; k <= 4; k++) {
+      if (k === 0) continue;
+      const r = row + k * dr;
+      const c = col + k * dc;
+      if (inBounds(r, c) && cells[toIndex(r, c)] === player) return true;
+    }
+    return false;
+  });
+  let fours = 0;
+  const noFour = [];
+  for (const { dr, dc } of lines) {
+    const f = foursOnLine(cells, row, col, dr, dc, player);
+    if (f) fours += f;
+    else noFour.push({ dr, dc });
+  }
+  if (fours >= 2) return 'double-four';
+  if (noFour.length < 2) return null;
+  let threes = 0;
+  for (const { dr, dc } of noFour) {
+    if (threeOnLine(cells, row, col, dr, dc, player, depth) && ++threes >= 2) return 'double-three';
+  }
+  return null;
+}
+
+const CENTER = toIndex(Math.floor(BOARD_SIZE / 2), Math.floor(BOARD_SIZE / 2));
+
 // Evaluates the stone just placed at `index` (cells already includes it).
 // Returns { legal, win, winLine?, reason? }. A genuine five-in-a-row always
 // wins outright — that exception (straight from tournament Renju rules) is
 // checked before any forbidden-move logic, so a winning move is never
 // blocked by an incidental double-three elsewhere on the board.
 //
-// NOTE: this implements the common simplified version of Renju's forbidden
-// points (contiguous open-three / simple-four / overline patterns only). It
-// does not detect "broken" three/four shapes a tournament referee would
-// also catch — good enough for a casual web opponent, not a certified judge.
+// Renju forbidden points follow the RIF definitions: a "four" is any shape
+// one stone from an exact five (●●●●, ●●●_●, ●●_●●), a "three" any shape one
+// stone from an open four (●●●, ●●_●, ●_●●) whose completing stone would be
+// legal; two of either, or six-plus in a row, is forbidden for black.
 export function analyzeMove(cells, index, player, ruleset) {
   const { row, col } = toCoords(index);
   const runs = DIRS4.map(({ dr, dc }) => axisRun(cells, row, col, dr, dc, player));
@@ -91,20 +177,16 @@ export function analyzeMove(cells, index, player, ruleset) {
 
   // Renju forbidden-move checks — first player (A) only, and only once we
   // know this move isn't an outright win.
-  const overline = runs.find((r) => r.length >= 6);
-  if (overline) return { legal: false, reason: 'overline' };
-
-  const openThrees = runs.filter((r) => r.length === 3 && r.openStart && r.openEnd).length;
-  if (openThrees >= 2) return { legal: false, reason: 'double-three' };
-
-  const liveFours = runs.filter((r) => r.length === 4 && (r.openStart || r.openEnd)).length;
-  if (liveFours >= 2) return { legal: false, reason: 'double-four' };
-
-  return { legal: true, win: false };
+  const reason = renjuFoul(cells.slice(), index, player);
+  return reason ? { legal: false, reason } : { legal: true, win: false };
 }
+
+// Renju (RIF): black's first stone goes on the center point.
+const mustTakeCenter = (state) => state.ruleset === RULESETS.RENJU && state.moveCount === 0;
 
 export function legalPlacements(state) {
   if (state.winner) return [];
+  if (mustTakeCenter(state)) return [CENTER];
   const targets = [];
   for (let i = 0; i < CELL_COUNT; i++) {
     if (state.cells[i] !== null) continue;
@@ -141,6 +223,7 @@ export function allLegalMoves(state, player) {
 export function move(state, _from, to) {
   if (state.winner) throw new Error('Game already over');
   if (to < 0 || to >= CELL_COUNT || state.cells[to] !== null) throw new Error('Illegal placement');
+  if (mustTakeCenter(state) && to !== CENTER) throw new Error('Illegal placement: the first stone goes on the center point');
   const player = state.turn;
   const cells = state.cells.slice();
   cells[to] = player;

@@ -39,6 +39,7 @@ const STRINGS = {
     wins: (n) => `${n} wins!`,
     toMove: (n) => `${n} to move`,
     foul: 'Renju rule: that point is forbidden (double-three, double-four, or overline).',
+    firstCenter: "Renju: Black's first stone goes on the center point.",
     placed: (b, w) => `Stones placed — Black: ${b} · White: ${w}`,
   },
   ko: {
@@ -46,6 +47,7 @@ const STRINGS = {
     wins: (n) => `${n} 승리!`,
     toMove: (n) => `${n} 차례`,
     foul: '렌주룰: 그 자리는 삼삼·사사·장목 금수입니다.',
+    firstCenter: '렌주룰: 흑의 첫 수는 가운데(천원)에 둡니다.',
     placed: (b, w) => `놓은 돌 — 검정: ${b} · 흰돌: ${w}`,
   },
   es: {
@@ -53,6 +55,7 @@ const STRINGS = {
     wins: (n) => `¡Ganan ${n}!`,
     toMove: (n) => `Turno de ${n}`,
     foul: 'Regla Renju: esa casilla está prohibida (doble tres, doble cuatro o más de cinco).',
+    firstCenter: 'Renju: la primera piedra negra va en el punto central.',
     placed: (b, w) => `Piedras colocadas — Negras: ${b} · Blancas: ${w}`,
   },
   ja: {
@@ -60,6 +63,7 @@ const STRINGS = {
     wins: (n) => `${n}の勝ち！`,
     toMove: (n) => `${n}の番`,
     foul: '連珠ルール：そこは禁じ手です（三三・四四・長連）。',
+    firstCenter: '連珠：黒の初手は中央（天元）に打ちます。',
     placed: (b, w) => `置いた石 — 黒: ${b} · 白: ${w}`,
   },
   zh: {
@@ -67,6 +71,7 @@ const STRINGS = {
     wins: (n) => `${n}获胜！`,
     toMove: (n) => `轮到${n}`,
     foul: '连珠规则：该点为禁手（三三、四四或长连）。',
+    firstCenter: '连珠规则：黑方第一手下在棋盘中央（天元）。',
     placed: (b, w) => `已落子 — 黑: ${b} · 白: ${w}`,
   },
 };
@@ -140,7 +145,8 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
 
   function showFoulNote() {
     if (!foulNote) return;
-    foulNote.textContent = STRINGS[lang].foul;
+    // Renju's first move has one legal point (the center), not a foul.
+    foulNote.textContent = game.moveCount === 0 && game.ruleset === RULESETS.RENJU ? STRINGS[lang].firstCenter : STRINGS[lang].foul;
     foulNote.style.opacity = '1';
     clearTimeout(showFoulNote._t);
     showFoulNote._t = setTimeout(() => { foulNote.style.opacity = '0'; }, 2200);

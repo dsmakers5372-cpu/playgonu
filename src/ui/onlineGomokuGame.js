@@ -51,6 +51,7 @@ const T = {
     leave: 'Leave',
     wins: (n) => `${n} wins!`,
     opponent: 'Opponent',
+    firstCenter: "Renju: Black's first stone goes on the center point.",
     rematchWaiting: 'Waiting for your opponent…',
     rematchAsked: (n) => `${n} wants a rematch — press Play again.`,
     rematchStarted: (c) => `New game — this time you are ${PLAYER_NAME.en[c]}.`,
@@ -73,6 +74,7 @@ const T = {
     leave: '나가기',
     wins: (n) => `${n} 승리!`,
     opponent: '상대',
+    firstCenter: '렌주룰: 흑의 첫 수는 가운데(천원)에 둡니다.',
     rematchWaiting: '상대방을 기다리는 중…',
     rematchAsked: (n) => `${n}님이 한 판 더 원해요 — '한번더'를 누르세요.`,
     rematchStarted: (c) => `새 판 시작 — 이번엔 ${PLAYER_NAME.ko[c]}입니다.`,
@@ -91,6 +93,7 @@ const T = {
     resultDrawTitle: 'Empate',
     playAgain: 'Otra partida',
     leave: 'Salir',
+    firstCenter: 'Renju: la primera piedra negra va en el punto central.',
     rematchWaiting: 'Esperando a tu rival…',
     rematchAsked: (n) => `${n} quiere la revancha — pulsa Otra partida.`,
     rematchStarted: (c) => `Nueva partida — esta vez juegas con ${PLAYER_NAME.es[c]}.`,
@@ -113,6 +116,7 @@ const T = {
     resultDrawTitle: '引き分けです',
     playAgain: 'もう一局',
     leave: '退出',
+    firstCenter: '連珠：黒の初手は中央（天元）に打ちます。',
     rematchWaiting: '相手を待っています…',
     rematchAsked: (n) => `${n}さんがもう一局を希望しています — 「もう一局」を押してください。`,
     rematchStarted: (c) => `新しい対局 — 今回は${PLAYER_NAME.ja[c]}です。`,
@@ -135,6 +139,7 @@ const T = {
     resultDrawTitle: '平局',
     playAgain: '再来一局',
     leave: '离开',
+    firstCenter: '连珠规则：黑方第一手下在棋盘中央（天元）。',
     rematchWaiting: '等待对手…',
     rematchAsked: (n) => `${n} 想再来一局 — 请点击“再来一局”。`,
     rematchStarted: (c) => `新对局 — 这次你是${PLAYER_NAME.zh[c]}。`,
@@ -353,7 +358,10 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   function handlePointClick(index, legalSet) {
     if (!isMyTurn()) return;
     if (game.cells[index] !== null) return;
-    if (legalSet && !legalSet.has(index)) return;
+    if (legalSet && !legalSet.has(index)) {
+      if (game.moveCount === 0 && game.ruleset === RULESETS.RENJU) panel?.addSystemMessage(t.firstCenter);
+      return;
+    }
     if (lastPointerType !== 'mouse' && currentTapMode() === 'safe' && previewIndex !== index) {
       previewIndex = index;
       renderBoard();

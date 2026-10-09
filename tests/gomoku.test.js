@@ -142,7 +142,7 @@ test('renju: legalPlacements and forbiddenPoints agree on the one blocked point'
   cells[toIndex(7, 6)] = PLAYERS.A;
   cells[toIndex(5, 7)] = PLAYERS.A;
   cells[toIndex(6, 7)] = PLAYERS.A;
-  const state = emptyState({ cells, turn: PLAYERS.A, ruleset: RULESETS.RENJU });
+  const state = emptyState({ cells, turn: PLAYERS.A, ruleset: RULESETS.RENJU, moveCount: 4 });
   const forbidden = forbiddenPoints(state);
   assert.deepEqual(forbidden, [toIndex(7, 7)]);
   assert.equal(legalPlacements(state).includes(toIndex(7, 7)), false);
@@ -152,4 +152,39 @@ test('renju: legalPlacements and forbiddenPoints agree on the one blocked point'
 test('no further moves once the game has a winner', () => {
   const state = emptyState({ winner: PLAYERS.A });
   assert.throws(() => move(state, null, toIndex(0, 0)), /Game already over/);
+});
+
+const renjuState = (black, white = [], extra = {}) => {
+  const cells = new Array(BOARD_SIZE * BOARD_SIZE).fill(null);
+  for (const [r, c] of black) cells[toIndex(r, c)] = PLAYERS.A;
+  for (const [r, c] of white) cells[toIndex(r, c)] = PLAYERS.B;
+  return emptyState({ cells, turn: PLAYERS.A, ruleset: RULESETS.RENJU, moveCount: black.length + white.length, ...extra });
+};
+
+test('renju: a broken three (●●_●) counts toward double-three', () => {
+  // Row 6: ●_● around (6,9) -> ●●● ; column 9: (5,9) ● (6,9) _ (8,9) ● -> ●●_●
+  const state = renjuState([[5, 9], [6, 8], [6, 10], [7, 7], [8, 9]], [[3, 11], [8, 5], [8, 6], [8, 7], [8, 8]]);
+  assert.deepEqual(forbiddenPoints(state), [toIndex(6, 9)]);
+  assert.throws(() => move(state, null, toIndex(6, 9)), /double-three/);
+});
+
+test('renju: a broken three blocked on one side is not a three', () => {
+  // Same shape but white caps the column above, so it can't become an open four.
+  const state = renjuState([[5, 9], [6, 8], [6, 10], [8, 9]], [[4, 9]]);
+  assert.equal(forbiddenPoints(state).includes(toIndex(6, 9)), false);
+});
+
+test('renju: two broken fours (●●●_●) at once are a double-four', () => {
+  // (7,7) makes ●●●_● along row 7 (gap at 7,6) and down column 7 (gap at 6,7).
+  const state = renjuState([[7, 3], [7, 4], [7, 5], [3, 7], [4, 7], [5, 7]]);
+  assert.equal(forbiddenPoints(state).includes(toIndex(7, 7)), true);
+  assert.throws(() => move(state, null, toIndex(7, 7)), /double-four/);
+});
+
+test("renju: black's first stone must go on the center point", () => {
+  const state = createInitialState({ ruleset: RULESETS.RENJU });
+  assert.deepEqual(legalPlacements(state), [toIndex(7, 7)]);
+  assert.throws(() => move(state, null, toIndex(0, 0)), /center/);
+  const free = createInitialState({ ruleset: RULESETS.FREESTYLE });
+  assert.equal(legalPlacements(free).length, BOARD_SIZE * BOARD_SIZE);
 });
