@@ -473,6 +473,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
           opponentColorHex: PLAYER_COLOR[opponentColor].fill,
         });
         panel.onSendChat((text) => roomClient.sendChat(text));
+        panel.onResign(() => roomClient.sendResign());
         panel.addSystemMessage(t.gameStarted(myColor));
         panel.startTimer();
       }
@@ -499,7 +500,8 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
         panel?.stopTimer();
         const won = game.winner === myColor;
         panel?.recordResult(won ? 'win' : 'loss');
-        panel?.addSystemMessage(won ? t.youWin : t.youLose);
+        if (game.resignedBy) panel?.noteResign(game.resignedBy === myColor);
+        else panel?.addSystemMessage(won ? t.youWin : t.youLose);
         if (resultTitle) resultTitle.textContent = won ? t.resultWinTitle : t.resultLoseTitle;
         resultBanner?.classList.add('is-visible');
       }

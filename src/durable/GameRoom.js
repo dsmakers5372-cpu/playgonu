@@ -130,6 +130,7 @@ export class GameRoom {
     if (msg.type === 'move') await this.handleMove(ws, conn, msg);
     else if (msg.type === 'chat') this.handleChat(conn, msg);
     else if (msg.type === 'rematch') await this.handleRematch(ws, conn);
+    else if (msg.type === 'resign') this.handleResign(conn);
     else if (msg.type === 'leave') ws.close(1000, 'left');
   }
 
@@ -282,6 +283,20 @@ export class GameRoom {
     if (this.room.vsBot) await this.triggerBotMoves();
   }
 
+  // A player gives up: the opponent wins at once, and it counts in the
+  // saved records like any other win or loss.
+  handleResign(conn) {
+    if (conn.role !== 'player' || !this.room || this.room.status !== 'playing') return;
+    const player = this.room.players.find((p) => p.id === conn.id);
+    if (!player || this.room.players.length < MAX_PLAYERS) return;
+    const { opponent } = ENGINES[this.room.gameType];
+    this.room.engineState = { ...this.room.engineState, winner: opponent(player.color), resignedBy: player.color };
+    this.room.status = 'finished';
+    this.broadcast({ type: 'state', engineState: this.room.engineState, status: this.room.status });
+    this.recordResults();
+    this.botAfterGame();
+  }
+
   // A room id like "vpm-v012-v087-K3PQ9X2A" is a spectator opening one of
   // the lobby's virtual games in progress: both seats are bots, the game
   // starts from a played-in opening, and it only runs while watched.
@@ -417,6 +432,7 @@ export class GameRoom {
         }
         await new Promise((resolve) => setTimeout(resolve, delay));
         if (watch && this.sockets.size === 0) break;
+        if (this.room.status !== 'playing') break; // e.g. the player resigned meanwhile
         const aiMove = ai.chooseAIMove(this.room.engineState, { difficulty: mover.difficulty, deepMidgame: !watch });
         if (!aiMove) break;
         let next;

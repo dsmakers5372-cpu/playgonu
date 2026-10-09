@@ -48,6 +48,9 @@ export function connectToRoom({ roomId, name, title, isPublic, allowSpectators =
       ws.send(JSON.stringify({ type: 'rematch' }));
       return true;
     },
+    sendResign() {
+      if (ws.readyState === WebSocket.OPEN) ws.send(JSON.stringify({ type: 'resign' }));
+    },
     close() {
       closedByUs = true;
       try { ws.close(1000, 'left'); } catch { /* already closed */ }

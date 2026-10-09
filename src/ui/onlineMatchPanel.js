@@ -20,6 +20,12 @@ const STRINGS = {
     win: 'Win',
     draw: 'Draw',
     loss: 'Loss',
+    resign: 'Resign',
+    resignAsk: 'Resign this game?',
+    resignNote: 'It counts as a loss.',
+    cancel: 'Cancel',
+    youResigned: 'You resigned.',
+    oppResigned: (n) => `${n} resigned — you win!`,
   },
   ko: {
     chatTitle: '채팅',
@@ -30,6 +36,12 @@ const STRINGS = {
     win: '승',
     draw: '무',
     loss: '패',
+    resign: '기권',
+    resignAsk: '기권하시겠어요?',
+    resignNote: '이번 판은 패배로 기록돼요.',
+    cancel: '취소',
+    youResigned: '기권했어요.',
+    oppResigned: (n) => `${n}님이 기권했어요 — 승리!`,
   },
   es: {
     chatTitle: 'Chat',
@@ -40,6 +52,12 @@ const STRINGS = {
     win: 'G',
     draw: 'E',
     loss: 'P',
+    resign: 'Rendirse',
+    resignAsk: '¿Rendirte en esta partida?',
+    resignNote: 'Contará como derrota.',
+    cancel: 'Cancelar',
+    youResigned: 'Te rendiste.',
+    oppResigned: (n) => `${n} se rindió — ¡ganaste!`,
   },
   ja: {
     chatTitle: 'チャット',
@@ -50,6 +68,12 @@ const STRINGS = {
     win: '勝',
     draw: '分',
     loss: '敗',
+    resign: '投了',
+    resignAsk: '投了しますか？',
+    resignNote: 'この対局は負けとして記録されます。',
+    cancel: 'キャンセル',
+    youResigned: '投了しました。',
+    oppResigned: (n) => `${n}さんが投了しました — あなたの勝ち！`,
   },
   zh: {
     chatTitle: '聊天',
@@ -60,6 +84,12 @@ const STRINGS = {
     win: '胜',
     draw: '平',
     loss: '负',
+    resign: '认输',
+    resignAsk: '确定认输吗？',
+    resignNote: '本局将记为负。',
+    cancel: '取消',
+    youResigned: '你已认输。',
+    oppResigned: (n) => `${n} 认输了 — 你赢了！`,
   },
 };
 
@@ -166,6 +196,65 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
     renderStatsRows(accountStats);
   });
 
+  // Resign: asks first in a small dialog (Cancel / Resign), so a stray tap
+  // doesn't end the game. Only live while a game is being played.
+  const resignRow = document.createElement('div');
+  resignRow.style.cssText = 'display:flex;justify-content:flex-end;';
+  const resignBtn = document.createElement('button');
+  resignBtn.type = 'button';
+  resignBtn.className = 'btn';
+  resignBtn.style.cssText = 'padding:6px 14px;font-size:13px;';
+  resignBtn.textContent = t.resign;
+  resignBtn.disabled = true;
+  resignRow.appendChild(resignBtn);
+
+  const resignDialog = document.createElement('div');
+  resignDialog.className = 'win-banner';
+  resignDialog.setAttribute('role', 'dialog');
+  resignDialog.setAttribute('aria-modal', 'true');
+  const resignCard = document.createElement('div');
+  resignCard.className = 'win-banner__card';
+  const resignTitle = document.createElement('div');
+  resignTitle.className = 'serif';
+  resignTitle.style.cssText = 'font-size:22px;font-weight:700;';
+  resignTitle.textContent = t.resignAsk;
+  const resignNote = document.createElement('div');
+  resignNote.style.cssText = 'font-size:14px;color:var(--ink-soft);';
+  resignNote.textContent = t.resignNote;
+  const resignActions = document.createElement('div');
+  resignActions.style.cssText = 'display:flex;gap:10px;justify-content:center;';
+  const resignCancel = document.createElement('button');
+  resignCancel.type = 'button';
+  resignCancel.className = 'btn';
+  resignCancel.textContent = t.cancel;
+  const resignOk = document.createElement('button');
+  resignOk.type = 'button';
+  resignOk.className = 'btn-primary';
+  resignOk.textContent = t.resign;
+  resignActions.append(resignCancel, resignOk);
+  resignCard.append(resignTitle, resignNote, resignActions);
+  resignDialog.appendChild(resignCard);
+  document.body.appendChild(resignDialog);
+
+  let onResign = null;
+  const closeResignDialog = () => resignDialog.classList.remove('is-visible');
+  resignBtn.addEventListener('click', () => {
+    resignDialog.classList.add('is-visible');
+    resignCancel.focus();
+  });
+  resignCancel.addEventListener('click', closeResignDialog);
+  resignDialog.addEventListener('click', (e) => { if (e.target === resignDialog) closeResignDialog(); });
+  resignDialog.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeResignDialog(); });
+  resignOk.addEventListener('click', () => {
+    closeResignDialog();
+    resignBtn.disabled = true;
+    onResign?.();
+  });
+  function setResignLive(live) {
+    if (!live) closeResignDialog();
+    resignBtn.disabled = !live;
+  }
+
   const chatCard = document.createElement('div');
   chatCard.className = 'card';
   chatCard.style.cssText = 'overflow:hidden;display:flex;flex-direction:column;';
@@ -247,6 +336,7 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
   let timerHandle = null;
   function startTimer() {
     stopTimer();
+    setResignLive(true);
     const start = Date.now();
     clockTag.textContent = '0:00';
     timerHandle = setInterval(() => {
@@ -256,9 +346,10 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
   function stopTimer() {
     if (timerHandle) clearInterval(timerHandle);
     timerHandle = null;
+    setResignLive(false);
   }
 
-  root.append(playerBar, statsCard, chatCard);
+  root.append(playerBar, statsCard, resignRow, chatCard);
 
   return {
     setTurnCaption(text) { turnCaption.textContent = text; },
@@ -274,6 +365,9 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
       showOverlay(from, text);
     },
     onSendChat(fn) { onSendChat = fn; },
+    onResign(fn) { onResign = fn; },
+    // A system line when a game ended by resignation.
+    noteResign(byYou) { appendChatLine({ system: true, text: byYou ? t.youResigned : t.oppResigned(opponentName) }); },
     // outcome: 'win' | 'loss' | 'draw'
     recordResult(outcome) {
       if (accountStats) {
@@ -290,6 +384,7 @@ export function mountMatchPanel(root, { lang = 'en', gameType, youName, opponent
     },
     destroy() {
       stopTimer();
+      resignDialog.remove();
       if (overlayTimer) clearTimeout(overlayTimer);
       overlay.remove();
     },

@@ -400,6 +400,7 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
           opponentColorHex: PLAYER_COLOR[opponentColor].fill,
         });
         panel.onSendChat((text) => roomClient.sendChat(text));
+        panel.onResign(() => roomClient.sendResign());
         panel.addSystemMessage(t.gameStarted(myColor));
         panel.startTimer();
       }
@@ -430,7 +431,8 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
         else if (game.winner === myColor) { outcome = 'win'; sysMsg = t.youWin; title = t.resultWinTitle; }
         else { outcome = 'loss'; sysMsg = t.youLose; title = t.resultLoseTitle; }
         panel?.recordResult(outcome);
-        panel?.addSystemMessage(sysMsg);
+        if (game.resignedBy) panel?.noteResign(game.resignedBy === myColor);
+        else panel?.addSystemMessage(sysMsg);
         if (resultTitle) resultTitle.textContent = title;
         resultBanner?.classList.add('is-visible');
       }
