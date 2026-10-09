@@ -406,7 +406,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
     if (role === 'spectator') {
       turnLabel.textContent = t.spectating;
     } else if (game.winner) {
-      turnLabel.textContent = t.wins(PLAYER_NAME[lang][game.winner]);
+      turnLabel.textContent = game.winner === 'draw' ? t.resultDrawTitle : t.wins(PLAYER_NAME[lang][game.winner]);
     } else if (game.pendingCapture) {
       turnLabel.textContent = isMyTurn() ? t.pickCapture : t.waitTurn(PLAYER_NAME[lang][game.turn]);
     } else {
@@ -498,11 +498,12 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       if (role === 'player' && !resultRecorded && !wasWinner && game.winner) {
         resultRecorded = true;
         panel?.stopTimer();
+        const draw = game.winner === 'draw';
         const won = game.winner === myColor;
-        panel?.recordResult(won ? 'win' : 'loss');
+        panel?.recordResult(draw ? 'draw' : won ? 'win' : 'loss');
         if (game.resignedBy) panel?.noteResign(game.resignedBy === myColor);
-        else panel?.addSystemMessage(won ? t.youWin : t.youLose);
-        if (resultTitle) resultTitle.textContent = won ? t.resultWinTitle : t.resultLoseTitle;
+        else panel?.addSystemMessage(draw ? t.resultDrawTitle : won ? t.youWin : t.youLose);
+        if (resultTitle) resultTitle.textContent = draw ? t.resultDrawTitle : won ? t.resultWinTitle : t.resultLoseTitle;
         resultBanner?.classList.add('is-visible');
       }
     },

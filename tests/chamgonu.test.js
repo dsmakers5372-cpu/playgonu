@@ -5,6 +5,7 @@ import {
   legalPlacements,
   legalCaptures,
   legalMovesFrom,
+  allLegalMoves,
   move,
   PLAYERS,
 } from '../src/engine/chamgonu.js';
@@ -197,4 +198,16 @@ test('win by reduction: the opponent dropping to 2 pieces ends the game', () => 
 test('no further moves once the game has a winner', () => {
   const state = emptyState({ winner: PLAYERS.A });
   assert.throws(() => move(state, null, 3), /Game already over/);
+});
+
+test('a board filled while placing, with no mill ever made, is a draw', () => {
+  // Both sides always pick the first placement that doesn't make a mill.
+  let state = createInitialState();
+  while (state.phase === 'placing' && !state.winner) {
+    const quiet = allLegalMoves(state, state.turn).find((m) => !move(state, m.from, m.to).pendingCapture);
+    assert.ok(quiet, 'a mill-free placement exists');
+    state = move(state, quiet.from, quiet.to);
+  }
+  assert.ok(state.pieces.every((p) => p !== null));
+  assert.equal(state.winner, 'draw');
 });

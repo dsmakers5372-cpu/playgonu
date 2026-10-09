@@ -30,6 +30,7 @@ const PLAYER_NAME = {
 const STRINGS = {
   en: {
     wins: (n) => `${n} wins!`,
+    drawFull: 'Draw — the board filled up with no mill',
     pickCapture: (n) => `${n} — pick a piece to capture`,
     toPlace: (n, placed) => `${n} to place (${placed}/12)`,
     toMove: (n) => `${n} to move`,
@@ -37,6 +38,7 @@ const STRINGS = {
   },
   ko: {
     wins: (n) => `${n} 승리!`,
+    drawFull: '무승부 — 꼰 없이 판이 꽉 찼어요',
     pickCapture: (n) => `${n} — 잡을 말을 고르세요`,
     toPlace: (n, placed) => `${n} 차례 — 놓기 (${placed}/12)`,
     toMove: (n) => `${n} 차례`,
@@ -44,6 +46,7 @@ const STRINGS = {
   },
   es: {
     wins: (n) => `¡Gana ${n}!`,
+    drawFull: 'Empate — el tablero se llenó sin ningún molino',
     pickCapture: (n) => `${n} — elige una pieza para capturar`,
     toPlace: (n, placed) => `${n} coloca (${placed}/12)`,
     toMove: (n) => `Turno de ${n}`,
@@ -51,6 +54,7 @@ const STRINGS = {
   },
   ja: {
     wins: (n) => `${n}の勝ち！`,
+    drawFull: '引き分け — ゴンなしで盤が埋まりました',
     pickCapture: (n) => `${n} — 取る駒を選んでください`,
     toPlace: (n, placed) => `${n}の番 — 配置 (${placed}/12)`,
     toMove: (n) => `${n}の番`,
@@ -58,6 +62,7 @@ const STRINGS = {
   },
   zh: {
     wins: (n) => `${n}获胜！`,
+    drawFull: '平局 — 没有成三，棋盘已满',
     pickCapture: (n) => `${n} — 请选择要吃掉的棋子`,
     toPlace: (n, placed) => `${n}落子 (${placed}/12)`,
     toMove: (n) => `轮到${n}`,
@@ -84,6 +89,7 @@ const POINT_PIXELS = [
 function statusText(lang, game) {
   const s = STRINGS[lang];
   const name = PLAYER_NAME[lang][game.turn];
+  if (game.winner === 'draw') return s.drawFull;
   if (game.winner) return s.wins(PLAYER_NAME[lang][game.winner]);
   if (game.pendingCapture) return s.pickCapture(name);
   if (game.phase === 'placing') return s.toPlace(name, game.placedCount[game.turn]);
@@ -342,7 +348,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
   function showWinBanner() {
     if (!game.winner) return;
     stats.stop();
-    winMessage.textContent = STRINGS[lang].wins(PLAYER_NAME[lang][game.winner]);
+    winMessage.textContent = game.winner === 'draw' ? STRINGS[lang].drawFull : STRINGS[lang].wins(PLAYER_NAME[lang][game.winner]);
     if (winMoves) winMoves.textContent = String(stats.moveCount);
     if (winTime) winTime.textContent = formatElapsed(stats.elapsedMs());
     winBanner.classList.add('is-visible');

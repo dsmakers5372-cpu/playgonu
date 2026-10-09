@@ -159,6 +159,12 @@ function advanceTurnAndCheckEnd(next, mover) {
   next.turn = opp;
   if (next.phase === 'placing' && next.placedCount[PLAYERS.A] >= PIECES_PER_PLAYER && next.placedCount[PLAYERS.B] >= PIECES_PER_PLAYER) {
     next.phase = 'moving';
+    // Every point taken and nothing captured while placing: nobody can move.
+    // That's a draw, not a loss for whoever happens to move first.
+    if (next.pieces.every((p) => p !== null)) {
+      next.winner = 'draw';
+      return;
+    }
   }
   if (next.phase === 'moving' && !hasAnyLegalMove(next, opp)) {
     next.winner = mover;
