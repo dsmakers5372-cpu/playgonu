@@ -18,7 +18,7 @@ const STRINGS = {
     privacy: 'Privacy policy',
     welcome: 'Welcome to PlayGonu!',
     profileTitle: 'My account', signedInAs: 'Signed in as',
-    recordTitle: 'Online record', games: { cham: 'Cham-gonu', gomoku: 'Gomoku' }, win: 'W', draw: 'D', loss: 'L',
+    recordTitle: 'Online record', games: { cham: 'Cham-gonu', gomoku: 'Omok' }, win: 'W', draw: 'D', loss: 'L',
     recordNote: 'Games against online opponents are added automatically while you’re signed in.',
     importBody: (n) => `This browser recorded ${n} online game${n === 1 ? '' : 's'} before you signed up. Add them to your account? (one time only)`,
     importBtn: 'Add to my account', imported: 'Added to your record.',

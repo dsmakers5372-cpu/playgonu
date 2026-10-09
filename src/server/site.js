@@ -8,7 +8,7 @@ const SITE = 'https://playgonu.com';
 export const BLOG_LANGS = {
   en: {
     prefix: '', htmlLang: 'en', siteName: 'PlayGonu', blog: 'Blog', back: '← All posts', guide: 'A PlayGonu guide', privacy: 'Privacy Policy',
-    nav: [['index.html', 'Cham-gonu'], ['gomoku.html', 'Gomoku'], ['online.html', 'Online'], ['howto.html', 'How to Play']],
+    nav: [['index.html', 'Cham-gonu'], ['gomoku.html', 'Omok'], ['online.html', 'Online'], ['howto.html', 'How to Play']],
     indexTitle: 'Blog — PlayGonu', indexHeading: 'Guides to Gonu, Gomoku, and the games behind them', indexIntro: '',
   },
   ko: {

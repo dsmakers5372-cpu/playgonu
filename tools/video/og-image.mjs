@@ -1,7 +1,8 @@
 // Renders the per-language link-preview cards (og:image) shown when a page is
 // shared on KakaoTalk, X, Facebook… — same layout as the English og-image.svg,
 // with the text of each language's home-page hero.
-//   node og-image.mjs [ko es …]  → ../../og-image-{ko,es,ja,zh}.png (+ .svg)
+//   node og-image.mjs [en ko es …]  → ../../og-image.png (English) and
+//   og-image-{ko,es,ja,zh}.png, each with its .svg source
 import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer-core';
@@ -10,6 +11,11 @@ const ROOT = path.resolve(import.meta.dirname, '../..');
 const CHROME = ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe'].find((p) => fs.existsSync(p));
 
 const CARDS = {
+  en: {
+    file: 'og-image', serif: 'Noto Serif', sans: 'Noto Sans', font: 'Noto+Serif:wght@400;700&family=Noto+Sans:wght@400;700',
+    name: 'PlayGonu', tag: ['Master Mind Games', 'Cham-gonu & Omok'],
+    lines: ['Korean traditional strategy board games.', 'Play solo vs AI, or online against a real person.'],
+  },
   ko: {
     serif: 'Noto Serif KR', sans: 'Noto Sans KR', font: 'Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@400;700',
     name: '플레이고누', tag: ['한국 전통 최고의 전략 두뇌게임', '고누 온라인 대전'],
@@ -76,7 +82,8 @@ await page.setViewport({ width: 1200, height: 630 });
 const only = process.argv.slice(2);
 for (const [lang, c] of Object.entries(CARDS).filter(([l]) => !only.length || only.includes(l))) {
   const svg = svgFor(c);
-  fs.writeFileSync(path.join(ROOT, `og-image-${lang}.svg`), svg);
+  const file = c.file || `og-image-${lang}`;
+  fs.writeFileSync(path.join(ROOT, `${file}.svg`), svg);
   await page.setContent(`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=${c.font}&display=block" rel="stylesheet"><style>html,body{margin:0}</style></head><body>${svg}</body></html>`, { waitUntil: 'load', timeout: 120000 });
   // Load exactly the glyphs on the card (CJK web fonts come in many slices).
   await page.evaluate(async (fams, texts) => {
@@ -85,7 +92,7 @@ for (const [lang, c] of Object.entries(CARDS).filter(([l]) => !only.length || on
   }, [c.serif, c.sans], [c.name, ...c.tag, ...c.lines, 'playgonu.com'].join(''));
   // Text left of the board must not run into it (the board starts at x=700).
   const widest = await page.evaluate(() => Math.max(...[...document.querySelectorAll('text')].slice(0, 6).map((t) => t.getBBox().x + t.getBBox().width)));
-  await page.screenshot({ path: path.join(ROOT, `og-image-${lang}.png`), clip: { x: 0, y: 0, width: 1200, height: 630 } });
-  console.log(`og-image-${lang}.png  text right edge ${Math.round(widest)}px${widest > 680 ? '  ⚠ overlaps the board' : ''}`);
+  await page.screenshot({ path: path.join(ROOT, `${file}.png`), clip: { x: 0, y: 0, width: 1200, height: 630 } });
+  console.log(`${file}.png  text right edge ${Math.round(widest)}px${widest > 680 ? '  ⚠ overlaps the board' : ''}`);
 }
 await browser.close();
