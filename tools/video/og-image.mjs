@@ -1,7 +1,7 @@
 // Renders the per-language link-preview cards (og:image) shown when a page is
 // shared on KakaoTalk, X, Facebook… — same layout as the English og-image.svg,
 // with the text of each language's home-page hero.
-//   node og-image.mjs            → ../../og-image-{ko,es,ja,zh}.png (+ .svg)
+//   node og-image.mjs [ko es …]  → ../../og-image-{ko,es,ja,zh}.png (+ .svg)
 import fs from 'node:fs';
 import path from 'node:path';
 import puppeteer from 'puppeteer-core';
@@ -12,8 +12,8 @@ const CHROME = ['C:/Program Files/Google/Chrome/Application/chrome.exe', 'C:/Pro
 const CARDS = {
   ko: {
     serif: 'Noto Serif KR', sans: 'Noto Sans KR', font: 'Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@400;700',
-    name: '플레이고누', tag: ['두뇌 게임의 끝판왕', '참고누 & 오목'],
-    lines: ['한국 전통 전략 보드게임.', 'AI와 혼자, 또는 온라인에서 실제 상대와.', '설치도 회원가입도 필요 없어요.'],
+    name: '플레이고누', tag: ['한국 전통 최고의 전략 두뇌게임', '고누 온라인 대전'],
+    lines: ['참고누 · 오목 · 줄고누 · 바퀴고누', 'AI와 혼자, 또는 온라인에서 실제 상대와.', '설치도 회원가입도 필요 없어요.'],
   },
   es: {
     serif: 'Noto Serif', sans: 'Noto Sans', font: 'Noto+Serif:wght@400;700&family=Noto+Sans:wght@400;700',
@@ -70,7 +70,8 @@ ${c.lines.map((l, i) => `  <text x="80" y="${400 + i * 34}" font-family="'${c.sa
 const browser = await puppeteer.launch({ executablePath: CHROME, headless: true });
 const page = await browser.newPage();
 await page.setViewport({ width: 1200, height: 630 });
-for (const [lang, c] of Object.entries(CARDS)) {
+const only = process.argv.slice(2);
+for (const [lang, c] of Object.entries(CARDS).filter(([l]) => !only.length || only.includes(l))) {
   const svg = svgFor(c);
   fs.writeFileSync(path.join(ROOT, `og-image-${lang}.svg`), svg);
   await page.setContent(`<!doctype html><html><head><link href="https://fonts.googleapis.com/css2?family=${c.font}&display=block" rel="stylesheet"><style>html,body{margin:0}</style></head><body>${svg}</body></html>`, { waitUntil: 'load', timeout: 120000 });
