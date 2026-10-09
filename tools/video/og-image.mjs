@@ -13,7 +13,7 @@ const CARDS = {
   ko: {
     serif: 'Noto Serif KR', sans: 'Noto Sans KR', font: 'Noto+Serif+KR:wght@400;700&family=Noto+Sans+KR:wght@400;700',
     name: '플레이고누', tag: ['한국 전통 최고의 전략 두뇌게임', '고누 온라인 대전'],
-    lines: ['참고누 · 오목 · 줄고누 · 바퀴고누', 'AI와 혼자, 또는 온라인에서 실제 상대와.', '설치도 회원가입도 필요 없어요.'],
+    lines: ['참고누 · 오목 · 줄고누 · 바퀴고누'],
   },
   es: {
     serif: 'Noto Serif', sans: 'Noto Sans', font: 'Noto+Serif:wght@400;700&family=Noto+Sans:wght@400;700',
@@ -31,6 +31,9 @@ const CARDS = {
     lines: ['韩国传统策略棋类游戏。', '单人挑战 AI，或在线与真人对弈。', '无需安装，无需注册。'],
   },
 };
+
+// The site button sits just under the last line of text (y=500 with three lines).
+const btnY = (c) => 400 + (c.lines.length - 1) * 34 + 32;
 
 const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
 
@@ -61,8 +64,8 @@ function svgFor(c) {
   <text x="80" y="340" font-family="'${c.serif}', serif" font-size="40" fill="#AC3B2A">${esc(c.tag[1])}</text>
 ${c.lines.map((l, i) => `  <text x="80" y="${400 + i * 34}" font-family="'${c.sans}', sans-serif" font-size="25" fill="#4A4038">${esc(l)}</text>`).join('\n')}
 
-  <rect x="80" y="500" width="190" height="56" rx="10" fill="#AC3B2A"/>
-  <text x="175" y="536" font-family="'${c.sans}', sans-serif" font-size="26" font-weight="700" fill="#F6F1E6" text-anchor="middle">playgonu.com</text>
+  <rect x="80" y="${btnY(c)}" width="190" height="56" rx="10" fill="#AC3B2A"/>
+  <text x="175" y="${btnY(c) + 36}" font-family="'${c.sans}', sans-serif" font-size="26" font-weight="700" fill="#F6F1E6" text-anchor="middle">playgonu.com</text>
 </svg>
 `;
 }
