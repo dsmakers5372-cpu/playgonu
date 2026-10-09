@@ -42,7 +42,6 @@ export async function handleAccount(request, env, url) {
     const username = cleanUsername(body.username);
     if (!username) return json({ error: 'bad-username' }, 400);
     if (!passwordOk(body.password)) return json({ error: 'bad-password' }, 400);
-    if (body.age14 !== true) return json({ error: 'age' }, 400);
     if (await overLimit(env, `signup-ip:${ip}`, SIGNUPS_PER_IP.limit, SIGNUPS_PER_IP.window)) return json({ error: 'too-many' }, 429);
     const t = iso();
     let row;

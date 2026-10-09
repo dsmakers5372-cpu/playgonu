@@ -14,9 +14,7 @@ const STRINGS = {
     toSignup: 'Create an account', toSignin: 'I already have an account',
     noRecovery: 'There’s no email, so a forgotten password can’t be recovered — keep it somewhere safe.',
     forgotNote: 'Forgot your password? Without an email it can’t be reset — you can make a new ID.',
-    age: 'I am 14 years old or older.',
-    consent: 'I agree to the collection and use of my information (required).',
-    consentBody: 'What we keep: your ID, password (hashed — never readable) and online game results. Why: to sign you in and save your record. How long: until you delete your account.',
+    consentBody: 'Signing up saves your ID, your password (hashed — never readable) and your online results, until you delete the account.',
     privacy: 'Privacy policy',
     welcome: 'Welcome to PlayGonu!',
     profileTitle: 'My account', signedInAs: 'Signed in as',
@@ -31,7 +29,6 @@ const STRINGS = {
     playOnline: 'Play online →',
     errors: {
       'bad-username': 'ID: 2–20 letters, numbers or “_” (no spaces).', 'bad-password': 'Password must be 8–128 characters.',
-      age: 'You need to be 14 or older to create an account.', consent: 'Please agree to the collection and use of your information.',
       mismatch: 'The two passwords don’t match.', taken: 'That ID is already taken. Try another one.',
       'too-many': 'Too many tries. Please wait a while and try again.', 'bad-login': 'Wrong ID or password.',
       'bad-current': 'The password is not correct.', 'signed-out': 'You’ve been signed out. Please sign in again.',
@@ -48,9 +45,7 @@ const STRINGS = {
     toSignup: '회원가입', toSignin: '이미 계정이 있어요',
     noRecovery: '이메일을 받지 않아서 비밀번호를 잊으면 찾을 수 없어요. 잘 기억해 두세요.',
     forgotNote: '비밀번호를 잊으셨나요? 이메일이 없어 찾을 수 없어요 — 새 아이디로 가입해 주세요.',
-    age: '만 14세 이상입니다.',
-    consent: '개인정보 수집·이용에 동의합니다. (필수)',
-    consentBody: '수집 항목: 아이디, 비밀번호(복원할 수 없게 암호화), 온라인 대전 결과. 목적: 로그인과 전적 저장. 보관 기간: 회원 탈퇴 시까지.',
+    consentBody: '가입하면 아이디, 비밀번호(복원할 수 없게 암호화), 온라인 전적이 저장되고, 탈퇴하면 바로 지워져요.',
     privacy: '개인정보처리방침',
     welcome: '가입 완료 — 플레이고누에 오신 걸 환영해요!',
     profileTitle: '내 계정', signedInAs: '로그인 아이디',
@@ -65,7 +60,6 @@ const STRINGS = {
     playOnline: '온라인 대전 하러 가기 →',
     errors: {
       'bad-username': '아이디는 2~20자 글자·숫자·“_”만 쓸 수 있어요(띄어쓰기 없이).', 'bad-password': '비밀번호는 8~128자로 정해 주세요.',
-      age: '만 14세 이상만 가입할 수 있어요.', consent: '개인정보 수집·이용에 동의해 주세요.',
       mismatch: '비밀번호 두 개가 서로 달라요.', taken: '이미 있는 아이디예요. 다른 아이디를 써 주세요.',
       'too-many': '시도가 너무 많아요. 잠시 뒤에 다시 해주세요.', 'bad-login': '아이디 또는 비밀번호가 맞지 않아요.',
       'bad-current': '비밀번호가 맞지 않아요.', 'signed-out': '로그아웃됐어요. 다시 로그인해 주세요.',
@@ -82,9 +76,7 @@ const STRINGS = {
     toSignup: 'Crear una cuenta', toSignin: 'Ya tengo cuenta',
     noRecovery: 'No pedimos correo, así que una contraseña olvidada no se puede recuperar. Guárdala bien.',
     forgotNote: '¿Olvidaste tu contraseña? Sin correo no se puede restablecer: crea un usuario nuevo.',
-    age: 'Tengo 14 años o más.',
-    consent: 'Acepto la recogida y el uso de mis datos (obligatorio).',
-    consentBody: 'Qué guardamos: tu usuario, tu contraseña (cifrada, nunca legible) y tus resultados en línea. Para qué: iniciar sesión y guardar tu historial. Hasta cuándo: hasta que borres la cuenta.',
+    consentBody: 'Al registrarte guardamos tu usuario, tu contraseña (cifrada, nunca legible) y tus resultados en línea, hasta que borres la cuenta.',
     privacy: 'Política de privacidad',
     welcome: '¡Cuenta creada! Bienvenido a PlayGonu.',
     profileTitle: 'Mi cuenta', signedInAs: 'Sesión iniciada como',
@@ -99,7 +91,6 @@ const STRINGS = {
     playOnline: 'Jugar en línea →',
     errors: {
       'bad-username': 'Usuario: 2–20 letras, números o “_” (sin espacios).', 'bad-password': 'La contraseña debe tener 8–128 caracteres.',
-      age: 'Debes tener 14 años o más para crear una cuenta.', consent: 'Acepta la recogida y el uso de datos.',
       mismatch: 'Las dos contraseñas no coinciden.', taken: 'Ese usuario ya existe. Prueba con otro.',
       'too-many': 'Demasiados intentos. Espera un poco.', 'bad-login': 'Usuario o contraseña incorrectos.',
       'bad-current': 'La contraseña no es correcta.', 'signed-out': 'Se cerró tu sesión. Vuelve a entrar.',
@@ -116,9 +107,7 @@ const STRINGS = {
     toSignup: 'アカウント作成', toSignin: 'アカウントを持っています',
     noRecovery: 'メールアドレスを登録しないため、パスワードを忘れると復元できません。大切に保管してください。',
     forgotNote: 'パスワードを忘れた場合は再設定できません。新しいIDで登録してください。',
-    age: '14歳以上です。',
-    consent: '個人情報の収集・利用に同意します（必須）。',
-    consentBody: '収集項目：ID、パスワード（復元できない形で暗号化）、オンライン対局の結果。目的：ログインと戦績の保存。保存期間：退会まで。',
+    consentBody: '登録すると、ID・パスワード（復元できない形で暗号化）・オンライン戦績が保存され、退会するとすぐに削除されます。',
     privacy: 'プライバシーポリシー',
     welcome: '登録完了 — PlayGonu へようこそ！',
     profileTitle: 'マイアカウント', signedInAs: 'ログイン中のID',
@@ -133,7 +122,6 @@ const STRINGS = {
     playOnline: 'オンライン対局へ →',
     errors: {
       'bad-username': 'IDは2〜20文字の文字・数字・「_」のみ使えます（空白なし）。', 'bad-password': 'パスワードは8〜128文字にしてください。',
-      age: '登録できるのは14歳以上の方です。', consent: '個人情報の収集・利用に同意してください。',
       mismatch: 'パスワードが一致しません。', taken: 'そのIDはすでに使われています。別のIDにしてください。',
       'too-many': '試行回数が多すぎます。しばらくしてからお試しください。', 'bad-login': 'IDまたはパスワードが違います。',
       'bad-current': 'パスワードが違います。', 'signed-out': 'ログアウトされました。もう一度ログインしてください。',
@@ -150,9 +138,7 @@ const STRINGS = {
     toSignup: '注册账号', toSignin: '我已有账号',
     noRecovery: '我们不收集邮箱，忘记密码后无法找回，请妥善保管。',
     forgotNote: '忘记密码？没有邮箱无法重置——可以注册一个新用户名。',
-    age: '我已年满 14 岁。',
-    consent: '我同意收集和使用我的信息（必选）。',
-    consentBody: '收集内容：用户名、密码（加密保存，无法还原）、在线对局结果。用途：登录和保存战绩。保存期限：直到你注销账号。',
+    consentBody: '注册后会保存你的用户名、密码（加密保存，无法还原）和在线战绩，注销账号后立即删除。',
     privacy: '隐私政策',
     welcome: '注册完成——欢迎来到 PlayGonu！',
     profileTitle: '我的账号', signedInAs: '当前登录',
@@ -167,7 +153,6 @@ const STRINGS = {
     playOnline: '去在线对局 →',
     errors: {
       'bad-username': '用户名为 2–20 个字母、数字或“_”（不能有空格）。', 'bad-password': '密码需要 8–128 个字符。',
-      age: '年满 14 岁才能注册账号。', consent: '请同意收集和使用信息。',
       mismatch: '两次输入的密码不一致。', taken: '该用户名已被使用，请换一个。',
       'too-many': '尝试次数过多，请稍后再试。', 'bad-login': '用户名或密码错误。',
       'bad-current': '密码不正确。', 'signed-out': '你已退出登录，请重新登录。',
@@ -270,13 +255,9 @@ function showSignup() {
     field(t.password2, pwInput('password2', 'new-password')),
     h('p', { class: 'hint', style: 'margin:0;font-weight:700;', text: t.noRecovery }),
     h('div', { class: 'consent' }, t.consentBody, ' ', h('a', { href: privacyHref, target: '_blank', rel: 'noopener', text: t.privacy })),
-    h('label', { class: 'check' }, h('input', { type: 'checkbox', name: 'consent' }), t.consent),
-    h('label', { class: 'check' }, h('input', { type: 'checkbox', name: 'age14' }), t.age),
   ], t.signupBtn, async (v, box) => {
     if (v.password !== v.password2) return showMsg(box, t.errors.mismatch);
-    if (!v.consent) return showMsg(box, t.errors.consent);
-    if (!v.age14) return showMsg(box, t.errors.age);
-    const r = await accountPost('/signup', { username: v.username, password: v.password, lang, age14: true });
+    const r = await accountPost('/signup', { username: v.username, password: v.password, lang });
     if (r.error) return showMsg(box, errText(r.error));
     showProfile(r.user, { text: t.welcome, ok: true });
   });

@@ -35,7 +35,7 @@ function setup(extraEnv = {}) {
   return { env, call, me };
 }
 
-const SIGNUP = { username: '고누왕', password: 'correct horse', lang: 'ko', age14: true };
+const SIGNUP = { username: '고누왕', password: 'correct horse', lang: 'ko' };
 
 test('passwords hash with a salt and verify', async () => {
   const a = await hashPassword('secret-one');
@@ -68,7 +68,6 @@ test('sign-up checks its fields', async () => {
   const { call } = setup();
   assert.equal((await call('/signup', { ...SIGNUP, username: 'a b' })).data.error, 'bad-username');
   assert.equal((await call('/signup', { ...SIGNUP, password: 'short' })).data.error, 'bad-password');
-  assert.equal((await call('/signup', { ...SIGNUP, age14: false })).data.error, 'age');
 });
 
 test('sign up signs you in at once, with an empty record; IDs are unique ignoring case', async () => {
