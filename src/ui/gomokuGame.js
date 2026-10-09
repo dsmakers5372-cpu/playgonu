@@ -12,6 +12,7 @@ import {
 import { chooseAIMove } from '../engine/gomokuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el } from './svg.js';
+import { mountShadowStone } from './shadowStone.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playPlaceSound } from './sound.js';
 
@@ -116,8 +117,12 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
   let history = [];
   // On a dense 15x15 board, a mis-tap is easy on mobile — the first tap on
   // a point just previews a faint stone there; tapping that same point
-  // again is what actually commits the move.
+  // again is what actually commits the move. A mouse sees a shadow stone
+  // while hovering instead, so one click places the stone.
   let previewIndex = null;
+  const hover = { index: null };
+  let lastPointerType = 'mouse';
+  svg.addEventListener('pointerdown', (e) => { lastPointerType = e.pointerType || 'mouse'; });
   let aiEnabled = opponentModeSelect.value === 'ai';
   let aiPlayer = sideSelect && sideSelect.value === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
   const stats = createGameStats({ onTick: (ms) => { if (timerLabel) timerLabel.textContent = formatElapsed(ms); } });
@@ -233,10 +238,18 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
     }
 
     const legal = isHumanTurn() ? new Set(legalPlacements(game)) : null;
+    const shadow = mountShadowStone(svg, {
+      r: STEP * 0.38,
+      pointPixel,
+      canPlace: (index) => !game.winner && isHumanTurn() && game.cells[index] === null && index !== previewIndex && (!legal || legal.has(index)),
+      colors: () => (game.turn === PLAYERS.A ? { ...PLAYER_COLOR[game.turn], stroke: '#F6F1E6' } : PLAYER_COLOR[game.turn]),
+      hover,
+    });
     game.cells.forEach((_, index) => {
       const { x, y } = pointPixel(index);
       const hit = el('circle', { cx: x, cy: y, r: STEP * 0.46, fill: 'transparent', class: 'board-point' });
       hit.addEventListener('click', () => handlePointClick(index, legal));
+      shadow.wire(hit, index);
       svg.appendChild(hit);
     });
   }
@@ -273,7 +286,7 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
       showFoulNote();
       return;
     }
-    if (previewIndex === index) {
+    if (lastPointerType === 'mouse' || previewIndex === index) {
       previewIndex = null;
       applyAction(index);
       return;

@@ -2,6 +2,7 @@ import { legalPlacements, forbiddenPoints, toIndex, toCoords, BOARD_SIZE, PLAYER
 import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
+import { mountShadowStone } from './shadowStone.js';
 import { el, animate, startAnimations } from './svg.js';
 import { playPlaceSound } from './sound.js';
 
@@ -236,6 +237,8 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
   let pulseTimer = null;
   let pulseStart = 0;
 
+  const hover = { index: null };
+
   function isMyTurn() {
     return role === 'player' && game && game.turn === myColor && !game.winner;
   }
@@ -299,10 +302,18 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     });
 
     const legal = isMyTurn() ? new Set(legalPlacements(game)) : null;
+    const shadow = mountShadowStone(svg, {
+      r: STEP * 0.38,
+      pointPixel,
+      canPlace: (index) => isMyTurn() && game.cells[index] === null && (!legal || legal.has(index)),
+      colors: () => (myColor === PLAYERS.A ? { ...PLAYER_COLOR[myColor], stroke: '#F6F1E6' } : PLAYER_COLOR[myColor]),
+      hover,
+    });
     game.cells.forEach((_, index) => {
       const { x, y } = pointPixel(index);
       const hit = el('circle', { cx: x, cy: y, r: STEP * 0.46, fill: 'transparent', class: 'board-point' });
       hit.addEventListener('click', () => handlePointClick(index, legal));
+      shadow.wire(hit, index);
       svg.appendChild(hit);
     });
     startAnimations(svg);
