@@ -1,4 +1,9 @@
+import { QUIET_MOVE_LIMIT, decideByCount } from './board.js';
+
 export const PLAYERS = Object.freeze({ A: 'A', B: 'B' });
+// Moving phase only: this many moves in a row with no capture (both sides)
+// and the game goes to whoever has more pieces left — equal is a draw.
+export { QUIET_MOVE_LIMIT };
 
 const POINT_COUNT = 24;
 const PIECES_PER_PLAYER = 12;
@@ -60,6 +65,7 @@ export function createInitialState() {
     pendingCapture: false,
     lastMill: [],
     lastMove: null,
+    quietMoves: 0,
   };
 }
 
@@ -143,6 +149,7 @@ function cloneState(state) {
     pendingCapture: false,
     lastMill: [],
     lastMove: state.lastMove ?? null,
+    quietMoves: state.quietMoves ?? 0,
   };
 }
 
@@ -168,6 +175,11 @@ function advanceTurnAndCheckEnd(next, mover) {
   }
   if (next.phase === 'moving' && !hasAnyLegalMove(next, opp)) {
     next.winner = mover;
+    return;
+  }
+  if (next.phase === 'moving' && next.quietMoves >= QUIET_MOVE_LIMIT) {
+    next.winner = decideByCount(next.pieces, PLAYERS.A, PLAYERS.B);
+    next.decidedByCount = true;
   }
 }
 
@@ -202,6 +214,7 @@ function applyMovement(state, from, to) {
   next.pieces[to] = player;
   next.pieces[from] = null;
   next.lastMove = to;
+  next.quietMoves = (state.quietMoves ?? 0) + 1;
   return finishTurnOrCapture(next, player, to);
 }
 
@@ -211,6 +224,7 @@ function applyCapture(state, point) {
   next.pieces[point] = null;
   if (next.phase === 'placing') next.deadForPlacement[point] = true;
   next.pendingCapture = false;
+  next.quietMoves = 0;
   advanceTurnAndCheckEnd(next, player);
   return next;
 }

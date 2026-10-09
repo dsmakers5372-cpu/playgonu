@@ -6,7 +6,9 @@ import {
   move,
   BOARD_EDGES,
   PLAYERS,
+  QUIET_MOVE_LIMIT,
 } from '../engine/chamgonu.js';
+import { getDynamicStrings } from '../i18n/dynamicStrings.js';
 import { chooseAIMove } from '../engine/chamgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el, animate, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
@@ -89,11 +91,22 @@ const POINT_PIXELS = [
 function statusText(lang, game) {
   const s = STRINGS[lang];
   const name = PLAYER_NAME[lang][game.turn];
-  if (game.winner === 'draw') return s.drawFull;
-  if (game.winner) return s.wins(PLAYER_NAME[lang][game.winner]);
+  if (game.winner) return resultText(lang, game);
   if (game.pendingCapture) return s.pickCapture(name);
   if (game.phase === 'placing') return s.toPlace(name, game.placedCount[game.turn]);
+  const quietLeft = QUIET_MOVE_LIMIT - (game.quietMoves ?? 0);
+  if (quietLeft <= 10) return getDynamicStrings(lang).toMoveLimitSoon(name, quietLeft);
   return s.toMove(name);
+}
+
+// How the game ended: a full board with no mill (draw), the quiet-move limit
+// (decided on pieces left), or an ordinary win.
+function resultText(lang, game) {
+  const s = STRINGS[lang];
+  const d = getDynamicStrings(lang);
+  if (game.decidedByCount) return game.winner === 'draw' ? d.drawExclaim(QUIET_MOVE_LIMIT) : d.countWinExclaim(PLAYER_NAME[lang][game.winner], QUIET_MOVE_LIMIT);
+  if (game.winner === 'draw') return s.drawFull;
+  return s.wins(PLAYER_NAME[lang][game.winner]);
 }
 
 export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
@@ -348,7 +361,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
   function showWinBanner() {
     if (!game.winner) return;
     stats.stop();
-    winMessage.textContent = game.winner === 'draw' ? STRINGS[lang].drawFull : STRINGS[lang].wins(PLAYER_NAME[lang][game.winner]);
+    winMessage.textContent = resultText(lang, game);
     if (winMoves) winMoves.textContent = String(stats.moveCount);
     if (winTime) winTime.textContent = formatElapsed(stats.elapsedMs());
     winBanner.classList.add('is-visible');

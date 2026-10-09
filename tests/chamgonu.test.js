@@ -6,6 +6,7 @@ import {
   legalCaptures,
   legalMovesFrom,
   allLegalMoves,
+  QUIET_MOVE_LIMIT,
   move,
   PLAYERS,
 } from '../src/engine/chamgonu.js';
@@ -210,4 +211,25 @@ test('a board filled while placing, with no mill ever made, is a draw', () => {
   }
   assert.ok(state.pieces.every((p) => p !== null));
   assert.equal(state.winner, 'draw');
+});
+
+test('moving phase: after the quiet-move limit, more pieces wins', () => {
+  const state = emptyState({ phase: 'moving', placedCount: { A: 12, B: 12 }, quietMoves: QUIET_MOVE_LIMIT - 1 });
+  for (const p of [0, 5, 19]) state.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 22]) state.pieces[p] = PLAYERS.B;
+  const next = move(state, 0, 7);
+  assert.equal(next.pendingCapture, false);
+  assert.equal(next.winner, PLAYERS.B);
+  assert.equal(next.decidedByCount, true);
+});
+
+test('moving phase: a capture resets the quiet-move count', () => {
+  const state = emptyState({ phase: 'moving', placedCount: { A: 12, B: 12 }, quietMoves: 20 });
+  for (const p of [0, 1, 3]) state.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 22]) state.pieces[p] = PLAYERS.B;
+  const milled = move(state, 3, 2); // 0-1-2 mill
+  assert.equal(milled.pendingCapture, true);
+  const next = move(milled, null, 10);
+  assert.equal(next.quietMoves, 0);
+  assert.equal(next.winner, null);
 });
