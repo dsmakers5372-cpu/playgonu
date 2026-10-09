@@ -1,5 +1,7 @@
 import { createGrid, QUIET_MOVE_LIMIT, decideByCount } from './board.js';
 
+export { QUIET_MOVE_LIMIT };
+
 export const PLAYERS = Object.freeze({ A: 'A', B: 'B' });
 
 const ROWS = 4;

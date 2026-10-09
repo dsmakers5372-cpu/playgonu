@@ -1,4 +1,8 @@
-import { createGrid, QUIET_MOVE_LIMIT, decideByCount } from './board.js';
+import { createGrid, decideByCount } from './board.js';
+
+// On 8x8 the opening alone can run past 30 quiet moves (in AI self-play the
+// first capture often came after move 30), so the limit is doubled here.
+export const QUIET_MOVE_LIMIT = 60;
 
 // 팔팔고누 (Palpal-gonu, "eight-eight gonu") — same 줄고누-family rules as
 // Jul-gonu/Daseotjul-gonu (custodian capture, reduce-to-one-or-stalemate

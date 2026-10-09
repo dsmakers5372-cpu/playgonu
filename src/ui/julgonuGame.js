@@ -1,10 +1,9 @@
-import { createInitialState, legalMovesFrom, move, julgonuGrid, PLAYERS } from '../engine/julgonu.js';
+import { createInitialState, legalMovesFrom, move, julgonuGrid, PLAYERS, QUIET_MOVE_LIMIT } from '../engine/julgonu.js';
 import { chooseAIMove } from '../engine/julgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
 import { playCaptureSound } from './sound.js';
-import { QUIET_MOVE_LIMIT } from '../engine/board.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 
 const AI_MOVE_DELAY_MS = 450;

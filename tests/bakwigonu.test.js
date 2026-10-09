@@ -45,7 +45,8 @@ test('a wheel slide captures the first enemy piece in its path and stops there',
   const state = emptyState();
   state.pieces[0] = PLAYERS.A;
   state.pieces[2] = PLAYERS.B;
-  state.pieces[12] = PLAYERS.B; // extra piece so B isn't wiped out
+  state.pieces[12] = PLAYERS.B; // extra pieces so B isn't down to one
+  state.pieces[13] = PLAYERS.B;
 
   const next = move(state, 0, 2);
   assert.deepEqual(next.lastCapture, [2]);
@@ -64,6 +65,16 @@ test('a normal one-square step never captures, even onto an adjacent enemy-free 
 test('moving onto an occupied point is illegal', () => {
   const state = createInitialState();
   assert.throws(() => move(state, 0, 1), /Illegal move/);
+});
+
+test('win by leaving the opponent a single piece', () => {
+  const state = emptyState();
+  state.pieces[0] = PLAYERS.A;
+  state.pieces[2] = PLAYERS.B;
+  state.pieces[13] = PLAYERS.B;
+
+  const next = move(state, 0, 2);
+  assert.equal(next.winner, PLAYERS.A);
 });
 
 test('win by capturing every enemy piece', () => {

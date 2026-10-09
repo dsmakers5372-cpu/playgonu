@@ -1,5 +1,7 @@
 import { createGrid, QUIET_MOVE_LIMIT, decideByCount } from './board.js';
 
+export { QUIET_MOVE_LIMIT };
+
 // 다섯줄고누 (Daseotjul-gonu, "five-line gonu") — namu.wiki's 고누 overview states
 // the 줄고누 family is named by its grid-line count ("4×4면 넉줄고누, 5×5면
 // 다섯줄고누, 6×6면 여섯줄고누…같은 방식"), i.e. the SAME rules as Jul-gonu

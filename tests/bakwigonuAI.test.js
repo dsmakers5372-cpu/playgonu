@@ -23,6 +23,7 @@ test('AI takes a free wheel capture when one is available', () => {
   const state = emptyState();
   state.pieces[0] = PLAYERS.A;
   state.pieces[2] = PLAYERS.B;
+  state.pieces[13] = PLAYERS.B; // two pieces, so only the capture wins
 
   const aiMove = chooseAIMove(state, { difficulty: 'easy' });
   assert.deepEqual(aiMove, { from: 0, to: 2 });

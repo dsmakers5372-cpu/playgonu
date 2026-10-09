@@ -1,5 +1,7 @@
 import { createGrid, QUIET_MOVE_LIMIT, decideByCount } from './board.js';
 
+export { QUIET_MOVE_LIMIT };
+
 // 바퀴고누 (Bakwi-gonu, "wheel gonu") — confirmed by two independent sources
 // (namu.wiki, artplay.co.kr): a square grid with a "wheel" at each of the 4
 // corners. A piece normally steps one square orthogonally; a piece sitting
@@ -120,7 +122,9 @@ export function move(state, from, to) {
   next.pieces[from] = null;
 
   const opp = opponent(player);
-  if (countPieces(next, opp) === 0) {
+  // Like the rest of the Jul-gonu family on this site: a side reduced to a
+  // single piece has lost (sources only name capturing everything).
+  if (countPieces(next, opp) <= 1) {
     next.turn = opp;
     next.winner = player;
     return next;

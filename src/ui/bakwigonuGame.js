@@ -1,9 +1,8 @@
-import { createInitialState, legalMovesFrom, move, bakwigonuGrid, WHEEL_POINTS, PLAYERS } from '../engine/bakwigonu.js';
+import { createInitialState, legalMovesFrom, move, bakwigonuGrid, WHEEL_POINTS, PLAYERS, QUIET_MOVE_LIMIT } from '../engine/bakwigonu.js';
 import { chooseAIMove } from '../engine/bakwigonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
-import { QUIET_MOVE_LIMIT } from '../engine/board.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playCaptureSound } from './sound.js';
 

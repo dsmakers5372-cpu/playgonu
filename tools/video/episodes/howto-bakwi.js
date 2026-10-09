@@ -1,7 +1,8 @@
 // "How to play Bakwi-gonu" — a real AI-vs-AI game (self-play batch
-// 2026-10-08, easy vs master, game 53: 18 moves, Black wins), clicked move by
+// 2026-10-08, easy vs master, game 53), clicked move by
 // move on the real bakwi.html page in 2-player local mode. Opens on the hook
-// (moves 8–10: three wheel-slide captures traded back and forth).
+// (moves 8–10: three wheel-slide captures traded back and forth). Since
+// 2026-10-09 a side left with one piece loses, so Black wins on move 14.
 // Points: 4×4 grid, index = row * 4 + col; wheels (corners) are 0, 3, 12, 15.
 export default {
   page: 'bakwi.html',
@@ -10,7 +11,7 @@ export default {
   pieceR: 12,
   scenes: [
     {
-      moves: [[5, 6], [14, 13], [4, 8], [13, 12], [1, 5], [11, 7], [0, 3], [12, 8], [3, 7], [15, 7], [5, 9], [7, 3], [6, 2], [3, 2], [9, 5], [8, 12], [5, 4], [12, 4]],
+      moves: [[5, 6], [14, 13], [4, 8], [13, 12], [1, 5], [11, 7], [0, 3], [12, 8], [3, 7], [15, 7], [5, 9], [7, 3], [6, 2], [3, 2]],
     },
   ],
   hook: {
@@ -52,12 +53,12 @@ export default {
       en: { tag: 'Capture', title: 'Slide in to capture', body: 'Take the first enemy in your path, and stop there.' },
     },
     {
-      after: 18,
-      arrows: [{ from: 12, to: 4 }],
-      rings: [{ color: 'dark', points: [4] }],
+      after: 14,
+      arrows: [{ from: 3, to: 2 }],
+      rings: [{ color: 'dark', points: [2] }],
       tagTone: 'alert',
-      ko: { tag: '승리', title: '다 잡으면 승리!', body: '가둬도 이겨요 · 40수 동안 못 잡으면 말 많은 쪽 승리' },
-      en: { tag: 'Win', title: 'Capture them all — you win', body: 'Boxing them in wins too · 40 moves with no capture: more pieces wins' },
+      ko: { tag: '승리', title: '1개 남기면 승리!', body: '가둬도 이겨요 · 30수 동안 못 잡으면 말 많은 쪽 승리' },
+      en: { tag: 'Win', title: 'Leave them 1 piece — you win', body: 'Boxing them in wins too · 30 moves with no capture: more pieces wins' },
     },
   ],
 };

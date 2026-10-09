@@ -3,8 +3,9 @@
 // consecutive moves with no capture (both sides counted) the game is decided
 // on pieces left — "상대편 말을 많이 없애는 편이 이긴다" for 줄고누 in the
 // Encyclopedia of Korean Culture (encykorea.aks.ac.kr/Article/E0003367); an
-// equal count is a draw.
-export const QUIET_MOVE_LIMIT = 40;
+// equal count is a draw. Palpal-gonu's big 8x8 board takes longer just to
+// bring the sides together, so it allows more (palpalgonu.js).
+export const QUIET_MOVE_LIMIT = 30;
 
 // The winner when the quiet-move limit is reached: whoever has more pieces
 // left, or 'draw' on an equal count.

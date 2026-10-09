@@ -1,10 +1,9 @@
-import { createInitialState, legalMovesFrom, move, palpalgonuGrid, PLAYERS } from '../engine/palpalgonu.js';
+import { createInitialState, legalMovesFrom, move, palpalgonuGrid, PLAYERS, QUIET_MOVE_LIMIT } from '../engine/palpalgonu.js';
 import { chooseAIMove } from '../engine/palpalgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
 import { playCaptureSound } from './sound.js';
-import { QUIET_MOVE_LIMIT } from '../engine/board.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 
 const AI_MOVE_DELAY_MS = 450;
