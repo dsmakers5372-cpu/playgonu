@@ -354,4 +354,5 @@ function showProfile(user, notice) {
 }
 
 // ---- start ----
-fetchMe().then((user) => (user ? showProfile(user) : showSignin()));
+const wantsSignup = new URLSearchParams(location.search).has('signup');
+fetchMe().then((user) => (user ? showProfile(user) : wantsSignup ? showSignup() : showSignin()));

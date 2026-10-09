@@ -3,6 +3,8 @@
 // logic needed). Cham-gonu stays its own top-level tab since it's the main
 // game; everything else funnels through here now that there are too many
 // variants to list as flat tabs.
+import { mountAccountLink } from './accountLink.js';
+
 const VARIANTS = [
   { href: 'jul.html', en: 'Jul-gonu', ko: '줄고누', es: 'Jul-gonu', ja: 'チュルゴヌ', zh: '线高努' },
   { href: 'daseotjul.html', en: 'Daseotjul-gonu', ko: '다섯줄고누', es: 'Daseotjul-gonu', ja: 'タソッチュルゴヌ', zh: '五线高努' },
@@ -45,4 +47,6 @@ export function mountVariantMenu(container, { lang: requestedLang = 'en', curren
   });
 
   container.appendChild(select);
+  // Every page's header loads this menu, so it also brings the sign-in links.
+  mountAccountLink(container.closest('nav'), lang);
 }
