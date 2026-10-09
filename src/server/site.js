@@ -77,11 +77,11 @@ function page({ lang, title, description, canonical, head = '', body }) {
 <meta property="og:url" content="${canonical}">
 <meta property="og:title" content="${t}">
 <meta property="og:description" content="${d}">
-<meta property="og:image" content="${SITE}/og-image.png">
+<meta property="og:image" content="${SITE}/${lang === 'ko' ? 'og-image-ko.png' : 'og-image.png'}">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="${t}">
 <meta name="twitter:description" content="${d}">
-<meta name="twitter:image" content="${SITE}/og-image.png">
+<meta name="twitter:image" content="${SITE}/${lang === 'ko' ? 'og-image-ko.png' : 'og-image.png'}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/styles/main.css">

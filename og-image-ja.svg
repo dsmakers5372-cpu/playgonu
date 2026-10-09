@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <rect width="1200" height="630" fill="#F6F1E6"/>
+
+  <!-- Cham-gonu board motif, right side -->
+  <g transform="translate(700,95)" fill="none" stroke="#2A2420" stroke-width="5" stroke-linecap="round">
+    <rect x="0" y="0" width="440" height="440"/>
+    <rect x="85" y="85" width="270" height="270"/>
+    <rect x="170" y="170" width="100" height="100"/>
+    <line x1="0" y1="0" x2="85" y2="85"/>
+    <line x1="440" y1="0" x2="355" y2="85"/>
+    <line x1="0" y1="440" x2="85" y2="355"/>
+    <line x1="440" y1="440" x2="355" y2="355"/>
+  </g>
+  <circle cx="700" cy="95" r="15" fill="#AC3B2A"/>
+  <circle cx="1140" cy="95" r="15" fill="#2C5F8A"/>
+  <circle cx="700" cy="535" r="15" fill="#2C5F8A"/>
+  <circle cx="1140" cy="535" r="15" fill="#AC3B2A"/>
+  <circle cx="785" cy="180" r="15" fill="#2C5F8A"/>
+  <circle cx="1055" cy="450" r="15" fill="#AC3B2A"/>
+
+  <!-- Text -->
+  <text x="80" y="230" font-family="'Noto Serif JP', serif" font-size="88" font-weight="700" fill="#2A2420">PlayGonu</text>
+  <text x="80" y="292" font-family="'Noto Serif JP', serif" font-size="40" fill="#AC3B2A">頭脳で勝負</text>
+  <text x="80" y="340" font-family="'Noto Serif JP', serif" font-size="40" fill="#AC3B2A">チャムゴヌ &amp; 五目並べ</text>
+  <text x="80" y="400" font-family="'Noto Sans JP', sans-serif" font-size="25" fill="#4A4038">韓国の伝統戦略ボードゲーム。</text>
+  <text x="80" y="434" font-family="'Noto Sans JP', sans-serif" font-size="25" fill="#4A4038">AIとひとりで、またはオンラインで対戦。</text>
+  <text x="80" y="468" font-family="'Noto Sans JP', sans-serif" font-size="25" fill="#4A4038">インストールもアカウントも不要。</text>
+
+  <rect x="80" y="500" width="190" height="56" rx="10" fill="#AC3B2A"/>
+  <text x="175" y="536" font-family="'Noto Sans JP', sans-serif" font-size="26" font-weight="700" fill="#F6F1E6" text-anchor="middle">playgonu.com</text>
+</svg>
