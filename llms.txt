@@ -22,6 +22,7 @@
   - [Gomoku vs. Renju vs. Omok: What's the Difference?](https://playgonu.com/blog/gomoku-vs-renju-vs-omok)
   - [PlayGonu Is Live: Korea's Traditional Board Games, Free and Online](https://playgonu.com/blog/playgonu-launch)
 - [Sources and references](https://playgonu.com/sources): The published sources behind the game histories and rules — Korean government and academic references, Wikipedia, and Stewart Culin's 1895 Korean Games — listed per game. Also in Korean, Spanish, Japanese and Chinese.
+- [Embed PlayGonu on your site](https://playgonu.com/embed/): Free copy-and-paste iframe code to add Cham-gonu or Gomoku (AI opponent) to a blog or website.
 - [Privacy Policy](https://playgonu.com/privacy)
 - [Korean version (한국어)](https://playgonu.com/ko/): The game pages, how-to and online battle in Korean, at the /ko/ path.
 - [Spanish version (Español)](https://playgonu.com/es/): The same pages in Spanish, at /es/.

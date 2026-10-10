@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Embed Gonu Games on Your Site — PlayGonu</title>
+<meta name="description" content="Add Cham-gonu or Gomoku to your blog or website with one copy-and-paste iframe. Free, no sign-up, works on Blogger, WordPress and any HTML page.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://playgonu.com/embed/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/embed/">
+<meta property="og:title" content="Embed Gonu Games on Your Site — PlayGonu">
+<meta property="og:description" content="Add Cham-gonu or Gomoku to your blog or website with one copy-and-paste iframe. Free, no sign-up.">
+<meta property="og:image" content="https://playgonu.com/og-image.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h1 { margin: 0; font-size: 30px; line-height: 1.3; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.7; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .preview { width: 100%; max-width: 520px; border: 1px solid var(--card-border); border-radius: 10px; background: var(--paper); display: block; }
+  textarea { width: 100%; font: 13px/1.5 Consolas, Menlo, monospace; padding: 12px; border: 1px solid var(--card-border); border-radius: 6px; background: var(--paper-deep); color: var(--ink); resize: vertical; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } .guide h1 { font-size: 26px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="/" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="/" class="variant-tab">Cham-gonu</a>
+        <a href="/gomoku" class="variant-tab">Gomoku</a>
+        <a href="/embed/" class="variant-tab is-active">Embed</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+    <section>
+      <span class="tag">For bloggers and site owners</span>
+      <h1 class="serif">Put a Gonu game on your site</h1>
+      <p>Copy the code below and paste it into your blog post or page. The game runs inside the frame, right on your page — no sign-up, no ads, no cost. It plays against the computer (four difficulty levels), works on phones and desktops, and needs no setup.</p>
+      <ul>
+        <li><strong>Blogger / Blogspot:</strong> in the post editor, switch to <em>HTML view</em> and paste the code.</li>
+        <li><strong>WordPress:</strong> add a <em>Custom HTML</em> block and paste the code.</li>
+        <li><strong>Any other site:</strong> paste it into the HTML where you want the game to appear.</li>
+      </ul>
+      <p>The code includes a small text link back to PlayGonu. Please keep it — it is the only thing we ask in return.</p>
+    </section>
+
+    <section>
+      <h2>Cham-gonu</h2>
+      <p>Twelve Men's Morris-style Korean strategy game (12 pieces each, mills, sliding). Play against the AI at four levels.</p>
+      <iframe class="preview" src="/embed/cham" title="Cham-gonu — free online game by PlayGonu" loading="lazy" style="height:740px"></iframe>
+      <label class="tag" for="code-cham">Copy this code</label>
+      <textarea id="code-cham" data-code="cham" data-src="https://playgonu.com/embed/cham" data-page="https://playgonu.com/" data-name="Cham-gonu" data-h="740" readonly rows="7"></textarea>
+      <div><button class="btn-primary" data-copy="cham">Copy code</button></div>
+    </section>\n
+    <section>
+      <h2>Gomoku (Omok)</h2>
+      <p>Five in a row on a 15x15 board, Freestyle or Renju rules. Play against the AI at four levels.</p>
+      <iframe class="preview" src="/embed/gomoku" title="Gomoku (Omok) — free online game by PlayGonu" loading="lazy" style="height:780px"></iframe>
+      <label class="tag" for="code-gomoku">Copy this code</label>
+      <textarea id="code-gomoku" data-code="gomoku" data-src="https://playgonu.com/embed/gomoku" data-page="https://playgonu.com/gomoku" data-name="Gomoku (Omok)" data-h="780" readonly rows="7"></textarea>
+      <div><button class="btn-primary" data-copy="gomoku">Copy code</button></div>
+    </section>
+
+    <section>
+      <h2>Tips</h2>
+      <ul>
+        <li>The frame is responsive: it fills the width of your column up to 520 px. Keep the suggested height so the whole board shows on phones.</li>
+        <li>Want a different game on your site? <a href="/">Browse the full PlayGonu collection</a>.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="/privacy" style="color:var(--muted);text-decoration:underline;">Privacy Policy</a>
+  </footer>
+
+</div>
+<script>
+  document.querySelectorAll('textarea[data-code]').forEach(function (ta) {
+    var d = ta.dataset;
+    ta.value =
+      '<div style="max-width:520px;margin:0 auto;">\n' +
+      '  <iframe src="' + d.src + '" title="' + d.name + ' — free online game by PlayGonu"\n' +
+      '    width="100%" height="' + d.h + '" style="border:0;border-radius:10px;" loading="lazy" allowfullscreen></iframe>\n' +
+      '  <p style="text-align:center;font-size:13px;margin:6px 0 0;">\n' +
+      '    <a href="' + d.page + '" target="_blank" rel="noopener">Play ' + d.name + ' on PlayGonu.com</a>\n' +
+      '  </p>\n' +
+      '</div>';
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var ta = document.getElementById('code-' + b.dataset.copy);
+      ta.select();
+      var done = function () { b.textContent = 'Copied!'; setTimeout(function () { b.textContent = 'Copy code'; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(done, function () { document.execCommand('copy'); done(); });
+      else { document.execCommand('copy'); done(); }
+    });
+  });
+</script>
+</body>
+</html>

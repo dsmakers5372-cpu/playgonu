@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gomoku (Omok) — play free online | PlayGonu</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://playgonu.com/gomoku">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+<style>
+  .toolbar__inner { padding: 8px 12px; gap: 8px; }
+  .main-layout { padding: 12px; gap: 12px; }
+  .board-column { gap: 10px; }
+  .board-frame { padding: 16px; }
+  .embed-foot { padding: 4px 12px 14px; text-align: center; font-size: 13px; }
+  .embed-foot a { font-weight: 600; }
+  @media (max-width: 640px) { .board-frame { width: 100%; margin: 0; padding: 10px; border-radius: 10px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <div class="toolbar">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>Black to move</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>Stones placed — Black: 0 · White: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <select class="pill" data-ruleset style="cursor:pointer;">
+          <option value="freestyle" selected>Freestyle</option>
+          <option value="renju">Standard (Renju)</option>
+        </select>
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">Play Black · First</option>
+          <option value="B">Play White · Second</option>
+        </select>
+        <select class="pill" data-opponent-mode hidden>
+          <option value="ai" selected>vs AI</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+          <option value="master">Master</option>
+        </select>
+        <button class="btn" data-undo>Undo</button>
+        <button class="btn-primary" data-new-game>New Game</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">Board color</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+      <div class="tag" data-foul-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;"></div>
+    </div>
+  </div>
+
+  <div class="embed-foot"><a href="https://playgonu.com/gomoku" target="_blank" rel="noopener">Play Gomoku on PlayGonu.com &rarr;</a></div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>Black wins!</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">Moves</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">Time</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>Play again</button>
+      <a href="https://playgonu.com/gomoku" target="_blank" rel="noopener" class="btn" style="text-align:center;">More on PlayGonu</a>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <button class="btn-primary" data-mode-local>Same device</button>
+      <button class="btn" data-mode-online>Play online</button>
+      <a href="#" data-mode-cancel>Cancel</a>
+    </div>
+  </div>
+
+</div>
+<script type="module">
+  import { mountGomokuGame } from '../src/ui/gomokuGame.js';
+  mountGomokuGame(document.querySelector('[data-root]'), { lang: 'en' });
+</script>
+</body>
+</html>
