@@ -4,21 +4,29 @@
 
 ## Games
 
-- [Cham-gonu](https://playgonu.com/index.html): The main game and PlayGonu's homepage. A 24-point board of three nested squares, 12 pieces per player — place pieces to form three-in-a-row "mills" and capture, then slide once the board fills. Same family as the Western game Nine Men's Morris.
-- [Jul-gonu](https://playgonu.com/jul.html): The simplest Gonu variant — a 4x4-point line board, 4 pieces per player, sandwich (custodian) capture. A two-minute starter game.
-- [Daseotjul-gonu](https://playgonu.com/daseotjul.html): Jul-gonu's exact rules on a bigger 5x5-point board with 5 pieces per side.
-- [Palpal-gonu](https://playgonu.com/palpal.html): Jul-gonu's exact rules on the widest board in the family — 8x8 points, 8 pieces per side.
-- [Bakwi-gonu](https://playgonu.com/bakwi.html): "Wheel gonu" — 4 pieces per side on a 4x4-point board; a piece standing on one of the board's four corner "wheels" can slide any distance in a straight line and capture the first enemy piece in its path.
-- [Gomoku](https://playgonu.com/gomoku.html): The classic five-in-a-row game, not part of the Gonu family — Freestyle or Standard (Renju) rules, 15x15 board.
+- [Cham-gonu](https://playgonu.com/): The main game and PlayGonu's homepage. A 24-point board of three nested squares, 12 pieces per player — place pieces to form three-in-a-row "mills" and capture, then slide once the board fills. Same family as the Western game Nine Men's Morris (its closest relative is Twelve Men's Morris / Morabaraba). Two rulesets are selectable on the game screen: Korean (the default; captured points are locked during placement, 20-move no-capture rule) and Western (Twelve Men's Morris rules: no locked points, flying at exactly 3 pieces).
+- [Jul-gonu](https://playgonu.com/jul): The simplest Gonu variant — a 4x4-point line board, 4 pieces per player, sandwich (custodian) capture. A two-minute starter game.
+- [Daseotjul-gonu](https://playgonu.com/daseotjul): Jul-gonu's exact rules on a bigger 5x5-point board with 5 pieces per side.
+- [Palpal-gonu](https://playgonu.com/palpal): Jul-gonu's exact rules on the widest board in the family — 8x8 points, 8 pieces per side.
+- [Bakwi-gonu](https://playgonu.com/bakwi): "Wheel gonu" — 4 pieces per side on a 4x4-point board; a piece standing on one of the board's four corner "wheels" can slide any distance in a straight line and capture the first enemy piece in its path.
+- [Gomoku (Omok)](https://playgonu.com/gomoku): The classic five-in-a-row game, not part of the Gonu family — Freestyle or Standard (Renju) rules, 15x15 board.
 
 ## Other pages
 
-- [How to Play](https://playgonu.com/howto.html): Full written rules for every game on the site, in one place.
-- [Cham-gonu strategy: the running mill](https://playgonu.com/cham-strategy.html): How Cham-gonu is usually won — a real game walked through with screenshots, the board's strongest points, and how to build or stop a running mill (a piece shuttling between two mills to capture every turn). Also in Korean, Spanish, Japanese and Chinese.
-- [Online Battle](https://playgonu.com/online.html): Real-time multiplayer for Cham-gonu and Gomoku — create a private room and share the link, or join an open public room. No account needed, just a name.
-- [Blog](https://playgonu.com/blog/index.html): Articles on Gonu's history and how it compares to Nine Men's Morris, Gomoku, and Renju.
-- [Privacy Policy](https://playgonu.com/privacy.html)
-- [Korean version (한국어)](https://playgonu.com/ko/index.html): The game pages, how-to and online battle in Korean, at the /ko/ path.
-- [Spanish version (Español)](https://playgonu.com/es/index.html): The same pages in Spanish, at /es/.
-- [Japanese version (日本語)](https://playgonu.com/ja/index.html): The same pages in Japanese, at /ja/ (Gomoku appears as 五目並べ).
-- [Simplified Chinese version (简体中文)](https://playgonu.com/zh/index.html): The same pages in Simplified Chinese, at /zh/ (Gomoku appears as 五子棋).
+- [How to Play](https://playgonu.com/howto): Full written rules for every game on the site, in one place.
+- [Cham-gonu strategy: the running mill](https://playgonu.com/cham-strategy): How Cham-gonu is usually won — a real game walked through with screenshots, the board's strongest points, and how to build or stop a running mill (a piece shuttling between two mills to capture every turn). Also in Korean, Spanish, Japanese and Chinese.
+- [Online Battle](https://playgonu.com/online): Real-time multiplayer for Cham-gonu and Gomoku — create a private room and share the link, or join an open public room. No account needed, just a name.
+- [Blog](https://playgonu.com/blog/): Articles on Gonu's history and how it compares to Nine Men's Morris, Gomoku, and Renju.
+  - [What Is Gonu? Korea's Ancient Board Game Family, Explained](https://playgonu.com/blog/what-is-gonu)
+  - [Cham-gonu: Korea's Version of Nine Men's Morris](https://playgonu.com/blog/cham-gonu-nine-mens-morris)
+  - [Gomoku vs. Renju vs. Omok: What's the Difference?](https://playgonu.com/blog/gomoku-vs-renju-vs-omok)
+  - [PlayGonu Is Live: Korea's Traditional Board Games, Free and Online](https://playgonu.com/blog/playgonu-launch)
+- [Privacy Policy](https://playgonu.com/privacy)
+- [Korean version (한국어)](https://playgonu.com/ko/): The game pages, how-to and online battle in Korean, at the /ko/ path.
+- [Spanish version (Español)](https://playgonu.com/es/): The same pages in Spanish, at /es/.
+- [Japanese version (日本語)](https://playgonu.com/ja/): The same pages in Japanese, at /ja/ (Gomoku appears as 五目並べ).
+- [Simplified Chinese version (简体中文)](https://playgonu.com/zh/): The same pages in Simplified Chinese, at /zh/ (Gomoku appears as 五子棋).
+
+## About each game page
+
+Every game page has a written article under the board — an at-a-glance fact table, the game's origin, step-by-step rules, tips, a short FAQ, links to the other games, and sources — in all five languages. Longer sections are folded (HTML <details>) but the full text is in the page source. The same pages carry JSON-LD (Game, BreadcrumbList, FAQPage).

@@ -10,6 +10,7 @@ import * as chamgonuAI from '../engine/chamgonuAI.js';
 import * as gomokuAI from '../engine/gomokuAI.js';
 import { getVirtualPlayer, VIRTUAL_PLAYERS } from './virtualPlayers.js';
 import { botChatReply, botGameOverLine, isKorean } from './botChat.js';
+import { chatAllowed } from './chatLimit.js';
 import { sessionUser, addResult } from '../server/users.js';
 import { ensureSchema } from '../server/schema.js';
 
@@ -348,7 +349,7 @@ export class GameRoom {
   handleChat(conn, msg) {
     if (!this.room || conn.role !== 'player') return;
     const text = String(msg.text || '').trim().slice(0, CHAT_MAX_LEN);
-    if (!text) return;
+    if (!text || !chatAllowed(conn)) return;
     this.broadcast({ type: 'chat', from: conn.name || 'Player', text, ts: Date.now() });
 
     // A virtual opponent answers now and then (not every message), after a
