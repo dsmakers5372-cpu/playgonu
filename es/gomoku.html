@@ -22,6 +22,96 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://playgonu.com/es/gomoku#page",
+      "url": "https://playgonu.com/es/gomoku",
+      "name": "Omok (Gomoku coreano) — reglas de Estilo libre y Renju, juega en línea",
+      "inLanguage": "es",
+      "dateModified": "2026-10-10",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PlayGonu",
+        "url": "https://playgonu.com/"
+      },
+      "about": {
+        "@type": "Game",
+        "name": "Omok",
+        "alternateName": [
+          "Gomoku",
+          "Cinco en fila",
+          "오목",
+          "五目並べ",
+          "Renju"
+        ],
+        "description": "Las negras y las blancas se turnan para colocar piedras en un tablero de 15×15; gana quien primero forme cinco en fila, en horizontal, vertical o diagonal.",
+        "numberOfPlayers": {
+          "@type": "QuantitativeValue",
+          "value": 2
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PlayGonu",
+          "item": "https://playgonu.com/es/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Omok",
+          "item": "https://playgonu.com/es/gomoku"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Son juegos distintos el Omok y el Renju?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Son conjuntos de reglas distintos del mismo juego. El Renju es el reglamento oficial que reduce la ventaja de mover primero de las negras al prohibirles un doble tres, un doble cuatro y una línea de más de cinco (overline)."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Ganan siempre las negras con las reglas de Estilo libre?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "En teoría, sí: se ha demostrado que con juego perfecto ganan las negras. En partidas entre personas los errores son comunes y las blancas pueden ganar con la misma frecuencia."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Es lo mismo que el Renju de torneo?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No exactamente. Las reglas de torneo añaden restricciones a la segunda y la tercera jugada y un procedimiento de apertura (swap), y una jugada prohibida hace perder la partida a las negras. PlayGonu omite todo eso y simplemente no deja que las negras jueguen un punto prohibido."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Es el Omok un tipo de Gonu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. El Omok es un juego de tablero aparte y no forma parte de la familia del Gonu."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <div data-root>
@@ -109,6 +199,70 @@
     </div>
 
   </div>
+
+  <article class="game-article">
+    <h1 class="article-title">Omok (Gomoku coreano) — reglas de Estilo libre y Renju, juega en línea</h1>
+    <p class="lead"><strong>Omok</strong> (오목) es el nombre coreano del Gomoku, un juego de tablero en el que dos jugadores se turnan para colocar piedras y gana quien primero alinea cinco en fila — en horizontal, vertical o diagonal. En PlayGonu puedes elegir las reglas de <strong>Estilo libre</strong> o las de <strong>Renju</strong>, donde las negras tienen restricciones, y jugar contra una IA o una persona real sin instalar nada.</p>
+    <dl class="facts">
+      <dt>Jugadores</dt><dd>2</dd>
+      <dt>Tablero</dt><dd>15×15 puntos</dd>
+      <dt>Piedras</dt><dd>Negras (primero) y blancas; las piedras se colocan y nunca se mueven ni se capturan</dd>
+      <dt>Victoria</dt><dd>Cinco de tus piedras en línea recta</dd>
+      <dt>Reglas</dt><dd>Estilo libre / Renju (las negras no pueden hacer un doble tres, un doble cuatro ni una línea de más de cinco)</dd>
+      <dt>Familia</dt><dd>No es un juego de Gonu — es un juego de tablero aparte</dd>
+    </dl>
+
+    <h2>El Omok y el Renju: de dónde vienen</h2>
+    <p>El Omok se conoce como <strong>Gomoku</strong> en los países de habla inglesa y como <strong>gomokunarabe</strong> (五目並べ) en Japón, y se juega por todo el este de Asia. En Corea es uno de los juegos más conocidos para jugar con un tablero y piedras de Go.</p><p>Sin restricciones, quien mueve primero tiene una gran ventaja. Una demostración por computadora en la década de 1990 mostró que con las reglas de Estilo libre ganan las negras con juego perfecto. El <strong>Renju</strong> es el conjunto de reglas que restablece el equilibrio al prohibir algunas jugadas a las negras. El nombre Renju fue dado en 1899 por el periodista japonés Kuroiwa Ruikō, y la Federación Internacional de Renju (RIF) se fundó en Estocolmo en 1988.</p><p>El Omok no es un juego de Gonu, pero comparte la misma idea de una lucha de estrategia sobre un tablero dibujado, por eso lo incluimos en PlayGonu. Si te gusta el Omok, prueba también el <a href="index.html">Cham-gonu</a>, donde alinear tres captura.</p>
+
+    <h2>Cómo se juega el Omok</h2>
+    <ol>
+      <li><strong>Inicio:</strong> Las negras mueven primero en el tablero vacío. Con las reglas de Renju, la primera jugada de las negras va en el punto central.</li>
+      <li><strong>Colocación:</strong> En tu turno, coloca una piedra en cualquier punto vacío. Las piedras nunca se mueven ni se capturan.</li>
+      <li><strong>Victoria:</strong> Forma cinco de tus piedras en fila, en horizontal, vertical o diagonal.</li>
+      <li><strong>Estilo libre:</strong> Gana una fila de cinco o más (overline) y nada está prohibido.</li>
+      <li><strong>Renju:</strong> Solo las negras tienen restricciones: están prohibidos el doble tres (dos tres abiertos a la vez), el doble cuatro y la línea de más de cinco (overline). Los puntos prohibidos se marcan con una × y no se pueden jugar, incluidos los tres y cuatro con un hueco. Las blancas no tienen ninguna restricción.</li>
+      <li><strong>Empate:</strong> Si se llenan los 225 puntos sin ninguna fila de cinco, la partida es empate.</li>
+    </ol>
+
+    <h2>Consejos para el Omok</h2>
+    <ul>
+      <li><strong>Cuidado con el tres abierto.</strong> Una fila de tres con ambos extremos abiertos se convierte en un cuatro abierto imparable en la jugada siguiente. Bloquea de inmediato los tres abiertos de tu rival.</li>
+      <li><strong>Busca un cuatro-tres.</strong> Una jugada que hace un cuatro y un tres abierto a la vez no se puede bloquear en ambos frentes. Las negras también pueden usarla con las reglas de Renju.</li>
+      <li><strong>Como blancas en Renju, aprovecha los puntos prohibidos.</strong> Si un punto que las negras necesitan es un punto de doble tres o doble cuatro, no pueden tomarlo.</li>
+      <li><strong>Pelea cerca del centro.</strong> Los bordes te dan menos direcciones para extender. En la apertura, quédate cerca del medio del tablero.</li>
+    </ul>
+
+    <h2>Preguntas frecuentes</h2>
+    <h3>¿Son juegos distintos el Omok y el Renju?</h3>
+    <p>Son conjuntos de reglas distintos del mismo juego. El Renju es el reglamento oficial que reduce la ventaja de mover primero de las negras al prohibirles un doble tres, un doble cuatro y una línea de más de cinco (overline).</p>
+    <h3>¿Ganan siempre las negras con las reglas de Estilo libre?</h3>
+    <p>En teoría, sí: se ha demostrado que con juego perfecto ganan las negras. En partidas entre personas los errores son comunes y las blancas pueden ganar con la misma frecuencia.</p>
+    <h3>¿Es lo mismo que el Renju de torneo?</h3>
+    <p>No exactamente. Las reglas de torneo añaden restricciones a la segunda y la tercera jugada y un procedimiento de apertura (swap), y una jugada prohibida hace perder la partida a las negras. PlayGonu omite todo eso y simplemente no deja que las negras jueguen un punto prohibido.</p>
+    <h3>¿Es el Omok un tipo de Gonu?</h3>
+    <p>No. El Omok es un juego de tablero aparte y no forma parte de la familia del Gonu.</p>
+
+    <h2>Prueba también los juegos de Gonu</h2>
+    <ul>
+      <li><a href="index.html">Cham-gonu</a> — doce piezas y molinos — el más profundo de los juegos de Gonu</li>
+      <li><a href="jul.html">Jul-gonu</a> — cuatro piezas, el Gonu más sencillo — se aprende en dos minutos</li>
+      <li><a href="daseotjul.html">Daseotjul-gonu</a> — las reglas del Jul-gonu en un tablero de 5×5 con cinco piezas por bando</li>
+      <li><a href="palpal.html">Palpal-gonu</a> — las mismas reglas en el tablero más amplio, de 8×8 con ocho piezas por bando</li>
+      <li><a href="bakwi.html">Bakwi-gonu</a> — gira alrededor de una "rueda" de esquina y desliza lejos para capturar</li>
+      <li><a href="howto.html">Cómo se juega cada Gonu</a> — todas las reglas en un solo lugar</li>
+    </ul>
+
+    <h2>Sobre PlayGonu</h2>
+    <p>PlayGonu es el lugar donde los juegos tradicionales coreanos de Gonu reciben una actualización moderna para la web. Reunimos las reglas que cambian de una región a otra, con sus fuentes, y usamos muchas partidas contra nuestra IA para detectar en qué puntos una partida se alarga; luego añadimos reglas pensadas para la web y las publicamos. En el Omok, la forma de marcar con una × los puntos prohibidos del Renju, que no se pueden jugar, se fijó así.</p>
+
+    <h2>Fuentes</h2>
+    <ul class="sources">
+      <li>Wikipedia, "Gomoku" <a href="https://en.wikipedia.org/wiki/Gomoku" rel="noopener">en.wikipedia.org</a></li>
+      <li>Wikipedia, "Renju" <a href="https://en.wikipedia.org/wiki/Renju" rel="noopener">en.wikipedia.org</a></li>
+    </ul>
+    <p class="updated">Última actualización: 2026-10-10 · PlayGonu</p>
+  </article>
 
   <div class="win-banner" data-win-banner>
     <div class="win-banner__card">

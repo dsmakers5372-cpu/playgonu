@@ -22,6 +22,97 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://playgonu.com/es/palpal#page",
+      "url": "https://playgonu.com/es/palpal",
+      "name": "Palpal-gonu — un juego de tablero tradicional coreano, juega en línea",
+      "inLanguage": "es",
+      "dateModified": "2026-10-10",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PlayGonu",
+        "url": "https://playgonu.com/"
+      },
+      "about": {
+        "@type": "Game",
+        "name": "Palpal-gonu",
+        "alternateName": [
+          "Gonu ocho-ocho",
+          "팔팔고누"
+        ],
+        "description": "Ocho piezas por jugador en un tablero de líneas de 8×8, el más amplio de la familia del Jul-gonu; se captura encerrando una pieza rival entre dos de las tuyas.",
+        "numberOfPlayers": {
+          "@type": "QuantitativeValue",
+          "value": 2
+        },
+        "isPartOf": {
+          "@type": "Thing",
+          "name": "Gonu"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PlayGonu",
+          "item": "https://playgonu.com/es/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Palpal-gonu",
+          "item": "https://playgonu.com/es/palpal"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Qué significa \"Palpal\"?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Se refiere a las ocho líneas del tablero y a las ocho piezas que tiene cada jugador."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Por qué el límite es de 60 jugadas?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El tablero es ancho y la primera captura tarda mucho. En nuestras partidas de IA con un límite de 30 jugadas, 19 de 20 partidas terminaron antes de una sola captura, así que lo subimos a 60."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Son las reglas las mismas que las del Jul-gonu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. Solo cambian el tablero y el número de piezas; el movimiento, la captura y la victoria son iguales."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Puede terminar en empate?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí, si pasan 60 jugadas sin ninguna captura y ambos bandos tienen el mismo número de piezas."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <div data-root>
@@ -104,6 +195,72 @@
     </div>
 
   </div>
+
+  <article class="game-article">
+    <h1 class="article-title">Palpal-gonu — un juego de tablero tradicional coreano, juega en línea</h1>
+    <p class="lead"><strong>Palpal-gonu</strong> (팔팔고누, "Gonu ocho-ocho") es un juego de tablero tradicional coreano para dos personas. Cada jugador mueve ocho piezas, un paso a la vez, en un tablero de líneas de 8×8 y captura encerrando una pieza rival entre dos de las suyas. Es el tablero más amplio de la familia del <a href="jul.html">Jul-gonu</a>, así que una partida trata de formar una estructura y mirar muy adelante. En PlayGonu puedes jugarlo de inmediato contra una IA.</p>
+    <dl class="facts">
+      <dt>Jugadores</dt><dd>2</dd>
+      <dt>Tablero</dt><dd>8×8 líneas, 64 puntos</dd>
+      <dt>Piezas</dt><dd>8 por jugador</dd>
+      <dt>Captura</dt><dd>Encerrar una pieza rival entre dos piezas tuyas en línea recta</dd>
+      <dt>Victoria</dt><dd>Deja a tu rival con 1 pieza o sin movimientos legales</dd>
+      <dt>Familia</dt><dd>Gonu, tipo Jul-gonu — mismas reglas que el <a href="jul.html">Jul-gonu</a> y el <a href="daseotjul.html">Daseotjul-gonu</a></dd>
+    </dl>
+
+    <h2>El Gonu y el Palpal-gonu: de dónde vienen</h2>
+    <p><strong>Gonu</strong> es una familia de juegos populares de tablero de Corea. Los jugadores dibujan el tablero en el suelo o en un papel y usan piedritas o ramitas como piezas, así que no hace falta ningún material especial. Por eso los juegos se extendieron por todo el país y recibieron nombres regionales como goni y kkoni (Gyeonggi), kkon y kkonu (Jeolla), kkon (Gyeongsang) y kkonja (Jeju). Se cree que el nombre viene de una antigua palabra que significa "contender". Un tablero grabado en una pieza de un horno de celadón de la época Goryeo sugiere que ya se jugaba al menos desde el período Goryeo (918–1392), y la pintura de género de finales de Joseon "Juego de Gonu", de Kim Hong-do, muestra a un grupo jugando sobre un tablero dibujado en la tierra.</p><p>El Palpal-gonu aparece con ese nombre en las listas de clases de Gonu, pero las reglas escritas con detalle son escasas. Como cada bando alinea ocho piezas en su primera fila, PlayGonu lo trata como un miembro de la familia del Jul-gonu y aplica las reglas de captura por encierro del Jul-gonu a un tablero de 8×8. Es decir, el tamaño del tablero y la regla de captura provienen de la misma familia y no de un registro conservado del propio Palpal-gonu, y lo decimos aquí con claridad.</p>
+
+    <h2>Cómo se juega el Palpal-gonu</h2>
+    <ol>
+      <li><strong>Preparación:</strong> Cada jugador alinea 8 piezas en las intersecciones de su propia fila delantera.</li>
+      <li><strong>Movimiento:</strong> En tu turno, desliza una pieza un paso a lo largo de una línea, en horizontal o en vertical. Sin movimientos en diagonal y sin saltos.</li>
+      <li><strong>Captura:</strong> Si tu jugada deja una pieza rival en línea recta entre dos de tus piezas, la retiras. Una sola jugada puede capturar en dos direcciones a la vez.</li>
+      <li><strong>La casilla segura:</strong> Una pieza que se mueve por su cuenta entre dos piezas rivales no es capturada.</li>
+      <li><strong>Victoria:</strong> Deja a tu rival con una sola pieza, o con ninguna pieza que pueda moverse.</li>
+      <li><strong>Límite de jugadas:</strong> Si pasan 60 jugadas en total sin ninguna captura, gana el bando con más piezas; con las mismas piezas, empate (una regla de PlayGonu).</li>
+    </ol>
+
+    <h2>Consejos para el Palpal-gonu</h2>
+    <ul>
+      <li><strong>No te apresures.</strong> En este tablero ancho la primera captura puede tardar decenas de jugadas. Tiene ventaja el bando que avanza su línea delantera en conjunto.</li>
+      <li><strong>Una pieza sola es la primera en caer.</strong> En un tablero ancho la ayuda queda lejos. Muévete en grupos de dos o tres.</li>
+      <li><strong>Usa las esquinas y los bordes.</strong> Una pieza en una esquina nunca puede ser capturada, y una pieza en el borde solo puede ser encerrada a lo largo del borde.</li>
+      <li><strong>Protege tu ventaja de material.</strong> Incluso una pieza de más gana por el límite de 60 jugadas.</li>
+    </ul>
+
+    <h2>Preguntas frecuentes</h2>
+    <h3>¿Qué significa "Palpal"?</h3>
+    <p>Se refiere a las ocho líneas del tablero y a las ocho piezas que tiene cada jugador.</p>
+    <h3>¿Por qué el límite es de 60 jugadas?</h3>
+    <p>El tablero es ancho y la primera captura tarda mucho. En nuestras partidas de IA con un límite de 30 jugadas, 19 de 20 partidas terminaron antes de una sola captura, así que lo subimos a 60.</p>
+    <h3>¿Son las reglas las mismas que las del Jul-gonu?</h3>
+    <p>Sí. Solo cambian el tablero y el número de piezas; el movimiento, la captura y la victoria son iguales.</p>
+    <h3>¿Puede terminar en empate?</h3>
+    <p>Sí, si pasan 60 jugadas sin ninguna captura y ambos bandos tienen el mismo número de piezas.</p>
+
+    <h2>Más juegos de Gonu para probar</h2>
+    <ul>
+      <li><a href="index.html">Cham-gonu</a> — doce piezas y molinos — el más profundo de los juegos de Gonu</li>
+      <li><a href="jul.html">Jul-gonu</a> — cuatro piezas, el Gonu más sencillo — se aprende en dos minutos</li>
+      <li><a href="daseotjul.html">Daseotjul-gonu</a> — las reglas del Jul-gonu en un tablero de 5×5 con cinco piezas por bando</li>
+      <li><a href="bakwi.html">Bakwi-gonu</a> — gira alrededor de una "rueda" de esquina y desliza lejos para capturar</li>
+      <li><a href="howto.html">Cómo se juega cada Gonu</a> — todas las reglas en un solo lugar</li>
+    </ul>
+
+    <h2>Sobre PlayGonu</h2>
+    <p>PlayGonu es el lugar donde los juegos tradicionales coreanos de Gonu reciben una actualización moderna para la web. Reunimos las reglas que cambian de una región a otra, con sus fuentes, y usamos muchas partidas contra nuestra IA para detectar en qué puntos una partida se alarga; luego añadimos reglas pensadas para la web y las publicamos. El límite de 60 jugadas del Palpal-gonu se fijó así: con un límite de 30 jugadas, 19 de 20 partidas de IA terminaron sin una sola captura.</p>
+
+    <h2>Fuentes</h2>
+    <ul class="sources">
+      <li>Ministry of Culture, Sports and Tourism (Korea), "Children's Traditional Play: Gonu" (en coreano) <a href="https://www.mcst.go.kr/usr/child/enter/play/gonu.jsp" rel="noopener">www.mcst.go.kr</a></li>
+      <li>Academy of Korean Studies, Digital Gwangju Culture Encyclopedia, "Gonu-nori" (en coreano) <a href="https://gwangju.grandculture.net/gwangju/bukgu/toc/GC60004445" rel="noopener">gwangju.grandculture.net</a></li>
+      <li>Academy of Korean Studies, Digital Pocheon Culture Encyclopedia, "Gonu" (en coreano) <a href="http://pocheon.grandculture.net/pocheon/toc/GC05001783" rel="noopener">pocheon.grandculture.net</a></li>
+      <li>Wikipedia, "Jul-gonu" <a href="https://en.wikipedia.org/wiki/Jul-gonu" rel="noopener">en.wikipedia.org</a></li>
+      <li>Wikipedia, "Gonu" <a href="https://en.wikipedia.org/wiki/Gonu" rel="noopener">en.wikipedia.org</a></li>
+    </ul>
+    <p class="updated">Última actualización: 2026-10-10 · PlayGonu</p>
+  </article>
 
   <div class="win-banner" data-win-banner>
     <div class="win-banner__card">

@@ -22,6 +22,98 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../styles/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://playgonu.com/ja/palpal#page",
+      "url": "https://playgonu.com/ja/palpal",
+      "name": "パルパルゴヌ（Palpal-gonu）— 韓国の伝統ボードゲームをオンラインで",
+      "inLanguage": "ja",
+      "dateModified": "2026-10-10",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PlayGonu",
+        "url": "https://playgonu.com/ja/"
+      },
+      "about": {
+        "@type": "Game",
+        "name": "パルパルゴヌ",
+        "alternateName": [
+          "Palpal-gonu",
+          "八八コヌ",
+          "팔팔고누"
+        ],
+        "description": "各8個の駒を8×8の線の盤で動かす、チュルゴヌ系でいちばん広い盤のゲームです。相手の駒を自分の駒2個で挟んで取ります。",
+        "numberOfPlayers": {
+          "@type": "QuantitativeValue",
+          "value": 2
+        },
+        "isPartOf": {
+          "@type": "Thing",
+          "name": "Gonu"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PlayGonu",
+          "item": "https://playgonu.com/ja/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "パルパルゴヌ",
+          "item": "https://playgonu.com/ja/palpal"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "「パルパル」とはどういう意味ですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "盤の8本の線と、各プレイヤーが持つ8個の駒のことです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "なぜ手数制限が60手なのですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "盤が広く、最初に駒を取るまでに長い時間がかかるためです。30手の制限でAI同士に対局させたところ、20局のうち19局が一度も駒を取らないまま終わったため、60手に引き上げました。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "ルールはチュルゴヌと同じですか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "はい。違うのは盤と駒の数だけで、動かし方、駒の取り方、勝ち方は同じです。"
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "引き分けになることはありますか？",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "あります。駒取りがないまま60手が過ぎ、双方の駒の数が同じ場合です。"
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <div data-root>
@@ -104,6 +196,72 @@
     </div>
 
   </div>
+
+  <article class="game-article">
+    <h1 class="article-title">パルパルゴヌ（Palpal-gonu）— 韓国の伝統ボードゲームをオンラインで</h1>
+    <p class="lead"><strong>パルパルゴヌ</strong>（팔팔고누、Palpal-gonu、「八八コヌ」）は、2人で遊ぶ韓国の伝統ボードゲームです。各プレイヤーが8個の駒を持ち、8×8の線の盤の上で駒を1歩ずつ動かして、相手の駒を自分の駒2個で挟んで取ります。<a href="jul.html">チュルゴヌ</a>系でいちばん広い盤なので、陣形を作り、遠くまで先を読むゲームになります。PlayGonuでは、すぐにAIと対戦できます。</p>
+    <dl class="facts">
+      <dt>プレイヤー</dt><dd>2人</dd>
+      <dt>盤</dt><dd>8×8の線、64点</dd>
+      <dt>駒</dt><dd>各8個</dd>
+      <dt>駒の取り方</dt><dd>一直線上で、相手の駒を自分の駒2個で挟む</dd>
+      <dt>勝利条件</dt><dd>相手の駒を1個まで減らすか、相手が動けない状態にする</dd>
+      <dt>仲間</dt><dd>コヌ、チュルゴヌ型 — <a href="jul.html">チュルゴヌ</a>や<a href="daseotjul.html">タソッチュルゴヌ</a>と同じルール</dd>
+    </dl>
+
+    <h2>コヌとパルパルゴヌの由来</h2>
+    <p><strong>コヌ</strong>（고누）は、韓国に伝わる民俗ボードゲームの一族です。地面や紙に盤を描き、小石や小枝を駒にして遊ぶので、特別な道具は要りません。そのため全国に広まり、地方ごとに goni・kkoni（京畿）、kkon・kkonu（全羅）、kkon（慶尚）、kkonja（済州）といった呼び名が生まれました。名前は「競う」を意味する古い言葉に由来すると考えられています。高麗時代の青磁窯の遺物に盤が刻まれていることから、少なくとも高麗時代（918〜1392年）には遊ばれていたことがうかがえます。また、朝鮮後期に金弘道（キム・ホンド）が描いた風俗画「고누놀이（Gonu Play）」には、地面に描いた盤を囲んで遊ぶ人々の姿があります。</p><p>パルパルゴヌは、コヌの種類を挙げた一覧には名前が出てきますが、くわしい文章化されたルールはほとんど残っていません。各自が最初の列に8個の駒を並べることから、PlayGonuではチュルゴヌの仲間として扱い、チュルゴヌの挟み取りのルールを8×8の盤に当てはめています。つまり、盤の大きさと駒の取り方は、パルパルゴヌ自体の現存する記録ではなく、同じ系統のルールに基づいています。そのことをここに明記します。</p>
+
+    <h2>パルパルゴヌの遊び方</h2>
+    <ol>
+      <li><strong>準備：</strong>各プレイヤーは、自分側の最前列の交点に駒を8個並べます。</li>
+      <li><strong>動かし方：</strong>自分の番に、駒を1個、線に沿って縦か横に1歩だけ動かします。斜めには動けず、飛び越えることもできません。</li>
+      <li><strong>駒の取り方：</strong>動かした結果、相手の駒が自分の駒2個の間に一直線に挟まれたら、その駒を取り除きます。1回の手で、2方向同時に取ることもできます。</li>
+      <li><strong>安全な点：</strong>相手の駒2個の間に自分から入った駒は、取られません。</li>
+      <li><strong>勝ち方：</strong>相手の駒を1個まで減らすか、動かせる駒がない状態にします。</li>
+      <li><strong>手数制限：</strong>駒取りがないまま合計60手続くと、駒の多い方が勝ちとなり、同じ数なら引き分けです（PlayGonuのルール）。</li>
+    </ol>
+
+    <h2>パルパルゴヌのコツ</h2>
+    <ul>
+      <li><strong>焦らないこと。</strong>この広い盤では、最初の駒取りまで数十手かかることもあります。前線をそろえて進める側が有利です。</li>
+      <li><strong>ぽつんと離れた駒が最初に取られます。</strong>広い盤では、助けが遠くなります。2個か3個のまとまりで動きましょう。</li>
+      <li><strong>角と辺を使いましょう。</strong>角の駒は絶対に取られず、辺の駒は辺に沿った方向からしか挟まれません。</li>
+      <li><strong>駒数のリードを守りましょう。</strong>60手制限では、1個多いだけでも勝ちです。</li>
+    </ul>
+
+    <h2>よくある質問</h2>
+    <h3>「パルパル」とはどういう意味ですか？</h3>
+    <p>盤の8本の線と、各プレイヤーが持つ8個の駒のことです。</p>
+    <h3>なぜ手数制限が60手なのですか？</h3>
+    <p>盤が広く、最初に駒を取るまでに長い時間がかかるためです。30手の制限でAI同士に対局させたところ、20局のうち19局が一度も駒を取らないまま終わったため、60手に引き上げました。</p>
+    <h3>ルールはチュルゴヌと同じですか？</h3>
+    <p>はい。違うのは盤と駒の数だけで、動かし方、駒の取り方、勝ち方は同じです。</p>
+    <h3>引き分けになることはありますか？</h3>
+    <p>あります。駒取りがないまま60手が過ぎ、双方の駒の数が同じ場合です。</p>
+
+    <h2>ほかのコヌも遊んでみましょう</h2>
+    <ul>
+      <li><a href="index.html">チャムゴヌ</a> — 駒は12個とミル — コヌの中でいちばん奥が深いゲーム</li>
+      <li><a href="jul.html">チュルゴヌ</a> — 駒は4個、いちばんシンプルなコヌ — 2分で覚えられます</li>
+      <li><a href="daseotjul.html">タソッチュルゴヌ</a> — チュルゴヌと同じルールを、5×5の盤・各5個の駒で</li>
+      <li><a href="bakwi.html">パクィゴヌ</a> — 角の「車輪」を回って、遠くまで滑って駒を取る</li>
+      <li><a href="howto.html">すべてのコヌの遊び方</a> — ルールをまとめて確認できます</li>
+    </ul>
+
+    <h2>PlayGonuについて</h2>
+    <p>PlayGonuは、韓国の伝統的なコヌのゲームを、ウェブ向けに現代風に磨き直して遊べる場所です。地方ごとに違うルールを出典とともに集め、AIとの対局を数多く重ねて、対局が間延びしてしまう箇所を見つけ、ウェブに合うルールを加えて公開しています。パルパルゴヌの60手制限は、こうして決めました。30手の制限では、AI同士の20局のうち19局が一度も駒を取らずに終わりました。</p>
+
+    <h2>参考資料</h2>
+    <ul class="sources">
+      <li>Ministry of Culture, Sports and Tourism (Korea), "Children's Traditional Play: Gonu"（韓国語） <a href="https://www.mcst.go.kr/usr/child/enter/play/gonu.jsp" rel="noopener">www.mcst.go.kr</a></li>
+      <li>Academy of Korean Studies, Digital Gwangju Culture Encyclopedia, "Gonu-nori"（韓国語） <a href="https://gwangju.grandculture.net/gwangju/bukgu/toc/GC60004445" rel="noopener">gwangju.grandculture.net</a></li>
+      <li>Academy of Korean Studies, Digital Pocheon Culture Encyclopedia, "Gonu"（韓国語） <a href="http://pocheon.grandculture.net/pocheon/toc/GC05001783" rel="noopener">pocheon.grandculture.net</a></li>
+      <li>Wikipedia, "Jul-gonu"（英語） <a href="https://en.wikipedia.org/wiki/Jul-gonu" rel="noopener">en.wikipedia.org</a></li>
+      <li>Wikipedia, "Gonu"（英語） <a href="https://en.wikipedia.org/wiki/Gonu" rel="noopener">en.wikipedia.org</a></li>
+    </ul>
+    <p class="updated">最終更新：2026-10-10 · PlayGonu</p>
+  </article>
 
   <div class="win-banner" data-win-banner>
     <div class="win-banner__card">

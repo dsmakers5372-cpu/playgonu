@@ -352,6 +352,9 @@ a:hover {
   line-height: 1.75;
   word-break: keep-all;
 }
+/* Japanese and Chinese have no spaces between words, so keep-all would never wrap. */
+html[lang="ja"] .game-article,
+html[lang^="zh"] .game-article { word-break: normal; overflow-wrap: anywhere; }
 .game-article h1,
 .game-article .article-title { font-family: 'Noto Serif KR', serif; font-size: 26px; line-height: 1.35; color: var(--ink); margin: 0 0 14px; }
 .game-article h2 { font-family: 'Noto Serif KR', serif; font-size: 20px; color: var(--ink); margin: 40px 0 10px; }
