@@ -377,6 +377,17 @@ html[lang^="zh"] .game-article { word-break: normal; overflow-wrap: anywhere; }
 .game-article .facts dd { margin: 0; }
 .game-article .sources { font-size: 13.5px; color: var(--muted); }
 .game-article .updated { font-size: 13px; color: var(--muted); margin-top: 28px; }
+/* Folded sections: only the title shows, the text opens on click. Native
+   <details>, so the text stays in the HTML for search engines and AI. */
+.game-article details { border-top: 1px solid var(--card-border); }
+.game-article details:last-of-type { border-bottom: 1px solid var(--card-border); }
+.game-article summary { position: relative; cursor: pointer; list-style: none; padding: 14px 32px 14px 0; }
+.game-article summary::-webkit-details-marker { display: none; }
+.game-article summary::after { content: '+'; position: absolute; right: 6px; top: 50%; transform: translateY(-50%); font-size: 22px; line-height: 1; color: var(--muted); }
+.game-article details[open] > summary::after { content: '\2212'; }
+.game-article summary:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
+.game-article summary h2, .game-article summary h3 { display: block; margin: 0; }
+.game-article details[open] { padding-bottom: 8px; }
 @media (max-width: 640px) {
   .game-article { margin-top: 40px; padding: 0 16px; font-size: 15px; }
   .game-article h1, .game-article .article-title { font-size: 22px; }
