@@ -22,15 +22,20 @@ test('greetings and gg get fitting answers', () => {
   assert.equal(botChatReply('수고하셨어요', {}, { rand: always }), 'gg 수고했어요');
 });
 
-test('a chatterbox gets told to play — and the bot never spams', () => {
+test('it only answers game manners — never spams, often silent', () => {
   const state = {};
   const t0 = 1_000_000;
   assert.ok(botChatReply('안녕', state, { now: t0, rand: always }));
-  assert.equal(botChatReply('뭐해요', state, { now: t0 + 5000, rand: always }), null, 'quiet within 30s of its last reply');
-  const third = botChatReply('어디 살아요', state, { now: t0 + 31000, rand: always });
-  assert.equal(third, '겜이나 해 ㅋㅋ');
-  assert.equal(botChatReply('응?', state, { now: t0 + 35000, rand: always }), null);
-  assert.equal(botChatReply('저기요', {}, { rand: () => 0.5 }), null, 'a plain remark mostly goes unanswered');
+  assert.equal(botChatReply('수고했어요', state, { now: t0 + 5000, rand: always }), null, 'quiet within 30s of its last reply');
+  assert.ok(botChatReply('gg', state, { now: t0 + 31000, rand: always }), 'answers again after 30s');
+  assert.equal(botChatReply('hello', {}, { rand: () => 0.7 }), null, 'a greeting is not always answered');
+});
+
+test('everything that is not game manners gets no answer', () => {
+  for (const q of ['너 누구니', '너 ai니', 'AI야?', '사람이야', 'are you a bot?', 'who are you', '어디 살아요', '뭐해요?', 'ㅋㅋㅋ', '저기요', 'what is your name?', '오늘 날씨 좋네요']) {
+    assert.equal(botChatReply(q, {}, { rand: always, roomLang: 'ko' }), null, q);
+    assert.equal(botChatReply(q, {}, { rand: always }), null, q);
+  }
 });
 
 test('after the game: sometimes a gg, worded for a win or a loss', () => {
