@@ -9,12 +9,13 @@ export function formatElapsed(ms) {
 // four variant UIs so the end-of-game summary (moves/time, like gomoku.com's
 // win modal) behaves the same everywhere.
 export function createGameStats({ onTick } = {}) {
-  let startTime = Date.now();
+  // The clock starts with the first move, not when the page opens.
+  let startTime = null;
   let moveCount = 0;
   let intervalId = null;
 
   function elapsedMs() {
-    return Date.now() - startTime;
+    return startTime === null ? 0 : Date.now() - startTime;
   }
 
   function stop() {
@@ -31,16 +32,18 @@ export function createGameStats({ onTick } = {}) {
   }
 
   function reset() {
-    startTime = Date.now();
+    startTime = null;
     moveCount = 0;
   }
 
   function recordMove() {
+    if (startTime === null) startTime = Date.now();
     moveCount += 1;
   }
 
   function unrecordMove(count = 1) {
     moveCount = Math.max(0, moveCount - count);
+    if (moveCount === 0) startTime = null;
   }
 
   return {
