@@ -75,8 +75,24 @@ const ASSET_PATH = /\.(js|css|svg|png|jpg|jpeg|webp|ico|json|woff2?|txt|xml)$/;
 // (App names like NAVER or KAKAOTALK alone are in-app browsers of real people.)
 const CRAWLER_UA = /bot|crawl|spider|slurp|yeti|daumoa|google|bing|yandex|baidu|facebookexternalhit|kakaotalk-scrap|whatsapp/i;
 
+// Cloudflare Web Analytics (cookieless visit counts), added to every HTML
+// page here instead of in each file. The token is the site's public tag —
+// it ends up in every page's source — not a secret. The admin pages are
+// left out so the owner's own visits aren't counted.
+const ANALYTICS_SNIPPET = `<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "f440395a75e04d2b876879cca36ecb35"}'></script>`;
+function withAnalytics(res, url) {
+  if (url.pathname.startsWith('/admin') || url.pathname === `/${NAVER_VERIFY_FILE}`) return res;
+  if (!(res.headers.get('Content-Type') || '').includes('text/html')) return res;
+  return new HTMLRewriter().on('body', { element(el) { el.append(ANALYTICS_SNIPPET, { html: true }); } }).transform(res);
+}
+
 export default {
   async fetch(request, env) {
+    return withAnalytics(await route(request, env), new URL(request.url));
+  },
+};
+
+async function route(request, env) {
     const url = new URL(request.url);
 
     // Naver Search Advisor ownership check: answered at exactly this address,
@@ -159,5 +175,4 @@ export default {
     }
 
     return env.ASSETS.fetch(request);
-  },
-};
+}
