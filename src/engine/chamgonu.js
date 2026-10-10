@@ -1,9 +1,20 @@
-import { QUIET_MOVE_LIMIT, decideByCount } from './board.js';
+import { decideByCount } from './board.js';
 
 export const PLAYERS = Object.freeze({ A: 'A', B: 'B' });
 // Moving phase only: this many moves in a row with no capture (both sides)
 // and the game goes to whoever has more pieces left — equal is a draw.
-export { QUIET_MOVE_LIMIT };
+// A PlayGonu rule (not from a historical source), so Cham-gonu keeps its own value.
+export const QUIET_MOVE_LIMIT = 20;
+
+// Two rule sets. 'korean' is the default (captured points stay unusable while
+// placing, 20-move count rule). 'western' follows Twelve Men's Morris: no dead
+// points, a player down to exactly 3 pieces may fly to any empty point, and
+// the 20-move count rule is replaced by a draw when someone is stuck on 3
+// pieces and no capture happens for FLYING_STALL_LIMIT moves (both sides
+// combined, i.e. 10 each).
+export const RULESETS = Object.freeze(['korean', 'western']);
+export const FLYING_STALL_LIMIT = 20;
+export const FLYING_AT = 3;
 
 const POINT_COUNT = 24;
 const PIECES_PER_PLAYER = 12;
@@ -54,8 +65,13 @@ export function opponent(player) {
   return player === PLAYERS.A ? PLAYERS.B : PLAYERS.A;
 }
 
-export function createInitialState() {
+export function normalizeRuleset(ruleset) {
+  return ruleset === 'western' ? 'western' : 'korean';
+}
+
+export function createInitialState({ ruleset } = {}) {
   return {
+    ruleset: normalizeRuleset(ruleset),
     pieces: new Array(POINT_COUNT).fill(null),
     phase: 'placing',
     placedCount: { [PLAYERS.A]: 0, [PLAYERS.B]: 0 },
@@ -92,24 +108,24 @@ function capturablePoints(state, player) {
   return notInMill.length > 0 ? notInMill : oppPoints;
 }
 
-export function legalMovesFrom(state, index) {
-  if (state.winner || state.pendingCapture || state.phase !== 'moving') return [];
-  if (state.pieces[index] !== state.turn) return [];
+// Plain one-step slides, ignoring flying (used by the AI's mobility score).
+export function slideTargetsFrom(state, index) {
   return ADJACENCY[index].filter((n) => state.pieces[n] === null);
 }
 
-// The very first placement of the game (쟁두 winner's opening move) is
-// restricted to one of the outermost square's 4 corners — not the full 24
-// points. After that single move, every other placement is unrestricted.
-const OPENING_MOVE_POINTS = Object.freeze([0, 2, 4, 6]);
-
-function isOpeningMove(state) {
-  return state.placedCount[PLAYERS.A] === 0 && state.placedCount[PLAYERS.B] === 0;
+export function legalMovesFrom(state, index) {
+  if (state.winner || state.pendingCapture || state.phase !== 'moving') return [];
+  if (state.pieces[index] !== state.turn) return [];
+  if (state.ruleset === 'western' && countPieces(state, state.turn) === FLYING_AT) {
+    const targets = [];
+    for (let i = 0; i < POINT_COUNT; i++) if (state.pieces[i] === null) targets.push(i);
+    return targets;
+  }
+  return slideTargetsFrom(state, index);
 }
 
 export function legalPlacements(state) {
   if (state.winner || state.pendingCapture || state.phase !== 'placing') return [];
-  if (isOpeningMove(state)) return OPENING_MOVE_POINTS.slice();
   const targets = [];
   for (let i = 0; i < POINT_COUNT; i++) {
     if (state.pieces[i] === null && !state.deadForPlacement[i]) targets.push(i);
@@ -140,6 +156,7 @@ export function hasAnyLegalMove(state, player) {
 
 function cloneState(state) {
   return {
+    ruleset: normalizeRuleset(state.ruleset),
     pieces: state.pieces.slice(),
     phase: state.phase,
     placedCount: { ...state.placedCount },
@@ -177,7 +194,14 @@ function advanceTurnAndCheckEnd(next, mover) {
     next.winner = mover;
     return;
   }
-  if (next.phase === 'moving' && next.quietMoves >= QUIET_MOVE_LIMIT) {
+  if (next.phase !== 'moving') return;
+  if (next.ruleset === 'western') {
+    const stuckOnThree = countPieces(next, PLAYERS.A) === FLYING_AT || countPieces(next, PLAYERS.B) === FLYING_AT;
+    if (stuckOnThree && next.quietMoves >= FLYING_STALL_LIMIT) {
+      next.winner = 'draw';
+      next.decidedByStall = true;
+    }
+  } else if (next.quietMoves >= QUIET_MOVE_LIMIT) {
     next.winner = decideByCount(next.pieces, PLAYERS.A, PLAYERS.B);
     next.decidedByCount = true;
   }
@@ -222,7 +246,7 @@ function applyCapture(state, point) {
   const player = state.turn;
   const next = cloneState(state);
   next.pieces[point] = null;
-  if (next.phase === 'placing') next.deadForPlacement[point] = true;
+  if (next.phase === 'placing' && next.ruleset !== 'western') next.deadForPlacement[point] = true;
   next.pendingCapture = false;
   next.quietMoves = 0;
   advanceTurnAndCheckEnd(next, player);

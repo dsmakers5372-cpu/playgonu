@@ -64,6 +64,10 @@
         <div style="font-size:13px;color:var(--muted);" data-captured-label>盘上棋子 — 红: 0 · 蓝: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-ruleset style="cursor:pointer;">
+          <option value="korean" selected>韩国规则</option>
+          <option value="western">西方规则（飞子）</option>
+        </select>
         <select class="pill" data-side-select style="cursor:pointer;">
           <option value="A">执红 · 先手</option>
           <option value="B">执蓝 · 后手</option>
@@ -100,12 +104,13 @@
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
         <div class="serif" style="font-size:18px;font-weight:700;">参高努怎么玩</div>
         <ul>
-          <li>双方各有 12 枚棋子，轮流每次在 24 点棋盘的任意空点上放下一枚——落子阶段是对局的前半段。整局的第一手只能下在最外层正方形的 4 个角之一。</li>
+          <li>双方各有 12 枚棋子，轮流每次在 24 点棋盘的任意空点上放下一枚——落子阶段是对局的前半段。</li>
           <li>沿棋盘上画好的线把自己的 3 枚棋子连成一条直线，即构成“三连”（mill）——随后可以移除对方一枚棋子。用于吃子的点会被标记，并在落子阶段剩余时间内锁定。</li>
           <li>24 枚棋子全部放完后进入后半段：每回合将一枚棋子滑到相邻的空点，仍可通过组成三连来吃子。</li>
           <li>把对方棋子减少到 2 枚，或让对方无棋可走，即获胜。</li>
           <li>如果落子阶段一次也没有成三，24 个点就已全部占满，则为和棋。</li>
-          <li>在走子阶段，如果连续 30 步（双方合计）都没有吃子，则剩余棋子多的一方获胜（数量相同则为和棋）。</li>
+          <li>在走子阶段，如果连续 20 步（双方合计）都没有吃子，则剩余棋子多的一方获胜（数量相同则为和棋）。这是 PlayGonu 的规则。</li>
+          <li><strong>西方规则（可选）：</strong>在棋盘上方选择“西方规则”，即按十二子棋（Twelve Men's Morris）的规则对局：落子阶段被吃的点不会被锁定，仅剩 3 枚棋子的一方可以飞到任意空位，并且用“有一方仅剩 3 枚且双方各 10 步无吃子则和棋”取代 20 步规则。</li>
           <li><strong>决定先手（쟁두）：</strong>按传统，双方先猜拳（石头剪刀布），<em>输</em>的一方先走。</li>
         </ul>
       </div>

@@ -7,6 +7,7 @@ import {
   BOARD_EDGES,
   PLAYERS,
   QUIET_MOVE_LIMIT,
+  FLYING_AT,
 } from '../engine/chamgonu.js';
 import { getDynamicStrings } from '../i18n/dynamicStrings.js';
 import { chooseAIMove } from '../engine/chamgonuAI.js';
@@ -37,6 +38,8 @@ const STRINGS = {
     toPlace: (n, placed) => `${n} to place (${placed}/12)`,
     toMove: (n) => `${n} to move`,
     onBoard: (r, b) => `On board — Red: ${r} · Blue: ${b}`,
+    flying: (n) => `${n} to move — flying (3 pieces)`,
+    drawStall: 'Draw — a side stuck on 3 pieces and no capture for 10 moves each',
   },
   ko: {
     wins: (n) => `${n} 승리!`,
@@ -45,6 +48,8 @@ const STRINGS = {
     toPlace: (n, placed) => `${n} 차례 — 놓기 (${placed}/12)`,
     toMove: (n) => `${n} 차례`,
     onBoard: (r, b) => `남은 말 — 빨강: ${r} · 파랑: ${b}`,
+    flying: (n) => `${n} 차례 — 날기 가능 (말 3개)`,
+    drawStall: '무승부 — 말 3개인 쪽이 있고 양쪽 10수씩 잡기가 없었어요',
   },
   es: {
     wins: (n) => `¡Gana ${n}!`,
@@ -53,6 +58,8 @@ const STRINGS = {
     toPlace: (n, placed) => `${n} coloca (${placed}/12)`,
     toMove: (n) => `Turno de ${n}`,
     onBoard: (r, b) => `En el tablero — Rojo: ${r} · Azul: ${b}`,
+    flying: (n) => `Turno de ${n} — puede volar (3 fichas)`,
+    drawStall: 'Empate — un bando con 3 fichas y 10 jugadas cada uno sin capturas',
   },
   ja: {
     wins: (n) => `${n}の勝ち！`,
@@ -61,6 +68,8 @@ const STRINGS = {
     toPlace: (n, placed) => `${n}の番 — 配置 (${placed}/12)`,
     toMove: (n) => `${n}の番`,
     onBoard: (r, b) => `盤上の駒 — 赤: ${r} · 青: ${b}`,
+    flying: (n) => `${n}の番 — 飛べます（駒3つ）`,
+    drawStall: '引き分け — 駒3つの側がいて、双方10手ずつ駒取りなし',
   },
   zh: {
     wins: (n) => `${n}获胜！`,
@@ -69,6 +78,8 @@ const STRINGS = {
     toPlace: (n, placed) => `${n}落子 (${placed}/12)`,
     toMove: (n) => `轮到${n}`,
     onBoard: (r, b) => `棋盘上 — 红: ${r} · 蓝: ${b}`,
+    flying: (n) => `轮到${n} — 可飞子（仅剩3枚）`,
+    drawStall: '平局 — 有一方仅剩3枚，且双方各10步无吃子',
   },
 };
 
@@ -94,6 +105,10 @@ function statusText(lang, game) {
   if (game.winner) return resultText(lang, game);
   if (game.pendingCapture) return s.pickCapture(name);
   if (game.phase === 'placing') return s.toPlace(name, game.placedCount[game.turn]);
+  if (game.ruleset === 'western') {
+    const onThree = game.pieces.filter((x) => x === game.turn).length === FLYING_AT;
+    return onThree ? s.flying(name) : s.toMove(name);
+  }
   const quietLeft = QUIET_MOVE_LIMIT - (game.quietMoves ?? 0);
   if (quietLeft <= 10) return getDynamicStrings(lang).toMoveLimitSoon(name, quietLeft);
   return s.toMove(name);
@@ -104,6 +119,7 @@ function statusText(lang, game) {
 function resultText(lang, game) {
   const s = STRINGS[lang];
   const d = getDynamicStrings(lang);
+  if (game.decidedByStall) return s.drawStall;
   if (game.decidedByCount) return game.winner === 'draw' ? d.drawExclaim(QUIET_MOVE_LIMIT) : d.countWinExclaim(PLAYER_NAME[lang][game.winner], QUIET_MOVE_LIMIT);
   if (game.winner === 'draw') return s.drawFull;
   return s.wins(PLAYER_NAME[lang][game.winner]);
@@ -132,10 +148,12 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
   const modeBannerCancel = root.querySelector('[data-mode-cancel]');
   const aiDifficultySelect = root.querySelector('[data-ai-difficulty]');
   const sideSelect = root.querySelector('[data-side-select]');
+  const rulesetSelect = root.querySelector('[data-ruleset]');
   const phaseBanner = root.querySelector('[data-phase-banner]');
   const phaseBannerOk = root.querySelector('[data-phase-banner-ok]');
 
-  let game = createInitialState();
+  const currentRuleset = () => (rulesetSelect ? rulesetSelect.value : 'korean');
+  let game = createInitialState({ ruleset: currentRuleset() });
   let selected = null;
   let history = [];
   let captureEffectIndex = null; // point a piece was just swept off of, briefly highlighted
@@ -406,7 +424,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
   }
 
   function newGame() {
-    game = createInitialState();
+    game = createInitialState({ ruleset: currentRuleset() });
     selected = null;
     history = [];
     clearTimeout(captureEffectTimer);
@@ -460,7 +478,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
   }
   if (modeBannerOnline) {
     modeBannerOnline.addEventListener('click', () => {
-      location.href = `online.html?game=cham`;
+      location.href = `online.html?game=cham&ruleset=${currentRuleset()}`;
     });
   }
   if (modeBannerCancel) {
@@ -470,6 +488,7 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
       modeBanner.classList.remove('is-visible');
     });
   }
+  if (rulesetSelect) rulesetSelect.addEventListener('change', newGame);
   if (sideSelect) {
     sideSelect.addEventListener('change', () => {
       updateAiPlayer();

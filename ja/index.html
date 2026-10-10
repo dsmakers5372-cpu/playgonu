@@ -64,6 +64,10 @@
         <div style="font-size:13px;color:var(--muted);" data-captured-label>盤上 — 赤: 0 · 青: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-ruleset style="cursor:pointer;">
+          <option value="korean" selected>韓国ルール</option>
+          <option value="western">西洋ルール（飛び）</option>
+        </select>
         <select class="pill" data-side-select style="cursor:pointer;">
           <option value="A">赤で遊ぶ · 先手</option>
           <option value="B">青で遊ぶ · 後手</option>
@@ -100,12 +104,13 @@
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
         <div class="serif" style="font-size:18px;font-weight:700;">チャムゴヌ（Cham-gonu）の遊び方</div>
         <ul>
-          <li>各プレイヤーは12個の駒を持ちます。24点の盤の空いている点に、1個ずつ交互に置いていきます — この配置がゲームの前半です。ゲームの最初の1手は、いちばん外側の四角形の4つの角のどこかにしか置けません。</li>
+          <li>各プレイヤーは12個の駒を持ちます。24点の盤の空いている点に、1個ずつ交互に置いていきます — この配置がゲームの前半です。</li>
           <li>自分の駒3個を（描かれた線に沿って）一直線に並べると「ミル」になり、相手の駒を1個取り除けます。駒取りに使われた点には印が付き、配置が終わるまで使えなくなります。</li>
           <li>24個すべての駒が置かれると後半が始まります。1手ごとに駒を1個、隣の空いている点へ動かし、引き続きミルを作って駒を取ります。</li>
           <li>相手の駒を2個まで減らすか、相手が動けない状態にすれば勝ちです。</li>
           <li>駒を置く間に一度もゴンができずに24点が埋まったら、引き分けです。</li>
-          <li>移動の段階で、駒取りがないまま30手（双方の手を合算）続くと、残りの駒が多い方の勝ちです（同じ数なら引き分け）。</li>
+          <li>移動の段階で、駒取りがないまま20手（双方の手を合算）続くと、残りの駒が多い方の勝ちです（同じ数なら引き分け）。PlayGonuのルールです。</li>
+          <li><strong>西洋ルール（選択式）：</strong>盤の上で「西洋ルール」を選ぶと、トゥエルブ・メンズ・モリス（Twelve Men's Morris）のルールで遊べます。配置中に取った点はふさがれず、駒がちょうど3つになった側は空いている点ならどこへでも飛べ、20手ルールの代わりに、3つの側がいて双方10手ずつ駒取りがなければ引き分けになります。</li>
           <li><strong>先手の決め方（쟁두）：</strong>伝統的には2人でじゃんけんをして、<em>負けた</em>ほうが先に打ちます。</li>
         </ul>
       </div>

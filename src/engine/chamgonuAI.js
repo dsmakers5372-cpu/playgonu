@@ -1,4 +1,4 @@
-import { move, allLegalMoves, legalMovesFrom, opponent } from './chamgonu.js';
+import { move, allLegalMoves, slideTargetsFrom, opponent } from './chamgonu.js';
 import { createMinimaxAI } from './minimaxAI.js';
 
 // Cham-gonu's branching factor is much larger than the other variants
@@ -17,13 +17,15 @@ function countPieces(state, player) {
 // at a given search leaf, only one of the two players can ever get credit,
 // regardless of which side the board actually favors. This recomputes
 // mobility for an arbitrary player by temporarily pretending it's their
-// turn, so both sides are scored on the same footing.
+// turn, so both sides are scored on the same footing. Counts plain slides
+// only, so a flying side (Western rules, 3 pieces) isn't scored as if it
+// had 3 x (every empty point) of mobility.
 function mobilityFor(state, player) {
   if (state.winner || state.phase !== 'moving' || state.pendingCapture) return 0;
   let count = 0;
   for (let i = 0; i < state.pieces.length; i++) {
     if (state.pieces[i] !== player) continue;
-    count += legalMovesFrom({ ...state, turn: player }, i).length;
+    count += slideTargetsFrom(state, i).length;
   }
   return count;
 }

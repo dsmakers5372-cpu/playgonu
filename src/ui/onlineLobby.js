@@ -24,6 +24,8 @@ const STRINGS = {
     publicCreated: 'Your public room is open — the game starts as soon as someone joins.',
     cancelRoom: 'Cancel',
     allowSpectators: 'Allow spectators',
+    rulesetKorean: 'Korean rules',
+    rulesetWestern: 'Western rules (flying)',
     watch: 'Watch',
     roomGone: 'That game has already ended.',
     accountGuest: 'Sign in to save your online record.',
@@ -49,6 +51,8 @@ const STRINGS = {
     publicCreated: '공개 방을 만들었어요 — 누군가 들어오면 바로 시작됩니다.',
     cancelRoom: '취소',
     allowSpectators: '관전 허용',
+    rulesetKorean: '한국 룰',
+    rulesetWestern: '서양 룰 (날기)',
     watch: '관전',
     roomGone: '이미 끝난 대국이에요.',
     accountGuest: '로그인하면 온라인 전적이 저장돼요.',
@@ -74,6 +78,8 @@ const STRINGS = {
     publicCreated: 'Tu sala pública está abierta — la partida empieza en cuanto alguien entre.',
     cancelRoom: 'Cancelar',
     allowSpectators: 'Permitir espectadores',
+    rulesetKorean: 'Reglas coreanas',
+    rulesetWestern: 'Reglas occidentales (vuelo)',
     watch: 'Ver',
     roomGone: 'Esa partida ya terminó.',
     accountGuest: 'Inicia sesión para guardar tu historial en línea.',
@@ -99,6 +105,8 @@ const STRINGS = {
     publicCreated: '公開ルームを作りました — 誰かが参加するとすぐに始まります。',
     cancelRoom: 'キャンセル',
     allowSpectators: '観戦を許可',
+    rulesetKorean: '韓国ルール',
+    rulesetWestern: '西洋ルール（飛び）',
     watch: '観戦',
     roomGone: 'その対局はすでに終了しています。',
     accountGuest: 'ログインするとオンライン戦績が保存されます。',
@@ -124,6 +132,8 @@ const STRINGS = {
     publicCreated: '公开房间已创建 — 有人加入后立即开始。',
     cancelRoom: '取消',
     allowSpectators: '允许观战',
+    rulesetKorean: '韩国规则',
+    rulesetWestern: '西方规则（飞子）',
     watch: '观战',
     roomGone: '该对局已经结束。',
     accountGuest: '登录后会保存你的在线战绩。',
@@ -168,6 +178,22 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   spectateCheck.style.cssText = 'width:18px;height:18px;cursor:pointer;';
   spectateLabel.append(spectateCheck, document.createTextNode(t.allowSpectators));
 
+  // Only Cham-gonu offers a rule choice here. It decides the rules of a room
+  // you create (or a bot match you start); joining someone's room always uses
+  // that room's own rules.
+  const rulesetSelect = document.createElement('select');
+  rulesetSelect.className = 'pill';
+  rulesetSelect.style.cssText = 'cursor:pointer;align-self:flex-start;';
+  for (const [value, label] of [['korean', t.rulesetKorean], ['western', t.rulesetWestern]]) {
+    const opt = document.createElement('option');
+    opt.value = value;
+    opt.textContent = label;
+    rulesetSelect.appendChild(opt);
+  }
+  rulesetSelect.value = ruleset === 'western' ? 'western' : 'korean';
+  if (gameType !== 'cham') rulesetSelect.style.display = 'none';
+  const chosenRuleset = () => (gameType === 'cham' ? rulesetSelect.value : ruleset);
+
   const btnRow = document.createElement('div');
   btnRow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;';
   const createPrivateBtn = document.createElement('button');
@@ -208,7 +234,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     if (!nameInput.value.trim()) nameInput.value = me.username;
   });
 
-  wrap.append(nameInput, accountLine, titleInput, spectateLabel, btnRow, statusArea, lobbyList);
+  wrap.append(nameInput, accountLine, titleInput, rulesetSelect, spectateLabel, btnRow, statusArea, lobbyList);
   root.appendChild(wrap);
 
   let pollTimer = null;
@@ -260,6 +286,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       if (!waiting) label.textContent = `${r.hostName} vs ${r.guestName || '…'}`;
       else if (r.title) label.textContent = `${r.title} · ${r.hostName}`;
       else label.textContent = t.waitingHost(r.hostName);
+      if (gameType === 'cham' && r.ruleset === 'western') label.textContent += ` · ${t.rulesetWestern}`;
       const right = document.createElement('div');
       right.style.cssText = 'display:flex;align-items:center;gap:12px;flex:none;';
       right.appendChild(statusBadge(waiting));
@@ -305,6 +332,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   function connect(roomId, name, isPublic, title = null, allowSpectators = true, spectate = false) {
     btnRow.style.display = 'none';
     titleInput.style.display = 'none';
+    rulesetSelect.style.display = 'none';
     spectateLabel.style.display = 'none';
     statusArea.style.display = 'flex';
     // A public host keeps browsing the dashboard while waiting (their own
@@ -339,7 +367,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       allowSpectators,
       spectate,
       gameType,
-      ruleset,
+      ruleset: chosenRuleset(),
       handlers: {
         onJoined(msg) {
           myColor = msg.color;
@@ -464,6 +492,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     }
     btnRow.style.display = 'flex';
     titleInput.style.display = '';
+    rulesetSelect.style.display = gameType === 'cham' ? '' : 'none';
     spectateLabel.style.display = 'inline-flex';
     lobbyList.style.display = 'flex';
     startPolling();
@@ -478,6 +507,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   if (incomingRoom) {
     btnRow.style.display = 'none';
     titleInput.style.display = 'none';
+    rulesetSelect.style.display = 'none';
     spectateLabel.style.display = 'none';
     lobbyList.style.display = 'none';
     const joinHint = document.createElement('button');

@@ -64,6 +64,10 @@
         <div style="font-size:13px;color:var(--muted);" data-captured-label>En el tablero — Rojo: 0 · Azul: 0</div>
       </div>
       <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+        <select class="pill" data-ruleset style="cursor:pointer;">
+          <option value="korean" selected>Reglas coreanas</option>
+          <option value="western">Reglas occidentales (vuelo)</option>
+        </select>
         <select class="pill" data-side-select style="cursor:pointer;">
           <option value="A">Jugar con Rojo · Primero</option>
           <option value="B">Jugar con Azul · Segundo</option>
@@ -100,12 +104,13 @@
       <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
         <div class="serif" style="font-size:18px;font-weight:700;">Cómo se juega el Cham-gonu</div>
         <ul>
-          <li>Cada jugador tiene 12 piezas. Por turnos, colocan una a la vez en cualquier punto vacío del tablero de 24 puntos — la colocación es la primera mitad de la partida. La primerísima colocación de la partida solo puede hacerse en una de las 4 esquinas del cuadrado exterior.</li>
+          <li>Cada jugador tiene 12 piezas. Por turnos, colocan una a la vez en cualquier punto vacío del tablero de 24 puntos — la colocación es la primera mitad de la partida.</li>
           <li>Alinea 3 de tus piezas en fila (en línea recta, siguiendo las líneas dibujadas) para formar un "molino" — y retira una pieza rival. El punto usado en una captura queda marcado y bloqueado durante el resto de la colocación.</li>
           <li>Cuando ya están colocadas las 24 piezas, empieza la segunda mitad: en cada turno desliza una pieza a un punto vacío adyacente, y sigue formando molinos para capturar.</li>
           <li>Ganas si reduces a tu rival a 2 piezas o lo dejas sin movimientos legales.</li>
           <li>Si los 24 puntos se llenan durante la colocación sin ningún molino, la partida es empate.</li>
-          <li>En la fase de movimiento, si pasan 30 jugadas seguidas (contando ambos bandos) sin ninguna captura, gana quien tenga más fichas (con las mismas fichas, empate).</li>
+          <li>En la fase de movimiento, si pasan 20 jugadas seguidas (contando ambos bandos) sin ninguna captura, gana quien tenga más fichas (con las mismas fichas, empate): una regla de PlayGonu.</li>
+          <li><strong>Reglas occidentales (opcional):</strong> elige «Reglas occidentales» sobre el tablero para jugar con las del Twelve Men's Morris. Un punto de captura no se bloquea durante la colocación, quien se quede con exactamente 3 fichas puede volar a cualquier punto libre, y la regla de las 20 jugadas se sustituye por un empate si alguien está con 3 fichas y nadie captura en 10 jugadas cada uno.</li>
           <li><strong>Quién empieza (쟁두):</strong> tradicionalmente, los dos jugadores juegan piedra, papel o tijera, y el que <em>pierde</em> mueve primero.</li>
         </ul>
       </div>

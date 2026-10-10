@@ -41,6 +41,7 @@ export class Lobby {
       if (body.action === 'upsert' && body.roomId) {
         this.rooms[body.roomId] = {
           gameType: body.gameType,
+          ruleset: body.ruleset || null,
           hostName: body.hostName,
           guestName: body.guestName || null,
           title: body.title || null,

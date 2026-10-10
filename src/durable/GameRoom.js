@@ -36,10 +36,17 @@ const WATCH_RESTART_MS = 6000;
 const WATCH_DIFFICULTY = 'hard';
 const LISTING_HEARTBEAT_MS = 60 * 1000; // keeps a public room's lobby entry from going stale (Lobby STALE_MS)
 
+// Only gomoku (freestyle | renju) and cham (korean | western) have rule
+// variants; every other game keeps the legacy 'freestyle' placeholder.
+function normalizeRuleset(gameType, ruleset) {
+  if (gameType === 'cham') return ruleset === 'western' ? 'western' : 'korean';
+  return ruleset === 'renju' ? 'renju' : 'freestyle';
+}
+
 function freshEngineState(gameType, ruleset) {
   const engine = ENGINES[gameType];
-  return gameType === 'gomoku'
-    ? engine.createInitialState({ ruleset: ruleset === 'renju' ? 'renju' : 'freestyle' })
+  return gameType === 'gomoku' || gameType === 'cham'
+    ? engine.createInitialState({ ruleset: normalizeRuleset(gameType, ruleset) })
     : engine.createInitialState();
 }
 
@@ -161,7 +168,7 @@ export class GameRoom {
       this.room = {
         roomId,
         gameType,
-        ruleset: msg.ruleset === 'renju' ? 'renju' : 'freestyle',
+        ruleset: normalizeRuleset(gameType, msg.ruleset),
         isPublic: vp ? false : !!msg.isPublic,
         hostName: name,
         title: String(msg.title || '').trim().slice(0, 30) || null,
@@ -310,7 +317,7 @@ export class GameRoom {
     this.room = {
       roomId,
       gameType,
-      ruleset: 'freestyle',
+      ruleset: normalizeRuleset(gameType),
       isPublic: false,
       hostName: a.name,
       title: null,
@@ -321,7 +328,7 @@ export class GameRoom {
         { id: 'bot-b', name: b.name, color: PLAYERS.B, isBot: true, difficulty: WATCH_DIFFICULTY },
       ],
       spectatorCount: 0,
-      engineState: simulatedOpening(gameType, 'freestyle'),
+      engineState: simulatedOpening(gameType, normalizeRuleset(gameType)),
       status: 'playing',
       vsBot: null,
     };
@@ -500,6 +507,7 @@ export class GameRoom {
           action: listed ? 'upsert' : 'remove',
           roomId: this.room.roomId,
           gameType: this.room.gameType,
+          ruleset: this.room.ruleset,
           hostName: this.room.hostName,
           guestName: this.room.players[1]?.name ?? null,
           title: this.room.title,

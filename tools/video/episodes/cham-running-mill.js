@@ -281,26 +281,15 @@ export default {
   explain: [
     {
       after: 1,
-      rings: [
-        {
-          points: [
-            0,
-            2,
-            4,
-            6
-          ],
-          color: "gold"
-        }
-      ],
       ko: {
         tag: "첫 수",
-        title: "첫 수는 바깥 모서리에만!",
-        body: "빨강은 오른쪽 아래 모서리로 시작."
+        title: "빨강이 먼저 시작해요",
+        body: "첫 수는 아무 점에나 놓을 수 있어요."
       },
       en: {
         tag: "Move 1",
-        title: "First move: an outer corner",
-        body: "Red starts bottom-right."
+        title: "Red opens the game",
+        body: "The first piece can go on any point."
       }
     },
     {

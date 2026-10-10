@@ -91,7 +91,7 @@
     history.replaceState(null, '', url);
     const opts = { lang: 'zh', onMatchStart: hideIntro };
     if (game === 'gomoku') mountOnlineGomokuGame(onlineRoot, opts);
-    else mountOnlineChamGame(onlineRoot, opts);
+    else mountOnlineChamGame(onlineRoot, { ...opts, ruleset: params.get('ruleset') === 'western' ? 'western' : 'korean' });
   }
   mount(initialGame);
   gameTabs.forEach((btn) => {

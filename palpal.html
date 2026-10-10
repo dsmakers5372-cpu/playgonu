@@ -22,6 +22,97 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles/main.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebPage",
+      "@id": "https://playgonu.com/palpal#page",
+      "url": "https://playgonu.com/palpal",
+      "name": "Palpal-gonu — a Korean Traditional Board Game, Play It Online",
+      "inLanguage": "en",
+      "dateModified": "2026-10-10",
+      "isPartOf": {
+        "@type": "WebSite",
+        "name": "PlayGonu",
+        "url": "https://playgonu.com/"
+      },
+      "about": {
+        "@type": "Game",
+        "name": "Palpal-gonu",
+        "alternateName": [
+          "Eight-Eight Gonu",
+          "팔팔고누"
+        ],
+        "description": "Eight pieces each on an 8×8 line board, the widest board of the Jul-gonu family; capture by sandwiching an enemy piece between two of yours.",
+        "numberOfPlayers": {
+          "@type": "QuantitativeValue",
+          "value": 2
+        },
+        "isPartOf": {
+          "@type": "Thing",
+          "name": "Gonu"
+        }
+      }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "PlayGonu",
+          "item": "https://playgonu.com/"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Palpal-gonu",
+          "item": "https://playgonu.com/palpal"
+        }
+      ]
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What does \"Palpal\" mean?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "It refers to the eight lines of the board and the eight pieces each player has."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Why is the move limit 60?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "The board is wide and the first capture takes a long time. In our AI games under a 30-move limit, 19 of 20 games ended before a single capture, so we raised it to 60."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Are the rules the same as Jul-gonu?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. Only the board and the number of pieces differ; moving, capturing and winning are the same."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Can a game end in a draw?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes, if 60 moves pass with no capture and both sides have the same number of pieces."
+          }
+        }
+      ]
+    }
+  ]
+}
+</script>
 </head>
 <body>
 <div data-root>
@@ -104,6 +195,72 @@
     </div>
 
   </div>
+
+  <article class="game-article">
+    <h1 class="article-title">Palpal-gonu — a Korean Traditional Board Game, Play It Online</h1>
+    <p class="lead"><strong>Palpal-gonu</strong> (팔팔고누, "eight-eight Gonu") is a traditional Korean board game for two. Each player moves eight pieces one step at a time on an 8×8 line board and captures by sandwiching an enemy piece between two of their own. It is the widest board in the <a href="jul.html">Jul-gonu</a> family, so a game is about forming a structure and looking far ahead. On PlayGonu you can play it against an AI right away.</p>
+    <dl class="facts">
+      <dt>Players</dt><dd>2</dd>
+      <dt>Board</dt><dd>8×8 lines, 64 points</dd>
+      <dt>Pieces</dt><dd>8 each</dd>
+      <dt>Capturing</dt><dd>Sandwich an enemy piece between two of your pieces in a straight line</dd>
+      <dt>Winning</dt><dd>Reduce your opponent to 1 piece, or leave them with no legal move</dd>
+      <dt>Family</dt><dd>Gonu, Jul-gonu type — same rules as <a href="jul.html">Jul-gonu</a> and <a href="daseotjul.html">Daseotjul-gonu</a></dd>
+    </dl>
+
+    <h2>Gonu and Palpal-gonu: where it comes from</h2>
+    <p><strong>Gonu</strong> is a family of Korean folk board games. Players draw a board on the ground or on paper and use pebbles or twigs as pieces, so no special equipment is needed. That is why the games spread across the whole country and carried regional names such as goni and kkoni (Gyeonggi), kkon and kkonu (Jeolla), kkon (Gyeongsang) and kkonja (Jeju). The name is thought to come from an old word meaning "to contend". A board carved into an artifact from a Goryeo-era celadon kiln suggests people were playing at least as far back as the Goryeo period (918–1392), and Kim Hong-do's late-Joseon genre painting "Gonu Play" shows a group playing on a board drawn in the dirt.</p><p>Palpal-gonu appears by name in lists of the kinds of Gonu, but detailed written rules for it are scarce. Because each side lines up eight pieces on its first row, PlayGonu treats it as a member of the Jul-gonu family and applies the Jul-gonu sandwich-capture rules to an 8×8 board. In other words, the board size and capture rule come from the same family rather than from a surviving record of Palpal-gonu itself, and we say so here.</p>
+
+    <h2>How to play Palpal-gonu</h2>
+    <ol>
+      <li><strong>Setup:</strong> Each player lines up 8 pieces on the intersections of their own front row.</li>
+      <li><strong>Moving:</strong> On your turn, slide one piece one step along a line, horizontally or vertically. No diagonal moves and no jumping.</li>
+      <li><strong>Capturing:</strong> If your move leaves an enemy piece in a straight line between two of your pieces, you remove it. One move can capture in two directions at once.</li>
+      <li><strong>The safe square:</strong> A piece that moves between two enemy pieces on its own is not captured.</li>
+      <li><strong>Winning:</strong> Leave your opponent with just 1 piece, or with no piece that can move.</li>
+      <li><strong>Move limit:</strong> If 60 moves in total pass with no capture, the side with more pieces wins; equal pieces is a draw (a PlayGonu rule).</li>
+    </ol>
+
+    <h2>Palpal-gonu tips</h2>
+    <ul>
+      <li><strong>Do not rush.</strong> On this wide board the first capture can take dozens of moves. The side that advances its front line together has the edge.</li>
+      <li><strong>A lone piece is captured first.</strong> Help is far away on a wide board. Move in groups of two or three.</li>
+      <li><strong>Use corners and edges.</strong> A corner piece can never be captured, and an edge piece can only be sandwiched along the edge.</li>
+      <li><strong>Protect a material lead.</strong> Even one extra piece wins on the 60-move limit.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <h3>What does "Palpal" mean?</h3>
+    <p>It refers to the eight lines of the board and the eight pieces each player has.</p>
+    <h3>Why is the move limit 60?</h3>
+    <p>The board is wide and the first capture takes a long time. In our AI games under a 30-move limit, 19 of 20 games ended before a single capture, so we raised it to 60.</p>
+    <h3>Are the rules the same as Jul-gonu?</h3>
+    <p>Yes. Only the board and the number of pieces differ; moving, capturing and winning are the same.</p>
+    <h3>Can a game end in a draw?</h3>
+    <p>Yes, if 60 moves pass with no capture and both sides have the same number of pieces.</p>
+
+    <h2>More Gonu games to try</h2>
+    <ul>
+      <li><a href="index.html">Cham-gonu</a> — twelve pieces and mills — the deepest of the Gonu games</li>
+      <li><a href="jul.html">Jul-gonu</a> — four pieces, the simplest Gonu — learn it in two minutes</li>
+      <li><a href="daseotjul.html">Daseotjul-gonu</a> — the Jul-gonu rules on a 5×5 board with five pieces each</li>
+      <li><a href="bakwi.html">Bakwi-gonu</a> — spin around a corner "wheel" and slide far to capture</li>
+      <li><a href="howto.html">How to play every Gonu game</a> — all the rules in one place</li>
+    </ul>
+
+    <h2>About PlayGonu</h2>
+    <p>PlayGonu is where traditional Korean Gonu games get a modern upgrade for the web. We collect rules that differ from region to region, with their sources, and we use many games against our AI to find the points where a match drags on, then add rules that suit the web and publish them. The 60-move limit in Palpal-gonu was set that way: with a 30-move limit, 19 of 20 AI games ended without a single capture.</p>
+
+    <h2>Sources</h2>
+    <ul class="sources">
+      <li>Ministry of Culture, Sports and Tourism (Korea), "Children's Traditional Play: Gonu" (in Korean) <a href="https://www.mcst.go.kr/usr/child/enter/play/gonu.jsp" rel="noopener">www.mcst.go.kr</a></li>
+      <li>Academy of Korean Studies, Digital Gwangju Culture Encyclopedia, "Gonu-nori" (in Korean) <a href="https://gwangju.grandculture.net/gwangju/bukgu/toc/GC60004445" rel="noopener">gwangju.grandculture.net</a></li>
+      <li>Academy of Korean Studies, Digital Pocheon Culture Encyclopedia, "Gonu" (in Korean) <a href="http://pocheon.grandculture.net/pocheon/toc/GC05001783" rel="noopener">pocheon.grandculture.net</a></li>
+      <li>Wikipedia, "Jul-gonu" <a href="https://en.wikipedia.org/wiki/Jul-gonu" rel="noopener">en.wikipedia.org</a></li>
+      <li>Wikipedia, "Gonu" <a href="https://en.wikipedia.org/wiki/Gonu" rel="noopener">en.wikipedia.org</a></li>
+    </ul>
+    <p class="updated">Last updated 2026-10-10 · PlayGonu</p>
+  </article>
 
   <div class="win-banner" data-win-banner>
     <div class="win-banner__card">

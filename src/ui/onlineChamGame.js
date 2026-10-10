@@ -1,4 +1,4 @@
-import { legalMovesFrom, legalPlacements, legalCaptures, BOARD_EDGES, PLAYERS } from '../engine/chamgonu.js';
+import { legalMovesFrom, legalPlacements, legalCaptures, BOARD_EDGES, PLAYERS, FLYING_AT } from '../engine/chamgonu.js';
 import { mountOnlineLobby } from './onlineLobby.js';
 import { mountMatchPanel } from './onlineMatchPanel.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
@@ -36,6 +36,7 @@ const T = {
     oppLeft: 'Your opponent left the game.',
     waitTurn: (n) => `${n}'s turn`,
     yourTurn: 'Your turn',
+    yourTurnFly: 'Your turn — you can fly to any empty point',
     pickCapture: 'Pick a piece to capture',
     spectating: 'Spectating',
     gameStarted: (c) => `The game has started — you are ${PLAYER_NAME.en[c]}. Good luck!`,
@@ -60,6 +61,7 @@ const T = {
     oppLeft: '상대방이 나갔습니다.',
     waitTurn: (n) => `${n} 차례`,
     yourTurn: '당신 차례',
+    yourTurnFly: '당신 차례 — 빈 점 어디로든 날 수 있어요',
     pickCapture: '잡을 말을 고르세요',
     spectating: '관전 중',
     gameStarted: (c) => `게임이 시작되었습니다 — 당신은 ${PLAYER_NAME.ko[c]}입니다. 화이팅!`,
@@ -84,6 +86,7 @@ const T = {
     oppLeft: 'Tu rival abandonó la partida.',
     waitTurn: (n) => `Turno de ${n}`,
     yourTurn: 'Tu turno',
+    yourTurnFly: 'Tu turno — puedes volar a cualquier punto libre',
     spectating: 'Observando',
     gameStarted: (c) => `La partida ha comenzado — eres ${PLAYER_NAME.es[c]}. ¡Suerte!`,
     youWin: '¡Ganaste! 🎉',
@@ -108,6 +111,7 @@ const T = {
     oppLeft: '相手が退出しました。',
     waitTurn: (n) => `${n}の番`,
     yourTurn: 'あなたの番',
+    yourTurnFly: 'あなたの番 — 空いている点ならどこへでも飛べます',
     spectating: '観戦中',
     gameStarted: (c) => `対局開始 — あなたは${PLAYER_NAME.ja[c]}です。がんばって！`,
     youWin: 'あなたの勝ち！🎉',
@@ -132,6 +136,7 @@ const T = {
     oppLeft: '对手已离开对局。',
     waitTurn: (n) => `轮到${n}`,
     yourTurn: '轮到你了',
+    yourTurnFly: '轮到你了 — 可飞到任意空位',
     spectating: '观战中',
     gameStarted: (c) => `对局开始 — 你是${PLAYER_NAME.zh[c]}。祝你好运！`,
     youWin: '你赢了！🎉',
@@ -153,7 +158,7 @@ const T = {
   },
 };
 
-export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
+export function mountOnlineChamGame(root, { lang = 'en', ruleset = 'korean', onMatchStart } = {}) {
   if (!T[lang]) lang = 'en';
   const t = T[lang];
   root.innerHTML = `
@@ -223,6 +228,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
       const url = new URL(location.href);
       url.searchParams.delete('room');
       url.searchParams.set('game', 'cham');
+      url.searchParams.set('ruleset', game && game.ruleset === 'western' ? 'western' : 'korean');
       // A bot match can jump straight back into a fresh bot challenge
       // instead of dropping the player back at the lobby screen — there's
       // no real opponent to lose by skipping it.
@@ -410,7 +416,9 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
     } else if (game.pendingCapture) {
       turnLabel.textContent = isMyTurn() ? t.pickCapture : t.waitTurn(PLAYER_NAME[lang][game.turn]);
     } else {
-      turnLabel.textContent = isMyTurn() ? t.yourTurn : t.waitTurn(PLAYER_NAME[lang][game.turn]);
+      const canFly = isMyTurn() && game.ruleset === 'western' && game.phase === 'moving'
+        && game.pieces.filter((x) => x === myColor).length === FLYING_AT;
+      turnLabel.textContent = canFly ? t.yourTurnFly : isMyTurn() ? t.yourTurn : t.waitTurn(PLAYER_NAME[lang][game.turn]);
     }
     if (role === 'player') youLabel.textContent = t.youAre(myColor);
     if (panel) panel.setTurnCaption(turnLabel.textContent);
@@ -449,6 +457,7 @@ export function mountOnlineChamGame(root, { lang = 'en', onMatchStart } = {}) {
   mountOnlineLobby(lobbyRoot, {
     lang,
     gameType: 'cham',
+    ruleset,
     onMatched(info) {
       roomClient = info.roomClient;
       myColor = info.color;

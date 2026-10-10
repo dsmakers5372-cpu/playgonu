@@ -55,9 +55,8 @@ export default {
     {
       after: 0,
       lines: [[0, 1, 2], [1, 9, 17], [0, 8, 16]],
-      rings: [{ color: 'gold', points: [0, 2, 4, 6] }],
-      ko: { tag: '전반', title: '12개씩 번갈아 놓기', body: '빨강 먼저, 첫 수는 바깥 모서리.' },
-      en: { tag: 'First half', title: 'Take turns placing 12 each', body: 'Red first — the first piece on an outer corner.' },
+      ko: { tag: '전반', title: '12개씩 번갈아 놓기', body: '빨강 먼저, 첫 수는 아무 점이나.' },
+      en: { tag: 'First half', title: 'Take turns placing 12 each', body: 'Red first — the first piece can go anywhere.' },
     },
     {
       after: 8,

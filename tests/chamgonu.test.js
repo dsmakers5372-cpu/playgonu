@@ -7,6 +7,7 @@ import {
   legalMovesFrom,
   allLegalMoves,
   QUIET_MOVE_LIMIT,
+  FLYING_STALL_LIMIT,
   move,
   PLAYERS,
 } from '../src/engine/chamgonu.js';
@@ -32,21 +33,21 @@ test('initial state: empty 24-point board, placing phase, A to move', () => {
   assert.equal(state.winner, null);
 });
 
-test('the opening move is restricted to the outermost square\'s 4 corners', () => {
+test('the opening move may go on any of the 24 points', () => {
   const state = createInitialState();
-  assert.deepEqual(legalPlacements(state).sort((a, b) => a - b), [0, 2, 4, 6]);
-  assert.throws(() => move(state, null, 16), /Illegal placement/); // inner corner, not allowed as the opening move
-  assert.throws(() => move(state, null, 1), /Illegal placement/); // outer-ring mid-side, not a corner
-  const next = move(state, null, 2); // a legal opening move
-  assert.equal(next.pieces[2], PLAYERS.A);
+  assert.equal(legalPlacements(state).length, 24);
+  for (const p of [0, 1, 9, 16]) {
+    const next = move(state, null, p);
+    assert.equal(next.pieces[p], PLAYERS.A);
+  }
 });
 
-test('after the opening move, every other empty point is open again', () => {
+test('after the opening move, every other empty point stays open', () => {
   const state = createInitialState();
   const next = move(state, null, 0);
   assert.equal(legalPlacements(next).length, 23);
   assert.deepEqual(legalPlacements(next).includes(0), false);
-  assert.deepEqual(legalPlacements(next).includes(16), true); // no longer restricted to corners
+  assert.deepEqual(legalPlacements(next).includes(16), true);
 });
 
 test('placing on an occupied point is illegal', () => {
@@ -57,7 +58,7 @@ test('placing on an occupied point is illegal', () => {
 
 test('completing a mill triggers a pending capture without passing the turn', () => {
   let state = createInitialState();
-  state = move(state, null, 0); // A (opening move — a valid outer corner)
+  state = move(state, null, 0); // A (opening move)
   state = move(state, null, 12); // B
   state = move(state, null, 1); // A
   state = move(state, null, 13); // B
@@ -232,4 +233,94 @@ test('moving phase: a capture resets the quiet-move count', () => {
   const next = move(milled, null, 10);
   assert.equal(next.quietMoves, 0);
   assert.equal(next.winner, null);
+});
+
+// ---- Western rules (Twelve Men's Morris style) ----
+
+test('ruleset defaults to korean and survives moves; unknown values fall back to korean', () => {
+  assert.equal(createInitialState().ruleset, 'korean');
+  assert.equal(createInitialState({ ruleset: 'bogus' }).ruleset, 'korean');
+  const w = createInitialState({ ruleset: 'western' });
+  assert.equal(w.ruleset, 'western');
+  assert.equal(move(w, null, 0).ruleset, 'western');
+  assert.equal(move(createInitialState(), null, 0).ruleset, 'korean');
+});
+
+test('western: a captured point is not blocked while placing', () => {
+  let state = createInitialState({ ruleset: 'western' });
+  state = move(state, null, 0);
+  state = move(state, null, 12);
+  state = move(state, null, 1);
+  state = move(state, null, 13);
+  state = move(state, null, 2);
+  state = move(state, null, 12); // capture
+  assert.equal(state.deadForPlacement[12], false);
+  assert.ok(legalPlacements(state).includes(12));
+});
+
+test('western: a side with exactly 3 pieces may fly to any empty point; others still slide', () => {
+  const state = emptyState({ ruleset: 'western', phase: 'moving', placedCount: { A: 12, B: 12 } });
+  for (const p of [0, 5, 19]) state.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 22]) state.pieces[p] = PLAYERS.B;
+  assert.equal(legalMovesFrom(state, 0).length, 24 - 7);
+  const next = move(state, 0, 20);
+  assert.equal(next.pieces[20], PLAYERS.A);
+  assert.equal(next.pieces[0], null);
+  const bTurn = { ...next, turn: PLAYERS.B };
+  assert.deepEqual(legalMovesFrom(bTurn, 10).sort((a, b) => a - b), [2, 9, 11, 18]);
+});
+
+test('western: 4 pieces do not fly, and korean 3-piece side does not fly', () => {
+  const four = emptyState({ ruleset: 'western', phase: 'moving', placedCount: { A: 12, B: 12 } });
+  for (const p of [0, 5, 19, 22]) four.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 21]) four.pieces[p] = PLAYERS.B;
+  assert.deepEqual(legalMovesFrom(four, 0).sort((a, b) => a - b), [1, 7, 8]);
+  const korean = emptyState({ phase: 'moving', placedCount: { A: 12, B: 12 } });
+  for (const p of [0, 5, 19]) korean.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 22]) korean.pieces[p] = PLAYERS.B;
+  assert.deepEqual(legalMovesFrom(korean, 0).sort((a, b) => a - b), [1, 7, 8]);
+});
+
+test('western: a flying piece can close a mill from anywhere', () => {
+  const state = emptyState({ ruleset: 'western', phase: 'moving', placedCount: { A: 12, B: 12 } });
+  for (const p of [0, 1, 20]) state.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 16]) state.pieces[p] = PLAYERS.B;
+  const next = move(state, 20, 2);
+  assert.equal(next.pendingCapture, true);
+  assert.deepEqual(next.lastMill.sort((a, b) => a - b), [0, 1, 2]);
+});
+
+test('western: no 20-move count win; stuck on 3 pieces with no capture is a draw', () => {
+  const nearLimit = emptyState({ ruleset: 'western', phase: 'moving', placedCount: { A: 12, B: 12 }, quietMoves: QUIET_MOVE_LIMIT - 1 });
+  for (const p of [0, 5, 19, 3]) nearLimit.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 22]) nearLimit.pieces[p] = PLAYERS.B;
+  const keepGoing = move(nearLimit, 0, 7);
+  assert.equal(keepGoing.winner, null);
+
+  const stall = emptyState({ ruleset: 'western', phase: 'moving', placedCount: { A: 12, B: 12 }, quietMoves: FLYING_STALL_LIMIT - 1 });
+  for (const p of [0, 5, 19]) stall.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 22]) stall.pieces[p] = PLAYERS.B;
+  const drawn = move(stall, 0, 20);
+  assert.equal(drawn.winner, 'draw');
+  assert.equal(drawn.decidedByStall, true);
+  assert.notEqual(drawn.decidedByCount, true);
+});
+
+test('western: the stall draw does not trigger when nobody is on exactly 3 pieces', () => {
+  const state = emptyState({ ruleset: 'western', phase: 'moving', placedCount: { A: 12, B: 12 }, quietMoves: FLYING_STALL_LIMIT + 5 });
+  for (const p of [0, 5, 19, 3]) state.pieces[p] = PLAYERS.A;
+  for (const p of [10, 12, 14, 22]) state.pieces[p] = PLAYERS.B;
+  assert.equal(move(state, 0, 7).winner, null);
+});
+
+test('western: reducing the opponent to 2 still wins', () => {
+  const state = emptyState({ ruleset: 'western', phase: 'moving', placedCount: { A: 12, B: 12 } });
+  state.pieces[1] = PLAYERS.A;
+  state.pieces[9] = PLAYERS.A;
+  state.pieces[18] = PLAYERS.A;
+  state.pieces[16] = PLAYERS.B;
+  state.pieces[20] = PLAYERS.B;
+  state.pieces[22] = PLAYERS.B;
+  const next = move(state, 18, 17);
+  assert.equal(move(next, null, 20).winner, PLAYERS.A);
 });
