@@ -30,3 +30,13 @@ export function mountLanguageSwitcher(container, { currentLang, currentPage }) {
 
   container.appendChild(select);
 }
+
+// Imported by every game page: open the folded article sections while printing so the
+// text is on paper, then put them back as they were.
+const printOpened = [];
+window.addEventListener('beforeprint', () => {
+  document.querySelectorAll('.game-article details:not([open])').forEach((d) => { d.open = true; printOpened.push(d); });
+});
+window.addEventListener('afterprint', () => {
+  printOpened.splice(0).forEach((d) => { d.open = false; });
+});

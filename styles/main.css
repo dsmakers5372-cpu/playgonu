@@ -394,3 +394,9 @@ html[lang^="zh"] .game-article { word-break: normal; overflow-wrap: anywhere; }
   .game-article .facts { grid-template-columns: 1fr; gap: 0 0; }
   .game-article .facts dd { margin-bottom: 8px; }
 }
+/* Print: the folded sections print in full (scripts open them too; this covers browsers that
+   support ::details-content) and the +/- marker is dropped. */
+@media print {
+  .game-article details::details-content { content-visibility: visible; display: block; }
+  .game-article summary::after { display: none; }
+}
