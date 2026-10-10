@@ -340,3 +340,43 @@ a:hover {
     padding: 0 16px;
   }
 }
+
+/* Readable article under each game board — what search engines and AI
+   assistants read about the game (the board itself is drawn by JS). */
+.game-article {
+  max-width: 860px;
+  margin: 56px auto 0;
+  padding: 0 24px;
+  color: var(--ink-soft);
+  font-size: 15.5px;
+  line-height: 1.75;
+  word-break: keep-all;
+}
+.game-article h1,
+.game-article .article-title { font-family: 'Noto Serif KR', serif; font-size: 26px; line-height: 1.35; color: var(--ink); margin: 0 0 14px; }
+.game-article h2 { font-family: 'Noto Serif KR', serif; font-size: 20px; color: var(--ink); margin: 40px 0 10px; }
+.game-article h3 { font-size: 16px; color: var(--ink); margin: 22px 0 4px; }
+.game-article p { margin: 0 0 12px; }
+.game-article ul, .game-article ol { margin: 0 0 12px; padding-left: 22px; }
+.game-article li { margin: 4px 0; }
+.game-article .lead { font-size: 17px; color: var(--ink); }
+.game-article .facts {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 6px 18px;
+  margin: 18px 0 0;
+  padding: 18px 22px;
+  background: var(--paper-deep);
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+}
+.game-article .facts dt { font-weight: 600; color: var(--muted); }
+.game-article .facts dd { margin: 0; }
+.game-article .sources { font-size: 13.5px; color: var(--muted); }
+.game-article .updated { font-size: 13px; color: var(--muted); margin-top: 28px; }
+@media (max-width: 640px) {
+  .game-article { margin-top: 40px; padding: 0 16px; font-size: 15px; }
+  .game-article h1, .game-article .article-title { font-size: 22px; }
+  .game-article .facts { grid-template-columns: 1fr; gap: 0 0; }
+  .game-article .facts dd { margin-bottom: 8px; }
+}
