@@ -14,6 +14,7 @@ import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThem
 import { el } from './svg.js';
 import { mountShadowStone } from './shadowStone.js';
 import { mountTapModeSelect, currentTapMode } from './tapMode.js';
+import { guardedSelect } from './guardedSelect.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playPlaceSound } from './sound.js';
 
@@ -360,14 +361,12 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
       modeBanner.classList.remove('is-visible');
     });
   }
+  const inProgress = () => history.length > 0 && !game.winner;
   if (sideSelect) {
-    sideSelect.addEventListener('change', () => {
-      updateAiPlayer();
-      newGame();
-    });
+    guardedSelect(sideSelect, { lang, inProgress, onConfirmed: () => { updateAiPlayer(); newGame(); } });
   }
   if (rulesetSelect) {
-    rulesetSelect.addEventListener('change', newGame);
+    guardedSelect(rulesetSelect, { lang, inProgress, onConfirmed: newGame });
   }
 
   renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });

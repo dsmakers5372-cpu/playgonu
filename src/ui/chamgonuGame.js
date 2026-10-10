@@ -13,6 +13,7 @@ import { getDynamicStrings } from '../i18n/dynamicStrings.js';
 import { chooseAIMove } from '../engine/chamgonuAI.js';
 import { THEMES, getStoredTheme, setStoredTheme, renderThemeSwatches, updateThemeSwatches } from './boardThemes.js';
 import { el, animate, startAnimations, captureFlipEffect, CAPTURE_FLIP_MS } from './svg.js';
+import { guardedSelect } from './guardedSelect.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playCaptureSound } from './sound.js';
 
@@ -488,12 +489,10 @@ export function mountChamgonuGame(root, { lang: requestedLang = 'en' } = {}) {
       modeBanner.classList.remove('is-visible');
     });
   }
-  if (rulesetSelect) rulesetSelect.addEventListener('change', newGame);
+  const inProgress = () => history.length > 0 && !game.winner;
+  if (rulesetSelect) guardedSelect(rulesetSelect, { lang, inProgress, onConfirmed: newGame });
   if (sideSelect) {
-    sideSelect.addEventListener('change', () => {
-      updateAiPlayer();
-      newGame();
-    });
+    guardedSelect(sideSelect, { lang, inProgress, onConfirmed: () => { updateAiPlayer(); newGame(); } });
   }
 
   renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });
