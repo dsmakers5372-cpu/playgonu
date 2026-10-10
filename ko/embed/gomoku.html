@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오목 — 무설치 무료 온라인 게임 | 플레이고누</title>
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://playgonu.com/ko/gomoku">
+<link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../styles/main.css">
+<style>
+  .toolbar__inner { padding: 8px 12px; gap: 8px; }
+  .main-layout { padding: 12px; gap: 12px; }
+  .board-column { gap: 10px; }
+  .board-frame { padding: 16px; }
+  .embed-foot { padding: 4px 12px 14px; text-align: center; font-size: 13px; }
+  .embed-foot a { font-weight: 600; }
+  @media (max-width: 640px) { .board-frame { width: 100%; margin: 0; padding: 10px; border-radius: 10px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <div class="toolbar">
+    <div class="toolbar__inner">
+      <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+        <div class="turn-indicator">
+          <span class="turn-dot" data-turn-dot></span>
+          <span data-turn-label>검정 차례</span>
+        </div>
+        <span class="tag" data-timer>0:00</span>
+        <div style="font-size:13px;color:var(--muted);" data-captured-label>놓은 돌 — 검정: 0 · 흰돌: 0</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <select class="pill" data-ruleset style="cursor:pointer;">
+          <option value="freestyle" selected>자유룰</option>
+          <option value="renju">표준(렌주룰)</option>
+        </select>
+        <select class="pill" data-side-select style="cursor:pointer;">
+          <option value="A">검정 · 선공</option>
+          <option value="B">흰돌 · 후공</option>
+        </select>
+        <select class="pill" data-opponent-mode hidden>
+          <option value="ai" selected>AI와 대전</option>
+        </select>
+        <select class="pill" data-ai-difficulty style="cursor:pointer;">
+          <option value="easy">쉬움</option>
+          <option value="normal" selected>보통</option>
+          <option value="hard">어려움</option>
+          <option value="master">마스터</option>
+        </select>
+        <button class="btn" data-undo>되돌리기</button>
+        <button class="btn-primary" data-new-game>새 게임</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main-layout">
+    <div class="board-column">
+      <div class="theme-row">
+        <span class="tag">보드 색상</span>
+        <div data-theme-row style="display:flex;gap:10px;"></div>
+      </div>
+      <div class="board-frame" data-board-frame>
+        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
+      </div>
+      <div class="tag" data-foul-note style="color:var(--red);min-height:14px;opacity:0;transition:opacity .2s;"></div>
+    </div>
+  </div>
+
+  <div class="embed-foot"><a href="https://playgonu.com/ko/gomoku" target="_blank" rel="noopener">플레이고누에서 오목 더 보기 &rarr;</a></div>
+
+  <div class="win-banner" data-win-banner>
+    <div class="win-banner__card">
+      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>검정 승리!</div>
+      <div style="display:flex;justify-content:center;gap:32px;">
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">수</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
+        </div>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
+          <span class="tag">시간</span>
+          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
+        </div>
+      </div>
+      <button class="btn-primary" data-win-play-again>다시 하기</button>
+      <a href="https://playgonu.com/ko/gomoku" target="_blank" rel="noopener" class="btn" style="text-align:center;">플레이고누에서 더 보기</a>
+    </div>
+  </div>
+
+  <div class="win-banner" data-mode-banner>
+    <div class="win-banner__card">
+      <button class="btn-primary" data-mode-local>같은 기기</button>
+      <button class="btn" data-mode-online>온라인으로 →</button>
+      <a href="#" data-mode-cancel>취소</a>
+    </div>
+  </div>
+
+</div>
+<script type="module">
+  import { mountGomokuGame } from '../../src/ui/gomokuGame.js';
+  mountGomokuGame(document.querySelector('[data-root]'), { lang: 'ko' });
+</script>
+</body>
+</html>

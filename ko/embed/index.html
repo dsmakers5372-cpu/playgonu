@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내 블로그에 오목·참고누 게임 넣기 (퍼가기 코드) — 플레이고누</title>
+<meta name="description" content="오목이나 참고누 게임을 블로그·웹사이트에 복사·붙여넣기 한 번으로 넣으세요. 무료, 가입 불필요, 블로그스팟·워드프레스·티스토리 HTML에서 사용할 수 있어요.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="canonical" href="https://playgonu.com/ko/embed/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ko/embed/">
+<meta property="og:title" content="내 블로그에 오목·참고누 게임 넣기 (퍼가기 코드) — 플레이고누">
+<meta property="og:description" content="오목이나 참고누 게임을 블로그·웹사이트에 복사·붙여넣기 한 번으로 넣으세요. 무료, 가입 불필요.">
+<meta property="og:image" content="https://playgonu.com/og-image-ko.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; word-break: keep-all; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h1 { margin: 0; font-size: 30px; line-height: 1.3; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .preview { width: 100%; max-width: 520px; border: 1px solid var(--card-border); border-radius: 10px; background: var(--paper); display: block; }
+  textarea { width: 100%; font: 13px/1.5 Consolas, Menlo, monospace; padding: 12px; border: 1px solid var(--card-border); border-radius: 6px; background: var(--paper-deep); color: var(--ink); resize: vertical; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } .guide h1 { font-size: 26px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="/ko/" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="/ko/" class="variant-tab">참고누</a>
+        <a href="/ko/gomoku" class="variant-tab">오목</a>
+        <a href="/ko/embed/" class="variant-tab is-active">퍼가기</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+    <section>
+      <span class="tag">블로거·사이트 운영자용</span>
+      <h1 class="serif">내 블로그에 오목·참고누 게임 넣기</h1>
+      <p>아래 코드를 복사해 블로그 글이나 페이지에 붙여 넣으면 게임이 그 자리에서 바로 실행됩니다. 가입도, 광고도, 비용도 없어요. 컴퓨터(4단계 난이도)와 대결하고, 휴대폰과 PC 모두에서 되며, 따로 설정할 것이 없습니다.</p>
+      <ul>
+        <li><strong>블로그스팟(Blogger):</strong> 글 작성 화면에서 <em>HTML 보기</em>로 바꾸고 붙여 넣으세요.</li>
+        <li><strong>워드프레스:</strong> <em>사용자 정의 HTML</em> 블록을 추가하고 붙여 넣으세요.</li>
+        <li><strong>그 밖의 사이트:</strong> 게임이 나올 자리의 HTML에 붙여 넣으세요. 티스토리는 글쓰기의 HTML 모드에서 되는 경우가 많습니다.</li>
+      </ul>
+      <p>코드 아래에는 플레이고누로 가는 작은 텍스트 링크가 들어 있어요. 이 링크만 남겨 주시면 됩니다.</p>
+    </section>
+
+    <section>
+      <h2>오목</h2>
+      <p>가로·세로·대각선으로 다섯 개를 먼저 잇는 게임입니다. 자유룰과 표준(렌주룰, 삼삼·사사·장목 금수), AI 4단계를 지원해요. 규칙은 <a href="/ko/gomoku">오목 페이지</a>와 <a href="/ko/gomoku-strategy">오목 전략 가이드</a>에서 볼 수 있습니다.</p>
+      <iframe class="preview" src="/ko/embed/gomoku" title="오목 — 플레이고누 무료 온라인 게임" loading="lazy" style="height:780px"></iframe>
+      <label class="tag" for="code-gomoku">이 코드를 복사하세요</label>
+      <textarea id="code-gomoku" data-code="gomoku" data-src="https://playgonu.com/ko/embed/gomoku" data-page="https://playgonu.com/ko/gomoku" data-name="오목" data-h="780" readonly rows="7"></textarea>
+      <div><button class="btn-primary" data-copy="gomoku">코드 복사</button></div>
+    </section>
+
+    <section>
+      <h2>참고누</h2>
+      <p>말 12개씩으로 세 개를 일렬로 맞춰 상대 말을 잡는 고누의 대표 놀이입니다. 한국 룰과 서양 룰(날기), AI 4단계를 지원해요. 자세한 규칙은 <a href="/ko/">참고누 페이지</a>에 있습니다.</p>
+      <iframe class="preview" src="/ko/embed/cham" title="참고누 — 플레이고누 무료 온라인 게임" loading="lazy" style="height:740px"></iframe>
+      <label class="tag" for="code-cham">이 코드를 복사하세요</label>
+      <textarea id="code-cham" data-code="cham" data-src="https://playgonu.com/ko/embed/cham" data-page="https://playgonu.com/ko/" data-name="참고누" data-h="740" readonly rows="7"></textarea>
+      <div><button class="btn-primary" data-copy="cham">코드 복사</button></div>
+    </section>
+
+    <section>
+      <h2>알아 두세요</h2>
+      <ul>
+        <li>화면은 글 칸의 너비에 맞춰 최대 520px까지 늘어납니다. 휴대폰에서 판 전체가 보이도록 권장 높이를 그대로 쓰세요.</li>
+        <li>온라인 2인 대전은 퍼가기에 없고, 컴퓨터와 대결만 됩니다. 사람과 두려면 <a href="/ko/online">온라인 대전</a>으로 이어 주세요.</li>
+      </ul>
+    </section>
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="/ko/privacy" style="color:var(--muted);text-decoration:underline;">개인정보처리방침</a>
+  </footer>
+
+</div>
+<script>
+  document.querySelectorAll('textarea[data-code]').forEach(function (ta) {
+    var d = ta.dataset;
+    ta.value =
+      '<div style="max-width:520px;margin:0 auto;">\n' +
+      '  <iframe src="' + d.src + '" title="' + d.name + ' — 플레이고누 무료 온라인 게임"\n' +
+      '    width="100%" height="' + d.h + '" style="border:0;border-radius:10px;" loading="lazy" allowfullscreen></iframe>\n' +
+      '  <p style="text-align:center;font-size:13px;margin:6px 0 0;">\n' +
+      '    <a href="' + d.page + '" target="_blank" rel="noopener">플레이고누에서 ' + d.name + ' 하기</a>\n' +
+      '  </p>\n' +
+      '</div>';
+  });
+  document.querySelectorAll('[data-copy]').forEach(function (b) {
+    b.addEventListener('click', function () {
+      var ta = document.getElementById('code-' + b.dataset.copy);
+      ta.select();
+      var done = function () { b.textContent = '복사됨!'; setTimeout(function () { b.textContent = '코드 복사'; }, 1800); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(ta.value).then(done, function () { document.execCommand('copy'); done(); });
+      else { document.execCommand('copy'); done(); }
+    });
+  });
+</script>
+</body>
+</html>

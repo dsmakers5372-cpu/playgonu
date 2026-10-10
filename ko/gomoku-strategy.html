@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>오목 전략 가이드: 3x3·4x4 금수 피하기와 사삼(4-3) 공격 — 플레이고누</title>
+<meta name="description" content="오목 이기는 법을 열린 삼·사삼(4-3)부터 렌주룰 삼삼(3x3)·사사(4x4)·장목 금수, 주형(오프닝), 4단계 AI로 연습하는 법까지 정리했어요.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/ko/gomoku-strategy">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ko/gomoku-strategy">
+<meta property="og:title" content="오목 전략 가이드: 3x3·4x4 금수 피하기와 사삼(4-3) 공격 — 플레이고누">
+<meta property="og:description" content="오목 이기는 법을 열린 삼·사삼(4-3)부터 렌주룰 삼삼(3x3)·사사(4x4)·장목 금수, 주형(오프닝), 4단계 AI로 연습하는 법까지 정리했어요.">
+<meta property="og:image" content="https://playgonu.com/og-image-ko.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="오목 전략 가이드: 3x3·4x4 금수 피하기와 사삼(4-3) 공격 — 플레이고누">
+<meta name="twitter:description" content="오목 이기는 법을 열린 삼·사삼(4-3)부터 렌주룰 삼삼(3x3)·사사(4x4)·장목 금수, 주형(오프닝), 4단계 AI로 연습하는 법까지 정리했어요.">
+<meta name="twitter:image" content="https://playgonu.com/og-image-ko.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Article",
+      "@id": "https://playgonu.com/ko/gomoku-strategy#article",
+      "headline": "오목 전략 가이드: 3x3·4x4 금수 피하기와 사삼(4-3) 공격",
+      "description": "오목 이기는 법을 열린 삼·사삼(4-3)부터 렌주룰 삼삼(3x3)·사사(4x4)·장목 금수, 주형(오프닝), 4단계 AI로 연습하는 법까지 정리했어요.",
+      "inLanguage": "ko",
+      "url": "https://playgonu.com/ko/gomoku-strategy",
+      "datePublished": "2026-10-10",
+      "dateModified": "2026-10-10",
+      "author": { "@type": "Organization", "name": "플레이고누 PlayGonu", "url": "https://playgonu.com/ko/" },
+      "publisher": { "@type": "Organization", "name": "PlayGonu", "url": "https://playgonu.com/" },
+      "about": { "@type": "Game", "name": "오목", "url": "https://playgonu.com/ko/gomoku" }
+    },
+    {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "플레이고누", "item": "https://playgonu.com/ko/" },
+        { "@type": "ListItem", "position": 2, "name": "오목", "item": "https://playgonu.com/ko/gomoku" },
+        { "@type": "ListItem", "position": 3, "name": "오목 전략 가이드", "item": "https://playgonu.com/ko/gomoku-strategy" }
+      ]
+    }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; word-break: keep-all; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .points { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .points th, .points td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+  .points th { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+  .table-wrap { overflow-x: auto; }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">참고누</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab is-active">오목</a>
+        <a href="howto.html" class="variant-tab">하는 법</a>
+        <a href="online.html" class="variant-tab">온라인 대전</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+
+    <section>
+      <div class="tag" style="color:var(--red);">전략 가이드 · 오목</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.3;">오목 이기는 법: 사삼(4-3)으로 끝내고, 3x3·4x4 금수는 피하기</h1>
+      <p>오목은 규칙이 단순한 만큼 “누가 먼저 막을 수 없는 모양을 만드느냐”로 갈립니다. 이 글은 그 모양(열린 삼, 사삼)과 렌주룰의 금수(삼삼·사사·장목), 주형(오프닝), 그리고 AI로 연습하는 순서를 차례로 정리했어요. 규칙 자체가 처음이라면 <a href="gomoku.html">오목 페이지의 하는 법</a>을 먼저 보세요.</p>
+    </section>
+
+    <section>
+      <h2 class="serif">1. 이기는 공식: 열린 삼 → 사삼(4-3)</h2>
+      <p>먼저 용어부터 맞춥니다. 같은 색 돌이 일직선으로 이어진 개수를 기준으로 부릅니다.</p>
+      <div class="table-wrap"><table class="points">
+        <tr><th>이름</th><th>뜻</th><th>왜 중요한가</th></tr>
+        <tr><td>열린 삼</td><td>양쪽 끝이 모두 비어 있는 3개 (한 칸 띄운 모양 포함)</td><td>방치하면 다음 수에 열린 사가 됩니다</td></tr>
+        <tr><td>사</td><td>한 수만 더 두면 5개가 되는 4개</td><td>상대는 반드시 그 한 자리를 막아야 합니다</td></tr>
+        <tr><td>열린 사</td><td>양쪽 끝으로 모두 5개를 만들 수 있는 4개</td><td>한 수로 둘 다 막을 수 없어 사실상 승리입니다</td></tr>
+        <tr><td>사삼(4-3)</td><td>한 수로 사 하나와 열린 삼 하나를 동시에 만드는 수</td><td>상대가 사를 막는 사이 삼이 열린 사가 됩니다</td></tr>
+      </table></div>
+      <p>실전에서는 이 순서로 생각하면 됩니다.</p>
+      <ul>
+        <li><strong>가운데에서 시작해 열린 삼을 먼저 만드세요.</strong> 상대는 막아야 하니 내가 주도권을 잡습니다.</li>
+        <li><strong>두 방향의 돌이 한 점에서 만나도록</strong> 미리 모아 두세요. 그 점이 사삼 자리입니다.</li>
+        <li><strong>상대의 열린 삼은 바로 막으세요.</strong> 양쪽 끝 중 상대의 다른 줄과 만나는 쪽, 또는 내 돌과 이어지는 쪽을 막으면 이득입니다.</li>
+        <li><strong>상대의 사가 나오면 그 자리부터 막으세요.</strong> 단, 내 수로 5개를 바로 완성할 수 있다면 막을 필요 없이 이깁니다.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif">2. 금수: 삼삼(3x3)·사사(4x4)·장목 피하기와 활용</h2>
+      <p>금수는 <strong>렌주룰에서 흑(선공)에게만</strong> 적용됩니다. 자유룰에는 금수가 없고, 백에게도 제한이 없어요. 플레이고누는 금수 자리를 판에 ×로 보여 주고 아예 둘 수 없게 막습니다.</p>
+      <div class="table-wrap"><table class="points">
+        <tr><th>금수</th><th>다른 이름</th><th>뜻</th></tr>
+        <tr><td>삼삼</td><td>3x3 · 쌍삼</td><td>한 수로 열린 삼 두 개를 동시에 만드는 것</td></tr>
+        <tr><td>사사</td><td>4x4 · 쌍사</td><td>한 수로 사 두 개를 동시에 만드는 것</td></tr>
+        <tr><td>장목</td><td>6목 이상</td><td>여섯 개 이상을 이어 놓는 것 (정확히 5개만 승리)</td></tr>
+      </table></div>
+      <p>알아 둘 점이 세 가지 있어요.</p>
+      <ul>
+        <li><strong>사삼(4-3)은 흑도 둘 수 있습니다.</strong> 금지되는 것은 삼삼과 사사뿐이라서, 흑의 주력 결정타는 사삼입니다.</li>
+        <li><strong>5개를 완성하는 수는 금수 모양이어도 승리입니다.</strong> 금수는 5개가 되지 않는 수에만 적용됩니다.</li>
+        <li><strong>한 칸 띄운 삼·사도 센다는 점</strong>을 놓치기 쉽습니다. 겉보기에 삼이 하나뿐이어도 띄운 삼이 겹쳐 있으면 삼삼 자리입니다.</li>
+      </ul>
+      <p><strong>흑으로 둘 때:</strong> 내 공격 자리가 ×로 막혀 있지 않은지 미리 보고, 삼삼·사사 대신 사삼으로 돌려 두세요. <strong>백으로 둘 때:</strong> 흑이 막아야 하는 자리를 금수 자리로 만들면 흑은 그곳을 막을 수 없습니다. 그래서 백은 흑의 ×자리 근처에서 열린 삼을 만드는 것이 효과적입니다.</p>
+    </section>
+
+    <section>
+      <h2 class="serif">3. 주형(오프닝)이란</h2>
+      <p>아무 제한 없이 두면 선공 흑이 크게 유리합니다. 그래서 국제 렌주 대회는 초반 몇 수를 정해진 모양으로 시작하는 <strong>주형(珠型)</strong>을 둡니다. 흑이 첫 수를 판 가운데(천원)에 두고, 백의 두 번째 수가 천원 바로 옆(상하좌우)이면 <strong>직접주형</strong>, 대각선 옆이면 <strong>간접주형</strong>이라 하며, 각각 13가지씩 모두 26가지 주형이 있어요.</p>
+      <p>플레이고누에는 주형 규칙이 들어 있지 않고, 렌주룰에서는 흑의 첫 수만 천원으로 정해져 있습니다. 대회 규칙을 연습하는 용도가 아니라면 주형 이름을 외울 필요는 없고, <strong>초반에는 판 가운데 가까이에서 내 돌이 여러 방향으로 이어질 자리를 고른다</strong>는 감각이면 충분합니다.</p>
+    </section>
+
+    <section>
+      <h2 class="serif">4. 4단계 AI로 수읽기 연습하기</h2>
+      <ul>
+        <li><strong>쉬움:</strong> 열린 삼과 사삼을 만드는 연습에 알맞습니다. 상대가 잘 막지 못하니 “어떤 모양이 이기는 모양인지” 손에 익히세요.</li>
+        <li><strong>보통:</strong> 상대의 열린 삼을 놓치지 않고 막는 방어 연습. 막은 뒤 곧바로 내 공격으로 이어 가는 순서를 익힙니다.</li>
+        <li><strong>어려움·마스터:</strong> <strong>렌주룰</strong>로 바꿔 흑과 백을 번갈아 두어 보세요. 금수 자리를 직접 겪으면 3x3·4x4가 금방 눈에 들어옵니다.</li>
+        <li><strong>되돌리기 활용:</strong> 진 판은 [되돌리기]로 몇 수 앞으로 가서 다른 자리를 두어 보세요. 어디서 열린 삼을 놓쳤는지 확인하기 좋은 방법입니다.</li>
+      </ul>
+      <p>사람과의 대국은 <a href="online.html?game=gomoku">온라인 대전</a>에서 설치와 가입 없이 바로 할 수 있어요.</p>
+    </section>
+
+    <section>
+      <div class="cta">
+        <a href="gomoku.html" class="btn-primary" style="padding:12px 24px;">지금 오목 온라인 대전 플레이하기</a>
+        <a href="online.html?game=gomoku" class="btn" style="padding:12px 24px;">온라인 2인용 대전</a>
+        <a href="howto.html" class="btn" style="padding:12px 24px;">전체 규칙</a>
+      </div>
+      <p style="font-size:13px;color:var(--muted);">최종 수정 2026-10-10 · 플레이고누</p>
+    </section>
+
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">개인정보처리방침</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ko', currentPage: 'gomoku-strategy.html' });
+</script>
+</body>
+</html>

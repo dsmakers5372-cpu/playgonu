@@ -23,6 +23,8 @@
   - [PlayGonu Is Live: Korea's Traditional Board Games, Free and Online](https://playgonu.com/blog/playgonu-launch)
 - [Sources and references](https://playgonu.com/sources): The published sources behind the game histories and rules — Korean government and academic references, Wikipedia, and Stewart Culin's 1895 Korean Games — listed per game. Also in Korean, Spanish, Japanese and Chinese.
 - [Embed PlayGonu on your site](https://playgonu.com/embed/): Free copy-and-paste iframe code to add Cham-gonu or Gomoku (AI opponent) to a blog or website.
+- [오목 전략 가이드 (Korean)](https://playgonu.com/ko/gomoku-strategy): Gomoku/Omok strategy in Korean — open threes, the 4-3 winning shape, Renju forbidden moves (3x3, 4x4, overline), openings, and practice against the AI.
+- [퍼가기 코드 (Korean embed guide)](https://playgonu.com/ko/embed/): Free copy-and-paste iframe code in Korean to add Gomoku (오목) or Cham-gonu (참고누) to a blog or website.
 - [Privacy Policy](https://playgonu.com/privacy)
 - [Korean version (한국어)](https://playgonu.com/ko/): The game pages, how-to and online battle in Korean, at the /ko/ path.
 - [Spanish version (Español)](https://playgonu.com/es/): The same pages in Spanish, at /es/.
