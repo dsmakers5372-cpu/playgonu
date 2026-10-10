@@ -136,7 +136,7 @@ async function route(request, env) {
         const country = request.cf && request.cf.country;
         const lang = country && COUNTRY_DEFAULT_LANG[country];
         if (lang && lang !== 'en') {
-          const alreadyLocalized = url.pathname === `/${lang}` || url.pathname.startsWith(`/${lang}/`);
+          const alreadyLocalized = /^\/(ko|es|ja|zh)(\/|$)/.test(url.pathname);
           if (!alreadyLocalized) {
             const target = new URL(url);
             target.pathname = `/${lang}${url.pathname}`;
