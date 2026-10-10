@@ -21,6 +21,7 @@
   - [Cham-gonu: Korea's Version of Nine Men's Morris](https://playgonu.com/blog/cham-gonu-nine-mens-morris)
   - [Gomoku vs. Renju vs. Omok: What's the Difference?](https://playgonu.com/blog/gomoku-vs-renju-vs-omok)
   - [PlayGonu Is Live: Korea's Traditional Board Games, Free and Online](https://playgonu.com/blog/playgonu-launch)
+- [Sources and references](https://playgonu.com/sources): The published sources behind the game histories and rules — Korean government and academic references, Wikipedia, and Stewart Culin's 1895 Korean Games — listed per game. Also in Korean, Spanish, Japanese and Chinese.
 - [Privacy Policy](https://playgonu.com/privacy)
 - [Korean version (한국어)](https://playgonu.com/ko/): The game pages, how-to and online battle in Korean, at the /ko/ path.
 - [Spanish version (Español)](https://playgonu.com/es/): The same pages in Spanish, at /es/.
@@ -29,4 +30,4 @@
 
 ## About each game page
 
-Every game page has a written article under the board — an at-a-glance fact table, the game's origin, step-by-step rules, tips, a short FAQ, links to the other games, and sources — in all five languages. Longer sections are folded (HTML <details>) but the full text is in the page source. The same pages carry JSON-LD (Game, BreadcrumbList, FAQPage).
+Every game page has a written article under the board — an at-a-glance fact table, the game's origin, step-by-step rules, tips, a short FAQ, and links to the other games — in all five languages. The sources are listed on the Sources page. Longer sections are folded (HTML <details>) but the full text is in the page source. The same pages carry JSON-LD (Game, BreadcrumbList, FAQPage).

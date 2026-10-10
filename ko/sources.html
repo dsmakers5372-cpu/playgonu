@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>참고 자료 — 플레이고누</title>
+<meta name="description" content="플레이고누의 게임 규칙과 유래를 설명할 때 참고한 자료 — 문화체육관광부, 한국학중앙연구원, 위키백과, 스튜어트 컬린의 1895년 저서.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/ko/sources">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/ko/sources">
+<meta property="og:title" content="참고 자료 — 플레이고누">
+<meta property="og:description" content="플레이고누의 게임 규칙과 유래를 설명할 때 참고한 자료 — 문화체육관광부, 한국학중앙연구원, 위키백과, 스튜어트 컬린의 1895년 저서.">
+<meta property="og:image" content="https://playgonu.com/og-image-ko.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="참고 자료 — 플레이고누">
+<meta name="twitter:description" content="플레이고누의 게임 규칙과 유래를 설명할 때 참고한 자료 — 문화체육관광부, 한국학중앙연구원, 위키백과, 스튜어트 컬린의 1895년 저서.">
+<meta name="twitter:image" content="https://playgonu.com/og-image-ko.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+<style>
+  .guide { max-width: 800px; margin: 0 auto; padding: 56px 40px; display: flex; flex-direction: column; gap: 44px; word-break: keep-all; }
+  .guide section { display: flex; flex-direction: column; gap: 14px; }
+  .guide h2 { margin: 0; font-size: 24px; line-height: 1.3; }
+  .guide p, .guide li { font-size: 15.5px; line-height: 1.75; color: var(--ink-soft); }
+  .guide p { margin: 0; }
+  .guide ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 6px; }
+  .shot { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+  .shot img { width: 100%; height: auto; border-radius: 12px; border: 1px solid var(--card-border); display: block; }
+  .shot figcaption { display: flex; flex-direction: column; gap: 4px; }
+  .shot .step { font-size: 12.5px; font-weight: 700; letter-spacing: .04em; color: var(--red); }
+  .shot .cap-title { font-size: 17px; font-weight: 700; color: var(--ink); }
+  .shot .cap-body { font-size: 15px; line-height: 1.7; color: var(--ink-soft); }
+  .points { width: 100%; border-collapse: collapse; font-size: 14.5px; }
+  .points th, .points td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--card-border); }
+  .points th { font-size: 12.5px; color: var(--muted); font-weight: 700; }
+  .points td.n { font-variant-numeric: tabular-nums; }
+  .points tr.best td { font-weight: 700; color: var(--ink); }
+  .table-wrap { overflow-x: auto; }
+  .stat { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; }
+  .stat .big { font-family: "Noto Serif KR", Georgia, serif; font-size: 34px; font-weight: 700; color: var(--red); }
+  .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  @media (max-width: 640px) { .guide { padding: 36px 16px; gap: 36px; } }
+</style>
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">참고누</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">오목</a>
+        <a href="howto.html" class="variant-tab">하는 법</a>
+        <a href="online.html" class="variant-tab">온라인 대전</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <main class="guide">
+
+    <section>
+      <div class="tag" style="color:var(--red);">출처 · 참고 자료</div>
+      <h1 class="serif" style="margin:0;font-size:34px;line-height:1.25;">참고 자료</h1>
+      <p>각 게임의 유래, 이름, 규칙에 대한 설명은 아래의 공개 자료를 바탕으로 합니다. 고누는 지역과 계열에 따라 규칙이 다르기 때문에, 자료의 설명이 이 사이트에서 하는 판과 조금 다를 수 있어요.</p>
+      <p>실제로 플레이하는 규칙은 플레이고누가 직접 구현한 것입니다. 전략 가이드에 나오는 AI 통계는 우리 AI끼리 둔 대국에서 나온 수치이며, 발표된 연구 결과가 아닙니다.</p>
+    </section>
+
+    <section>
+      <h2 class="serif" style="font-size:20px;"><a href="index.html">참고누</a> · <a href="bakwi.html">바퀴고누</a></h2>
+      <ul>
+        <li>문화체육관광부, 「어린이 전통놀이 — 고누」 <a href="https://www.mcst.go.kr/usr/child/enter/play/gonu.jsp" rel="noopener">mcst.go.kr</a></li>
+        <li>한국학중앙연구원, 디지털광주문화대전 「고누놀이」 <a href="https://gwangju.grandculture.net/gwangju/bukgu/toc/GC60004445" rel="noopener">grandculture.net</a></li>
+        <li>한국학중앙연구원, 디지털포천문화대전 「고누」 <a href="http://pocheon.grandculture.net/pocheon/toc/GC05001783" rel="noopener">grandculture.net</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif" style="font-size:20px;"><a href="jul.html">줄고누</a> · <a href="daseotjul.html">다섯줄고누</a> · <a href="palpal.html">팔팔고누</a></h2>
+      <ul>
+        <li>문화체육관광부, 「어린이 전통놀이 — 고누」 <a href="https://www.mcst.go.kr/usr/child/enter/play/gonu.jsp" rel="noopener">mcst.go.kr</a></li>
+        <li>한국학중앙연구원, 디지털광주문화대전 「고누놀이」 <a href="https://gwangju.grandculture.net/gwangju/bukgu/toc/GC60004445" rel="noopener">grandculture.net</a></li>
+        <li>한국학중앙연구원, 디지털포천문화대전 「고누」 <a href="http://pocheon.grandculture.net/pocheon/toc/GC05001783" rel="noopener">grandculture.net</a></li>
+        <li>Wikipedia, "Jul-gonu" <a href="https://en.wikipedia.org/wiki/Jul-gonu" rel="noopener">en.wikipedia.org</a></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="serif" style="font-size:20px;"><a href="gomoku.html">오목</a></h2>
+      <ul>
+        <li>위키백과, 「오목」 <a href="https://ko.wikipedia.org/wiki/%EC%98%A4%EB%AA%A9" rel="noopener">ko.wikipedia.org</a></li>
+        <li>Wikipedia, "Renju" <a href="https://en.wikipedia.org/wiki/Renju" rel="noopener">en.wikipedia.org</a></li>
+      </ul>
+    </section>
+
+    <p style="font-size:13px;color:var(--muted);">최종 수정 2026-10-10 · PlayGonu</p>
+
+  </main>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">개인정보처리방침</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'ko', currentPage: 'sources.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'ko', currentPage: 'sources.html' });
+</script>
+</body>
+</html>

@@ -425,5 +425,50 @@
     <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/cham-strategy" />
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/cham-strategy" />
   </url>
+  <url>
+    <loc>https://playgonu.com/sources</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/sources" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/sources" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/sources" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/sources" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/sources" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/sources" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ko/sources</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/sources" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/sources" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/sources" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/sources" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/sources" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/sources" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/es/sources</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/sources" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/sources" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/sources" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/sources" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/sources" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/sources" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/ja/sources</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/sources" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/sources" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/sources" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/sources" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/sources" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/sources" />
+  </url>
+  <url>
+    <loc>https://playgonu.com/zh/sources</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/sources" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/sources" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/sources" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/sources" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/sources" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/sources" />
+  </url>
 
 </urlset>

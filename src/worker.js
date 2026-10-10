@@ -21,7 +21,7 @@ export { GameRoom, Lobby };
 // Pages that exist in every language folder — the only ones a first-time
 // visitor is sent to their own language for (the blog is mostly English, so
 // /blog/... must not be bounced to a /ko/blog/... that doesn't exist).
-const LOCALIZED_PAGES = new Set(['', 'index', 'jul', 'daseotjul', 'palpal', 'bakwi', 'gomoku', 'howto', 'online', 'cham-strategy']);
+const LOCALIZED_PAGES = new Set(['', 'index', 'jul', 'daseotjul', 'palpal', 'bakwi', 'gomoku', 'howto', 'online', 'cham-strategy', 'sources']);
 const isLocalizedPage = (pathname) => {
   const parts = pathname.split('/').filter(Boolean);
   return parts.length <= 1 && LOCALIZED_PAGES.has((parts[0] || '').replace(/\.html$/, ''));
