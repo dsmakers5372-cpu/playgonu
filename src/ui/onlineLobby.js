@@ -26,6 +26,8 @@ const STRINGS = {
     allowSpectators: 'Allow spectators',
     rulesetKorean: 'Korean rules',
     rulesetWestern: 'Western rules (flying)',
+    rulesetFreestyle: 'Freestyle',
+    rulesetRenju: 'Standard (Renju)',
     watch: 'Watch',
     roomGone: 'That game has already ended.',
     accountGuest: 'Sign in to save your online record.',
@@ -53,6 +55,8 @@ const STRINGS = {
     allowSpectators: '관전 허용',
     rulesetKorean: '한국 룰',
     rulesetWestern: '서양 룰 (날기)',
+    rulesetFreestyle: '자유룰',
+    rulesetRenju: '표준(렌주룰)',
     watch: '관전',
     roomGone: '이미 끝난 대국이에요.',
     accountGuest: '로그인하면 온라인 전적이 저장돼요.',
@@ -80,6 +84,8 @@ const STRINGS = {
     allowSpectators: 'Permitir espectadores',
     rulesetKorean: 'Reglas coreanas',
     rulesetWestern: 'Reglas occidentales (vuelo)',
+    rulesetFreestyle: 'Estilo libre',
+    rulesetRenju: 'Estándar (Renju)',
     watch: 'Ver',
     roomGone: 'Esa partida ya terminó.',
     accountGuest: 'Inicia sesión para guardar tu historial en línea.',
@@ -107,6 +113,8 @@ const STRINGS = {
     allowSpectators: '観戦を許可',
     rulesetKorean: '韓国ルール',
     rulesetWestern: '西洋ルール（飛び）',
+    rulesetFreestyle: '自由ルール',
+    rulesetRenju: '標準（連珠）',
     watch: '観戦',
     roomGone: 'その対局はすでに終了しています。',
     accountGuest: 'ログインするとオンライン戦績が保存されます。',
@@ -134,6 +142,8 @@ const STRINGS = {
     allowSpectators: '允许观战',
     rulesetKorean: '韩国规则',
     rulesetWestern: '西方规则（飞子）',
+    rulesetFreestyle: '自由规则',
+    rulesetRenju: '标准（连珠）',
     watch: '观战',
     roomGone: '该对局已经结束。',
     accountGuest: '登录后会保存你的在线战绩。',
@@ -184,15 +194,19 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
   const rulesetSelect = document.createElement('select');
   rulesetSelect.className = 'pill';
   rulesetSelect.style.cssText = 'cursor:pointer;align-self:flex-start;';
-  for (const [value, label] of [['korean', t.rulesetKorean], ['western', t.rulesetWestern]]) {
+  const rulesetOptions = gameType === 'cham'
+    ? [['korean', t.rulesetKorean], ['western', t.rulesetWestern]]
+    : [['freestyle', t.rulesetFreestyle], ['renju', t.rulesetRenju]];
+  for (const [value, label] of rulesetOptions) {
     const opt = document.createElement('option');
     opt.value = value;
     opt.textContent = label;
     rulesetSelect.appendChild(opt);
   }
-  rulesetSelect.value = ruleset === 'western' ? 'western' : 'korean';
-  if (gameType !== 'cham') rulesetSelect.style.display = 'none';
-  const chosenRuleset = () => (gameType === 'cham' ? rulesetSelect.value : ruleset);
+  rulesetSelect.value = gameType === 'cham'
+    ? (ruleset === 'western' ? 'western' : 'korean')
+    : (ruleset === 'renju' ? 'renju' : 'freestyle');
+  const chosenRuleset = () => rulesetSelect.value;
 
   const btnRow = document.createElement('div');
   btnRow.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;';
@@ -287,6 +301,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
       else if (r.title) label.textContent = `${r.title} · ${r.hostName}`;
       else label.textContent = t.waitingHost(r.hostName);
       if (gameType === 'cham' && r.ruleset === 'western') label.textContent += ` · ${t.rulesetWestern}`;
+      if (gameType === 'gomoku') label.textContent += ` · ${r.ruleset === 'renju' ? t.rulesetRenju : t.rulesetFreestyle}`;
       const right = document.createElement('div');
       right.style.cssText = 'display:flex;align-items:center;gap:12px;flex:none;';
       right.appendChild(statusBadge(waiting));
@@ -492,7 +507,7 @@ export function mountOnlineLobby(root, { lang = 'en', gameType, ruleset, onMatch
     }
     btnRow.style.display = 'flex';
     titleInput.style.display = '';
-    rulesetSelect.style.display = gameType === 'cham' ? '' : 'none';
+    rulesetSelect.style.display = '';
     spectateLabel.style.display = 'inline-flex';
     lobbyList.style.display = 'flex';
     startPolling();

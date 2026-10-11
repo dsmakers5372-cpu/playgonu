@@ -34,6 +34,7 @@ function pointPixel(index) {
 
 const T = {
   en: {
+    ruleName: { freestyle: 'Freestyle', renju: 'Standard (Renju)' },
     youAre: (c) => `You are ${PLAYER_NAME.en[c]}`,
     oppLeft: 'Your opponent left the game.',
     waitTurn: (n) => `${n}'s turn`,
@@ -57,6 +58,7 @@ const T = {
     rematchStarted: (c) => `New game — this time you are ${PLAYER_NAME.en[c]}.`,
   },
   ko: {
+    ruleName: { freestyle: '자유룰', renju: '표준(렌주룰)' },
     youAre: (c) => `당신은 ${PLAYER_NAME.ko[c]}입니다`,
     oppLeft: '상대방이 나갔습니다.',
     waitTurn: (n) => `${n} 차례`,
@@ -80,6 +82,7 @@ const T = {
     rematchStarted: (c) => `새 판 시작 — 이번엔 ${PLAYER_NAME.ko[c]}입니다.`,
   },
   es: {
+    ruleName: { freestyle: 'Estilo libre', renju: 'Estándar (Renju)' },
     youAre: (c) => `Juegas con ${PLAYER_NAME.es[c]}`,
     oppLeft: 'Tu rival abandonó la partida.',
     waitTurn: (n) => `Turno de ${n}`,
@@ -103,6 +106,7 @@ const T = {
     drawMsg: '¡Empate!',
   },
   ja: {
+    ruleName: { freestyle: '自由ルール', renju: '標準（連珠）' },
     youAre: (c) => `あなたは${PLAYER_NAME.ja[c]}です`,
     oppLeft: '相手が退出しました。',
     waitTurn: (n) => `${n}の番`,
@@ -126,6 +130,7 @@ const T = {
     drawMsg: '引き分けです。',
   },
   zh: {
+    ruleName: { freestyle: '自由规则', renju: '标准（连珠）' },
     youAre: (c) => `你是${PLAYER_NAME.zh[c]}`,
     oppLeft: '对手已离开对局。',
     waitTurn: (n) => `轮到${n}`,
@@ -351,7 +356,8 @@ export function mountOnlineGomokuGame(root, { lang = 'en', ruleset = RULESETS.FR
     } else {
       turnLabel.textContent = isMyTurn() ? t.yourTurn : t.waitTurn(PLAYER_NAME[lang][game.turn]);
     }
-    if (role === 'player') youLabel.textContent = t.youAre(myColor);
+    const ruleName = t.ruleName[game.ruleset === RULESETS.RENJU ? 'renju' : 'freestyle'];
+    youLabel.textContent = role === 'player' ? `${t.youAre(myColor)} · ${ruleName}` : ruleName;
     if (panel) panel.setTurnCaption(turnLabel.textContent);
   }
 
