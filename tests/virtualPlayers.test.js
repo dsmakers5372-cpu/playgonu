@@ -32,6 +32,15 @@ test('roster size stays in range, has no duplicates, and is stable within the ho
   assert.deepEqual(a, b);
 });
 
+test('the lobby shows 5 to 10 open rooms at any hour', () => {
+  for (let hour = 0; hour < 24; hour++) {
+    for (const game of ['gomoku', 'cham']) {
+      const { waiting } = pickVirtualLobby(game, kst(hour));
+      assert.ok(waiting.length >= 5 && waiting.length <= 10, `${game} KST ${hour}:00 waiting ${waiting.length}`);
+    }
+  }
+});
+
 test('room titles follow the host language, so dawn lobbies read mostly English', () => {
   const { waiting } = pickVirtualLobby('gomoku', kst(4));
   const titled = waiting.filter((r) => r.title);

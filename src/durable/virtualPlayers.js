@@ -66,6 +66,8 @@ function seededShuffle(items, seed) {
 const ROTATE_MS = 60 * 60 * 1000; // roster composition shifts every 60 minutes, like people coming and going over the course of a session
 const MIN_ONLINE = 18;
 const MAX_ONLINE = 25;
+const WAITING_MIN = 5;
+const WAITING_MAX = 10;
 
 const KOREAN_PLAYERS = VIRTUAL_PLAYERS.slice(0, NAMES_KO.length);
 const INTERNATIONAL_PLAYERS = VIRTUAL_PLAYERS.slice(NAMES_KO.length);
@@ -121,5 +123,7 @@ export function pickVirtualLobby(gameType, now = Date.now()) {
     const titles = /[가-힣]/.test(vp.name) ? ROOM_TITLES_KO : ROOM_TITLES_EN;
     return { ...vp, title: titles[(Number(vp.id.slice(1)) + i) % titles.length] };
   });
-  return { waiting, playing };
+  // The dashboard shows 5–10 open rooms, rotating with the hour like the roster.
+  const waitingCount = WAITING_MIN + (((Math.floor(now / ROTATE_MS) ^ 0x2545f491) >>> 0) % (WAITING_MAX - WAITING_MIN + 1));
+  return { waiting: waiting.slice(0, waitingCount), playing };
 }
