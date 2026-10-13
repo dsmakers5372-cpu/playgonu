@@ -65,9 +65,9 @@
 
 </div>
 <script type="module">
-  import { mountGomokuRecords } from 'src/ui/gomokuRecords.js';
-  import { mountLanguageSwitcher } from 'src/ui/languageSwitcher.js';
-  import { mountVariantMenu } from 'src/ui/variantMenu.js';
+  import { mountGomokuRecords } from './src/ui/gomokuRecords.js';
+  import { mountLanguageSwitcher } from './src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from './src/ui/variantMenu.js';
   mountGomokuRecords(document.querySelector('[data-root]'), { lang: 'en' });
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'en', currentPage: 'gomoku-records.html' });
   mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'en', currentPage: 'gomoku-records.html' });
