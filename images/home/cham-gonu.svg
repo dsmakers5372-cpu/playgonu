@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400" role="img" aria-label="Cham-gonu board">
+  <rect width="400" height="400" fill="#F6F1E6"/>
+  <g transform="translate(50,50)" fill="none" stroke="#2A2420" stroke-width="4" stroke-linecap="round">
+    <rect x="0" y="0" width="300" height="300"/>
+    <rect x="60" y="60" width="180" height="180"/>
+    <rect x="120" y="120" width="60" height="60"/>
+    <line x1="0" y1="0" x2="60" y2="60"/>
+    <line x1="300" y1="0" x2="240" y2="60"/>
+    <line x1="0" y1="300" x2="60" y2="240"/>
+    <line x1="300" y1="300" x2="240" y2="240"/>
+    <line x1="150" y1="0" x2="150" y2="120"/>
+    <line x1="150" y1="180" x2="150" y2="300"/>
+    <line x1="0" y1="150" x2="120" y2="150"/>
+    <line x1="180" y1="150" x2="300" y2="150"/>
+  </g>
+  <g stroke="#2A2420" stroke-width="2">
+    <circle cx="50" cy="50" r="15" fill="#AC3B2A"/>
+    <circle cx="350" cy="50" r="15" fill="#2C5F8A"/>
+    <circle cx="50" cy="350" r="15" fill="#2C5F8A"/>
+    <circle cx="350" cy="350" r="15" fill="#AC3B2A"/>
+    <circle cx="110" cy="110" r="15" fill="#2C5F8A"/>
+    <circle cx="290" cy="290" r="15" fill="#AC3B2A"/>
+    <circle cx="200" cy="50" r="15" fill="#AC3B2A"/>
+    <circle cx="200" cy="170" r="15" fill="#2C5F8A"/>
+  </g>
+</svg>

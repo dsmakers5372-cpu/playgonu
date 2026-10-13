@@ -400,3 +400,21 @@ html[lang^="zh"] .game-article { word-break: normal; overflow-wrap: anywhere; }
   .game-article details::details-content { content-visibility: visible; display: block; }
   .game-article summary::after { display: none; }
 }
+
+.game-pick {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  text-decoration: none;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.game-pick:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(42, 36, 32, 0.12);
+}
+.game-pick__body {
+  padding: 18px 20px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
