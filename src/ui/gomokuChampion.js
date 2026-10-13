@@ -6,7 +6,7 @@ const RAPFI_URL = 'https://github.com/dhbloo/rapfi';
 export const CHAMPION_STRINGS = {
   en: {
     title: 'Champion AI — RAPFI',
-    lead: 'RAPFI won the Freestyle category of Gomocup 2025, the world computer-Gomoku tournament. It is the strongest opponent on this site.',
+    lead: 'RAPFI won both the Freestyle and Renju categories of Gomocup 2025, the world computer-Gomoku tournament. It is the strongest opponent on this site.',
     points: [
       'Plays Freestyle or Renju, whichever rule you have selected.',
       'You play Black and move first; the champion plays White.',
@@ -22,7 +22,7 @@ export const CHAMPION_STRINGS = {
   },
   ko: {
     title: '챔피언 AI — RAPFI',
-    lead: 'RAPFI는 세계 컴퓨터 오목 대회 Gomocup 2025 자유룰(Freestyle) 부문 우승 엔진입니다. 이 사이트에서 가장 강한 상대입니다.',
+    lead: 'RAPFI는 세계 컴퓨터 오목 대회 Gomocup 2025 자유룰(Freestyle)·렌주룰(Renju) 부문을 모두 우승한 엔진입니다. 이 사이트에서 가장 강한 상대입니다.',
     points: [
       '자유룰과 렌주룰 모두 대국합니다. 선택한 룰로 둡니다.',
       '내가 검정(선공)으로 먼저 두고, 챔피언은 흰돌입니다.',
@@ -38,7 +38,7 @@ export const CHAMPION_STRINGS = {
   },
   es: {
     title: 'IA Campeona — RAPFI',
-    lead: 'RAPFI ganó la categoría Freestyle de la Gomocup 2025, el torneo mundial de programas de Gomoku. Es el rival más fuerte de este sitio.',
+    lead: 'RAPFI ganó las categorías Freestyle y Renju de la Gomocup 2025, el torneo mundial de programas de Gomoku. Es el rival más fuerte de este sitio.',
     points: [
       'Juega con reglas libres o Renju, la que tengas seleccionada.',
       'Tú juegas con negras y mueves primero; la campeona juega con blancas.',
@@ -54,7 +54,7 @@ export const CHAMPION_STRINGS = {
   },
   ja: {
     title: 'チャンピオンAI — RAPFI',
-    lead: 'RAPFIは、世界コンピューター五目並べ大会Gomocup 2025のフリースタイル部門の優勝エンジンです。このサイトで最強の相手です。',
+    lead: 'RAPFIは、世界コンピューター五目並べ大会Gomocup 2025のフリースタイル部門と連珠部門の両方で優勝したエンジンです。このサイトで最強の相手です。',
     points: [
       'フリースタイルと連珠の両方に対応。選んだルールで対局します。',
       'あなたが黒で先に打ち、チャンピオンは白です。',
@@ -70,7 +70,7 @@ export const CHAMPION_STRINGS = {
   },
   zh: {
     title: '冠军AI — RAPFI',
-    lead: 'RAPFI是世界计算机五子棋大赛Gomocup 2025自由规则（Freestyle）组的冠军引擎，是本站最强的对手。',
+    lead: 'RAPFI是世界计算机五子棋大赛Gomocup 2025自由规则（Freestyle）组和连珠（Renju）组的双料冠军引擎，是本站最强的对手。',
     points: [
       '支持自由规则和连珠规则，按你所选的规则对局。',
       '你执黑先行，冠军执白。',
