@@ -101,6 +101,11 @@ async function route(request, env) {
       return new Response(`naver-site-verification: ${NAVER_VERIFY_FILE}`, { headers: { 'Content-Type': 'text/html; charset=utf-8' } });
     }
 
+    // Short Korean address for the Korean Gomoku page: playgonu.com/omok
+    if (url.pathname === '/omok' || url.pathname === '/omok/') {
+      return Response.redirect(new URL('/ko/gomoku', url).toString(), 301);
+    }
+
     // Online-battle room — one Durable Object instance per room id, created
     // lazily on first connection.
     if (url.pathname.startsWith('/ws/room/')) {
