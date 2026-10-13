@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>在线玩高努 — 参高努，韩国版十二子棋 | PlayGonu</title>
-<meta name="description" content="在浏览器里玩高努，韩国的传统棋类游戏。从参高努开始——九子棋的 12 子“表亲”。无需下载，无需注册，可挑战 AI，也可与朋友对弈。">
+<title>PlayGonu — 在线玩高努与五子棋</title>
+<meta name="description" content="在浏览器里玩高努（韩国传统棋类游戏）和五子棋。选择参高努或五子棋，挑战 AI 或朋友。无需下载，无需注册。">
 <link rel="icon" type="image/svg+xml" href="../favicon.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
 <link rel="apple-touch-icon" href="../apple-touch-icon.png">
@@ -12,12 +12,12 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="PlayGonu">
 <meta property="og:url" content="https://playgonu.com/zh/">
-<meta property="og:title" content="PlayGonu — 高努游戏：参高努，韩国版十二子棋">
-<meta property="og:description" content="十二枚棋子，两个阶段，毫无运气成分。挑战 AI 或真人对手——无需安装，无需注册。">
+<meta property="og:title" content="PlayGonu — 在线玩高努与五子棋">
+<meta property="og:description" content="选择参高努或五子棋，挑战 AI 或朋友。无需安装，无需注册。">
 <meta property="og:image" content="https://playgonu.com/og-image-zh.png">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="PlayGonu — 高努游戏：参高努，韩国版十二子棋">
-<meta name="twitter:description" content="十二枚棋子，两个阶段，毫无运气成分。挑战 AI 或真人对手——无需安装，无需注册。">
+<meta name="twitter:title" content="PlayGonu — 在线玩高努与五子棋">
+<meta name="twitter:description" content="选择参高努或五子棋，挑战 AI 或朋友。无需安装，无需注册。">
 <meta name="twitter:image" content="https://playgonu.com/og-image-zh.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -27,93 +27,21 @@
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "WebSite",
+      "@id": "https://playgonu.com/#website",
+      "name": "PlayGonu",
+      "url": "https://playgonu.com/",
+      "inLanguage": "zh"
+    },
+    {
       "@type": "WebPage",
       "@id": "https://playgonu.com/zh/#page",
       "url": "https://playgonu.com/zh/",
-      "name": "高努游戏在线玩：参高努，韩国版十二子棋",
-      "inLanguage": "zh-Hans",
-      "dateModified": "2026-10-10",
+      "name": "在线玩高努与五子棋 — PlayGonu",
+      "inLanguage": "zh",
       "isPartOf": {
-        "@type": "WebSite",
-        "name": "PlayGonu",
-        "url": "https://playgonu.com/"
-      },
-      "about": {
-        "@type": "Game",
-        "name": "参高努",
-        "alternateName": [
-          "Cham-gonu",
-          "참고누",
-          "Gonjil-gonu",
-          "韩国版十二子棋",
-          "韩国版九子棋"
-        ],
-        "description": "参高努是一种韩国传统策略游戏：双方各把 12 枚棋子放在 24 点的棋盘上，凑成一条线上的三连（mill）来吃子，随后再滑动棋子决出胜负。",
-        "numberOfPlayers": {
-          "@type": "QuantitativeValue",
-          "value": 2
-        },
-        "isPartOf": {
-          "@type": "Thing",
-          "name": "高努"
-        }
+        "@id": "https://playgonu.com/#website"
       }
-    },
-    {
-      "@type": "BreadcrumbList",
-      "itemListElement": [
-        {
-          "@type": "ListItem",
-          "position": 1,
-          "name": "PlayGonu",
-          "item": "https://playgonu.com/zh/"
-        }
-      ]
-    },
-    {
-      "@type": "FAQPage",
-      "mainEntity": [
-        {
-          "@type": "Question",
-          "name": "参高努和九子棋（Nine Men's Morris）是同一种游戏吗？",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "它们同属一个家族：都是先落子、后走子，凑成三连就能吃子。参高努用 12 枚棋子和带斜线的棋盘，比标准的 9 子玩法更接近十二子棋（Twelve Men's Morris）。"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "什么是“三连”（mill）？",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "沿着棋盘上画好的线，把自己的三枚棋子连成一条直线。凑成三连就可以移除对方一枚棋子。韩国玩家凑成三连时会喊“kkon”。"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "参高努会出现和棋吗？",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "会。落子阶段棋盘放满却始终没有成过一次三连，就是和棋；走子阶段达到 20 步限制而双方棋子数相同，同样是和棋。"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "免费吗？需要注册账号吗？",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "在浏览器里免费玩，无需下载，也无需注册账号。你可以选四个难度的 AI 对手，也可以在线邀请朋友对弈。"
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "我是高努新手，该从哪里开始？",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "先从规则更简单、几分钟就能玩完的线高努开始，然后再回来玩参高努。"
-          }
-        }
-      ]
     }
   ]
 }
@@ -128,7 +56,7 @@
         <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
       </a>
       <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
-        <a href="index.html" class="variant-tab is-active">参高努</a>
+        <a href="chamgonu.html" class="variant-tab">参高努</a>
         <span data-variant-menu></span>
         <a href="gomoku.html" class="variant-tab">五子棋</a>
         <a href="howto.html" class="variant-tab">玩法</a>
@@ -140,18 +68,16 @@
   </header>
 
   <div style="max-width:1280px;margin:0 auto;padding:clamp(16px,4vw,56px) clamp(16px,5vw,40px) clamp(14px,3vw,40px);text-align:center;display:flex;flex-direction:column;align-items:center;gap:clamp(8px,2.2vw,18px);">
-    <div class="tag" style="color:var(--red);">高努 · 韩国传统策略棋类游戏</div>
-    <h1 class="serif" style="margin:0;font-size:clamp(24px,8vw,34px);line-height:1.25;max-width:720px;white-space:nowrap;">韩国版十二子棋</h1>
-    <div class="serif" style="font-size:clamp(14px,4.2vw,20px);line-height:1.4;color:var(--red-deep);max-width:720px;white-space:nowrap;">十二枚棋子，两个阶段，毫无运气成分。</div>
-    <p style="margin:0;font-size:14px;line-height:1.6;color:var(--ink-soft);max-width:560px;">参高努——对战 AI 或真人</p>
+    <div class="tag" style="color:var(--red);">参高努 · 五子棋 · 线高努 · 轮子高努</div>
+    <h1 class="serif" style="margin:0;font-size:clamp(20px,5.6vw,34px);line-height:1.25;max-width:720px;word-break:keep-all;">在线玩韩国高努<br>与五子棋</h1>
+    <p style="margin:0;font-size:15px;line-height:1.6;color:var(--ink-soft);max-width:560px;word-break:keep-all;">选一个游戏，挑战 AI 或朋友。</p>
     <div style="display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
-      <a href="#board-top" class="btn-primary" style="padding:12px clamp(18px,5vw,28px);font-size:15px;">单人游戏</a>
       <a href="online.html" class="btn" style="padding:12px clamp(18px,5vw,28px);font-size:15px;">在线对战</a>
     </div>
   </div>
 
   <section data-game-pick aria-label="选择游戏" style="max-width:760px;margin:0 auto;padding:0 clamp(16px,5vw,40px) clamp(14px,3vw,32px);display:flex;gap:clamp(12px,3vw,20px);flex-wrap:wrap;">
-    <a href="#board-top" class="card game-pick" style="flex:1 1 280px;">
+    <a href="chamgonu.html" class="card game-pick" style="flex:1 1 280px;">
       <img src="../images/home/cham-gonu.svg" width="400" height="400" alt="摆有红蓝棋子的参高努棋盘" style="width:100%;height:auto;display:block;">
       <div class="game-pick__body">
         <div class="serif" style="font-size:22px;font-weight:700;color:var(--ink);">参高努 Cham-gonu</div>
@@ -168,75 +94,6 @@
       </div>
     </a>
   </section>
-
-  <div class="toolbar" id="board-top">
-    <div class="toolbar__inner">
-      <div style="display:flex;align-items:center;gap:24px;flex-wrap:wrap;">
-        <div class="turn-indicator">
-          <span class="turn-dot" data-turn-dot></span>
-          <span data-turn-label>红方落子 (0/12)</span>
-        </div>
-        <span class="tag" data-timer>0:00</span>
-        <div style="font-size:13px;color:var(--muted);" data-captured-label>盘上棋子 — 红: 0 · 蓝: 0</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-        <select class="pill" data-ruleset style="cursor:pointer;">
-          <option value="korean" selected>韩国规则</option>
-          <option value="western">西方规则（飞子）</option>
-        </select>
-        <select class="pill" data-side-select style="cursor:pointer;">
-          <option value="A">执红 · 先手</option>
-          <option value="B">执蓝 · 后手</option>
-        </select>
-        <select class="pill" data-opponent-mode style="cursor:pointer;">
-          <option value="local">双人（本地）</option>
-          <option value="ai" selected>对战 AI</option>
-        </select>
-        <select class="pill" data-ai-difficulty style="cursor:pointer;">
-          <option value="easy">简单</option>
-          <option value="normal" selected>普通</option>
-          <option value="hard">困难</option>
-          <option value="master">大师</option>
-        </select>
-        <button class="btn" data-undo>悔棋</button>
-        <button class="btn-primary" data-new-game>新对局</button>
-      </div>
-    </div>
-  </div>
-
-  <div class="main-layout">
-
-    <div class="board-column">
-      <div class="theme-row">
-        <span class="tag">棋盘颜色</span>
-        <div data-theme-row style="display:flex;gap:10px;"></div>
-      </div>
-      <div class="board-frame" data-board-frame>
-        <svg data-board-svg viewBox="0 0 420 420" width="420" height="420"></svg>
-      </div>
-    </div>
-
-    <div class="rules-panel">
-      <div class="card" style="padding:24px;display:flex;flex-direction:column;gap:14px;">
-        <div class="serif" style="font-size:18px;font-weight:700;">参高努怎么玩</div>
-        <ul>
-          <li>双方各有 12 枚棋子，轮流每次在 24 点棋盘的任意空点上放下一枚——落子阶段是对局的前半段。</li>
-          <li>沿棋盘上画好的线把自己的 3 枚棋子连成一条直线，即构成“三连”（mill）——随后可以移除对方一枚棋子。用于吃子的点会被标记，并在落子阶段剩余时间内锁定。</li>
-          <li>24 枚棋子全部放完后进入后半段：每回合将一枚棋子滑到相邻的空点，仍可通过组成三连来吃子。</li>
-          <li>把对方棋子减少到 2 枚，或让对方无棋可走，即获胜。</li>
-          <li>如果落子阶段一次也没有成三，24 个点就已全部占满，则为和棋。</li>
-          <li>在走子阶段，如果连续 20 步（双方合计）都没有吃子，则剩余棋子多的一方获胜（数量相同则为和棋）。这是 PlayGonu 的规则。</li>
-          <li><strong>西方规则（可选）：</strong>在棋盘上方选择“西方规则”，即按十二子棋（Twelve Men's Morris）的规则对局：落子阶段被吃的点不会被锁定，仅剩 3 枚棋子的一方可以飞到任意空位，并且用“有一方仅剩 3 枚且双方各 10 步无吃子则和棋”取代 20 步规则。</li>
-          <li><strong>决定先手（쟁두）：</strong>按传统，双方先猜拳（石头剪刀布），<em>输</em>的一方先走。</li>
-        </ul>
-      </div>
-      <div class="card" style="padding:20px 24px;display:flex;flex-direction:column;gap:6px;">
-        <div style="font-size:13px;font-weight:600;color:var(--muted);">什么是高努？</div>
-        <p style="margin:0;font-size:13.5px;line-height:1.55;color:var(--ink-soft);">高努（韩国传统棋）是一类流传了数百年的韩国民间棋类游戏——参高努是其中最有深度的一种，与西方的“九子棋”（Nine Men's Morris）同属一个家族。第一次接触高努？不妨先<a href="jul.html">试试线高努</a>，掌握基本玩法。熟悉规则后，再看看决定大多数对局的<a href="cham-strategy.html">往返三连战术</a>。</p>
-      </div>
-    </div>
-
-  </div>
 
   <div style="max-width:1280px;margin:0 auto;padding:0 40px 48px;display:flex;flex-direction:column;gap:40px;">
 
@@ -264,97 +121,9 @@
         </a>
       </div>
     </div>
-
-    <div style="display:flex;gap:20px;flex-wrap:wrap;">
-      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
-        <div class="tag" style="color:var(--red);">主打玩法</div>
-        <div class="serif" style="font-size:22px;font-weight:700;">参高努 (Cham-gonu) 참고누</div>
-        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">24 点棋盘，每方 12 枚棋子，与九子棋同属一个家族。落子组成“三连”来吃子，棋盘放满后改为移动棋子——真正有深度，多花几分钟学习非常值得。</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <a href="#board-top" class="btn-primary">单人游戏</a>
-          <a href="online.html?game=cham" class="btn">邀请好友</a>
-        </div>
-      </div>
-      <div class="card" style="flex:1 1 320px;padding:28px;display:flex;flex-direction:column;gap:12px;">
-        <div class="tag">并非高努变体</div>
-        <div class="serif" style="font-size:22px;font-weight:700;">五子棋</div>
-        <p style="margin:0;font-size:14px;line-height:1.65;color:var(--ink-soft);">在 15×15 棋盘上，任意方向连成五子即获胜——可选自由规则或标准（连珠）规则。没有吃子，纯粹比拼布局。</p>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <a href="gomoku.html" class="btn-primary">单人游戏</a>
-          <a href="online.html?game=gomoku" class="btn">邀请好友</a>
-        </div>
-      </div>
-    </div>
-
   </div>
 
   <article class="game-article">
-    <h2 class="article-title">高努游戏在线玩：参高努，韩国版十二子棋</h2>
-    <p class="lead"><strong>高努</strong>（고누）是韩国传统棋类游戏的统称，而<strong>参高努</strong>（참고누，Cham-gonu）是其中与九子棋（Nine Men's Morris）同类的一员，可以说是九子棋的韩国“亲戚”，一种两人对弈的策略游戏。双方各把 12 枚棋子放在由三个嵌套正方形构成的棋盘上，在一条线上连成三枚即成“三连”（mill），可以移除对方一枚棋子；随后进入第二阶段，把棋子一点一点地滑动。没有骰子，也没有隐藏信息，谁的计划更好谁就赢。在 PlayGonu 上，你可以直接在浏览器里对战 AI 或朋友，无需下载，无需注册。</p>
-    <dl class="facts">
-      <dt>玩家人数</dt><dd>2 人</dd>
-      <dt>棋盘</dt><dd>三个嵌套的正方形，24 个点，带斜线</dd>
-      <dt>棋子</dt><dd>每方 12 枚</dd>
-      <dt>吃子</dt><dd>把自己的三枚棋子连成一线，构成三连，然后移除对方一枚棋子</dd>
-      <dt>获胜</dt><dd>把对方棋子减少到 2 枚，或让对方无棋可走</dd>
-      <dt>又名</dt><dd>Gonjil-gonu · 西方最接近的游戏：十二子棋（Morabaraba）</dd>
-    </dl>
-
-    <details class="fold">
-      <summary><h2>高努与参高努的由来</h2></summary>
-    <p><strong>高努</strong>（고누）是韩国民间棋类游戏的统称。玩家在地上或纸上画出棋盘，用小石子或树枝当棋子，不需要任何专门的器具，因此这类游戏传遍了全国，各地叫法也不一样，如京畿的 goni、kkoni，全罗的 kkon、kkonu，庆尚的 kkon，济州的 kkonja。这个名称据说来自一个表示“相争”的古词。在一件高丽时代青瓷窑址出土的器物上刻有棋盘，说明至少在高丽时代（918–1392 年）就已经有人下高努；朝鲜后期金弘道的风俗画《高努游戏》（Gonu Play）里，则画着一群人围着地上画的棋盘对弈。</p><p>参高努是高努游戏中看起来最像西方游戏的一种。九子棋（Nine Men's Morris）是史上流传最广的棋类游戏之一，从古代神庙到中世纪大教堂的回廊，都发现过它的棋盘。它的十二子形式<strong>十二子棋</strong>（Twelve Men's Morris）在棋盘上增加了四条斜线，每方有十二枚棋子，这正是参高努棋盘的样子。在南非，同一家族的游戏被称作 Morabaraba。英文维基百科把参高努列在高努游戏之中，名称写作 Gonjilgonu（참고누），韩国的百科全书则记作<strong>곤질고누</strong>，因为玩家凑成三连时会喊“kkon”。据韩国文化体育观光部介绍，镇安郡一处青瓷窑址出土的器物上刻有棋盘，这使它成为较古老的高努之一。参高努是一种自成一格的韩国游戏，而不是照搬：下面的规则细节就是 PlayGonu 所采用的。我们的<a href="../blog/cham-gonu-nine-mens-morris.html">与九子棋的比较</a>（英文）更深入地讲了其中的差异。</p>
-    </details>
-    <details class="fold">
-      <summary><h2>参高努怎么玩</h2></summary>
-    <ol>
-      <li><strong>谁先走：</strong>按传统，双方先猜拳，输的一方先走。</li>
-      <li><strong>落子阶段（前半段）：</strong>双方轮流在任意空点上放一枚棋子。</li>
-      <li><strong>三连：</strong>当自己的三枚棋子沿着画好的线连成一条直线，就可以移除对方一枚棋子。被吃子的那个点会被标记，在落子阶段剩余时间内谁都不能在那里落子。</li>
-      <li><strong>走子阶段（后半段）：</strong>24 枚棋子全部放完后，双方轮流沿线把一枚棋子滑到相邻的空点。凑成三连依然可以吃子。</li>
-      <li><strong>获胜：</strong>把对方棋子减少到 2 枚，或让对方无棋可走。</li>
-      <li><strong>和棋与步数限制：</strong>落子阶段棋盘放满却没有人凑成三连，则为和棋。走子阶段如果连续 20 步（双方合计）都没有吃子，则剩余棋子多的一方获胜；棋子数相同则为和棋（这是 PlayGonu 的规则）。</li>
-      <li><strong>西方规则（可选）：</strong>游戏界面上有规则选择器。选择“西方规则”即切换为十二子棋（Twelve Men's Morris）的规则：落子阶段被吃的点不会被锁定，恰好剩 3 枚棋子的一方可以飞到任意空点，并且用“有一方被困在 3 枚棋子上、双方各 10 步无吃子则和棋”取代 20 步规则。</li>
-    </ol>
-    </details>
-    <h2>参高努技巧</h2>
-    <ul>
-      <li><strong>争夺中间那个正方形。</strong>它的点向四个方向都有线，能凑成的三连最多，活动空间也最大。</li>
-      <li><strong>尽早堵住“两连”。</strong>对方两枚棋子在同一条线上时，第三个点就是你要从他们手里夺走的点。</li>
-      <li><strong>落子时想着后半段。</strong>如果落子结束时你的棋子被围死，可能无棋可走而输掉。让棋子待在空点旁边。</li>
-      <li><strong>搭起往返三连。</strong>一枚棋子在两条线之间来回摆动，每走一步都凑成一个三连，大多数对局都由它决定。参见<a href="cham-strategy.html">我们的往返三连指南</a>。</li>
-    </ul>
-
-    <h2>常见问题</h2>
-    <details class="faq">
-      <summary><h3>参高努和九子棋（Nine Men's Morris）是同一种游戏吗？</h3></summary>
-    <p>它们同属一个家族：都是先落子、后走子，凑成三连就能吃子。参高努用 12 枚棋子和带斜线的棋盘，比标准的 9 子玩法更接近十二子棋（Twelve Men's Morris）。</p>
-    </details>
-    <details class="faq">
-      <summary><h3>什么是“三连”（mill）？</h3></summary>
-    <p>沿着棋盘上画好的线，把自己的三枚棋子连成一条直线。凑成三连就可以移除对方一枚棋子。韩国玩家凑成三连时会喊“kkon”。</p>
-    </details>
-    <details class="faq">
-      <summary><h3>参高努会出现和棋吗？</h3></summary>
-    <p>会。落子阶段棋盘放满却始终没有成过一次三连，就是和棋；走子阶段达到 20 步限制而双方棋子数相同，同样是和棋。</p>
-    </details>
-    <details class="faq">
-      <summary><h3>免费吗？需要注册账号吗？</h3></summary>
-    <p>在浏览器里免费玩，无需下载，也无需注册账号。你可以选四个难度的 AI 对手，也可以在线邀请朋友对弈。</p>
-    </details>
-    <details class="faq">
-      <summary><h3>我是高努新手，该从哪里开始？</h3></summary>
-    <p>先从规则更简单、几分钟就能玩完的<a href="jul.html">线高努</a>开始，然后再回来玩参高努。</p>
-    </details>
-
-    <h2>更多高努游戏</h2>
-    <ul>
-      <li><a href="jul.html">线高努</a>——4 枚棋子，最简单的高努——两分钟就能学会</li>
-      <li><a href="daseotjul.html">五线高努</a>——线高努的规则，搬到 5×5 的棋盘上，每方 5 枚棋子</li>
-      <li><a href="palpal.html">八八高努</a>——同样的规则，搬到最大的 8×8 棋盘上，每方 8 枚棋子</li>
-      <li><a href="bakwi.html">轮子高努</a>——绕着角上的“轮子”旋转，滑行很远来吃子</li>
-      <li><a href="howto.html">每一种高努的玩法</a>——所有规则集中在一处</li>
-    </ul>
-
     <details class="fold">
       <summary><h2>关于 PlayGonu</h2></summary>
     <p>PlayGonu 让韩国传统的高努游戏在网页上焕发新意。我们收集各地不尽相同的规则并注明出处，再通过与 AI 的大量对局找出对局容易拖沓的地方，加入适合网页的规则后发布。落子阶段棋盘放满即为和棋的规则，以及走子阶段的 20 步限制，就是这样定下来的。</p>
@@ -362,52 +131,14 @@
     <p class="updated">最后更新：2026-10-10 · PlayGonu</p>
   </article>
 
-  <div class="win-banner" data-win-banner>
-    <div class="win-banner__card">
-      <div class="serif" style="font-size:22px;font-weight:700;" data-win-message>红方获胜！</div>
-      <div style="display:flex;justify-content:center;gap:32px;">
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-          <span class="tag">步数</span>
-          <span class="serif" style="font-size:20px;font-weight:700;" data-win-moves>0</span>
-        </div>
-        <div style="display:flex;flex-direction:column;align-items:center;gap:2px;">
-          <span class="tag">用时</span>
-          <span class="serif" style="font-size:20px;font-weight:700;" data-win-time>0:00</span>
-        </div>
-      </div>
-      <button class="btn-primary" data-win-play-again>再来一局</button>
-      <a href="index.html" class="btn" style="text-align:center;">返回首页</a>
-    </div>
-  </div>
-
-  <div class="win-banner" data-phase-banner>
-    <div class="win-banner__card">
-      <div class="serif" style="font-size:22px;font-weight:700;">前半段结束！</div>
-      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">24 枚棋子已全部放下。后半段不再落子，改为每回合将一枚棋子滑到相邻的点。</p>
-      <button class="btn-primary" data-phase-banner-ok>知道了</button>
-    </div>
-  </div>
-
-  <div class="win-banner" data-mode-banner>
-    <div class="win-banner__card">
-      <div class="serif" style="font-size:22px;font-weight:700;">双人对战</div>
-      <p style="margin:0;font-size:14.5px;line-height:1.55;color:var(--ink-soft);">在这台设备上一起玩，还是在线邀请别人？</p>
-      <button class="btn-primary" data-mode-local>同一设备</button>
-      <button class="btn" data-mode-online>在线对战 →</button>
-      <a href="#" data-mode-cancel style="font-size:13px;color:var(--muted);">取消</a>
-    </div>
-  </div>
-
   <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
     &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">隐私政策</a>
   </footer>
 
 </div>
 <script type="module">
-  import { mountChamgonuGame } from '../src/ui/chamgonuGame.js';
   import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
   import { mountVariantMenu } from '../src/ui/variantMenu.js';
-  mountChamgonuGame(document.querySelector('[data-root]'), { lang: 'zh' });
   mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'zh', currentPage: 'index.html' });
   mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'zh', currentPage: 'index.html' });
 </script>

@@ -4,7 +4,7 @@
 
 ## Games
 
-- [Cham-gonu](https://playgonu.com/): The main game and PlayGonu's homepage. A 24-point board of three nested squares, 12 pieces per player — place pieces to form three-in-a-row "mills" and capture, then slide once the board fills. Same family as the Western game Nine Men's Morris (its closest relative is Twelve Men's Morris / Morabaraba). Two rulesets are selectable on the game screen: Korean (the default; captured points are locked during placement, 20-move no-capture rule) and Western (Twelve Men's Morris rules: no locked points, flying at exactly 3 pieces).
+- [Cham-gonu](https://playgonu.com/chamgonu): The main game (the homepage https://playgonu.com/ is a hub that links to Cham-gonu and Gomoku). A 24-point board of three nested squares, 12 pieces per player — place pieces to form three-in-a-row "mills" and capture, then slide once the board fills. Same family as the Western game Nine Men's Morris (its closest relative is Twelve Men's Morris / Morabaraba). Two rulesets are selectable on the game screen: Korean (the default; captured points are locked during placement, 20-move no-capture rule) and Western (Twelve Men's Morris rules: no locked points, flying at exactly 3 pieces).
 - [Jul-gonu](https://playgonu.com/jul): The simplest Gonu variant — a 4x4-point line board, 4 pieces per player, sandwich (custodian) capture. A two-minute starter game.
 - [Daseotjul-gonu](https://playgonu.com/daseotjul): Jul-gonu's exact rules on a bigger 5x5-point board with 5 pieces per side.
 - [Palpal-gonu](https://playgonu.com/palpal): Jul-gonu's exact rules on the widest board in the family — 8x8 points, 8 pieces per side.

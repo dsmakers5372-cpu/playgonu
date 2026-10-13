@@ -8,12 +8,12 @@ const SITE = 'https://playgonu.com';
 export const BLOG_LANGS = {
   en: {
     prefix: '', htmlLang: 'en', siteName: 'PlayGonu', blog: 'Blog', back: '← All posts', guide: 'A PlayGonu guide', privacy: 'Privacy Policy',
-    nav: [['index.html', 'Cham-gonu'], ['gomoku.html', 'Gomoku'], ['online.html', 'Online'], ['howto.html', 'How to Play']],
+    nav: [['chamgonu.html', 'Cham-gonu'], ['gomoku.html', 'Gomoku'], ['online.html', 'Online'], ['howto.html', 'How to Play']],
     indexTitle: 'Blog — PlayGonu', indexHeading: 'Guides to Gonu, Gomoku, and the games behind them', indexIntro: '',
   },
   ko: {
     prefix: '/ko', htmlLang: 'ko', siteName: '플레이고누', blog: '블로그', back: '← 블로그 목록', guide: '플레이고누 가이드', privacy: '개인정보처리방침',
-    nav: [['index.html', '참고누'], ['gomoku.html', '오목'], ['howto.html', '하는 법'], ['online.html', '온라인 대전']],
+    nav: [['chamgonu.html', '참고누'], ['gomoku.html', '오목'], ['howto.html', '하는 법'], ['online.html', '온라인 대전']],
     indexTitle: '블로그 — 플레이고누', indexHeading: '고누와 오목 이야기', indexIntro: '고누가 어떤 놀이인지, 어떻게 두는지, 어떻게 가르치는지 정리했어요.',
   },
 };
@@ -200,7 +200,7 @@ export async function injectIndexCards(response, posts) {
 }
 
 // ---- videos on the game pages ------------------------------------------------
-export const GAME_PAGES = { 'index.html': 'cham', 'jul.html': 'jul', 'daseotjul.html': 'daseotjul', 'palpal.html': 'palpal', 'bakwi.html': 'bakwi' };
+export const GAME_PAGES = { 'chamgonu.html': 'cham', 'jul.html': 'jul', 'daseotjul.html': 'daseotjul', 'palpal.html': 'palpal', 'bakwi.html': 'bakwi' };
 const PAGE_LANGS = ['ko', 'es', 'ja', 'zh'];
 const VIDEO_HEADING = { en: 'Watch: how to play', ko: '영상으로 배우기', es: 'Mira cómo se juega', ja: '動画で遊び方を見る', zh: '看视频学玩法' };
 

@@ -49,10 +49,12 @@ test('admin session token: valid, tampered, expired, other password', async () =
 });
 
 test('gamePageFor maps every game page in every language', () => {
-  assert.deepEqual(gamePageFor('/'), { lang: 'en', game: 'cham' });
-  assert.deepEqual(gamePageFor('/index.html'), { lang: 'en', game: 'cham' });
+  assert.deepEqual(gamePageFor('/chamgonu'), { lang: 'en', game: 'cham' });
+  assert.deepEqual(gamePageFor('/chamgonu.html'), { lang: 'en', game: 'cham' });
+  assert.equal(gamePageFor('/'), null);
+  assert.equal(gamePageFor('/ko/'), null);
   assert.deepEqual(gamePageFor('/jul'), { lang: 'en', game: 'jul' });
-  assert.deepEqual(gamePageFor('/ko/'), { lang: 'ko', game: 'cham' });
+  assert.deepEqual(gamePageFor('/ko/chamgonu'), { lang: 'ko', game: 'cham' });
   assert.deepEqual(gamePageFor('/ko/bakwi.html'), { lang: 'ko', game: 'bakwi' });
   assert.deepEqual(gamePageFor('/ja/palpal'), { lang: 'ja', game: 'palpal' });
   assert.equal(gamePageFor('/blog/what-is-gonu'), null);
@@ -80,6 +82,6 @@ test('a static blog post imports as editable Markdown', () => {
   assert.match(draft.title, /What Is Gonu/);
   assert.ok(draft.description.length > 20);
   assert.match(draft.body, /^## Where it comes from$/m);
-  assert.match(draft.body, /\[→ Play Cham-gonu \(the deep one\)\]\(\.\.\/index\.html\)/);
+  assert.match(draft.body, /\[→ Play Cham-gonu \(the deep one\)\]\(\.\.\/chamgonu\.html\)/);
   assert.doesNotMatch(draft.body, /<[a-z]/i);
 });

@@ -12,6 +12,15 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/" />
   </url>
   <url>
+    <loc>https://playgonu.com/chamgonu</loc>
+    <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/chamgonu" />
+    <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/chamgonu" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://playgonu.com/es/chamgonu" />
+    <xhtml:link rel="alternate" hreflang="ja" href="https://playgonu.com/ja/chamgonu" />
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://playgonu.com/zh/chamgonu" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://playgonu.com/chamgonu" />
+  </url>
+  <url>
     <loc>https://playgonu.com/jul</loc>
     <xhtml:link rel="alternate" hreflang="en" href="https://playgonu.com/jul" />
     <xhtml:link rel="alternate" hreflang="ko" href="https://playgonu.com/ko/jul" />
