@@ -199,7 +199,7 @@ export class GameRoom {
       return;
     }
 
-    // Courtesy as on other Omok sites: whoever made the room plays second and
+    // Courtesy as on other Gomoku sites: whoever made the room plays second and
     // the visitor gets the first move (Black / Red). Joining a virtual
     // player's waiting room makes the human the visitor, so they open there.
     const { PLAYERS, opponent } = ENGINES[this.room.gameType];

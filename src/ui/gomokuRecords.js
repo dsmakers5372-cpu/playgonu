@@ -18,10 +18,10 @@ const RAPFI_URL = 'https://github.com/dhbloo/rapfi';
 
 export const RECORD_STRINGS = {
   en: {
-    title: 'Omok game records',
+    title: 'Gomoku game records',
     intro: 'Replay your finished games move by move, and ask RAPFI — the Gomocup 2025 champion engine — where it would play at any point.',
     myGames: 'My games',
-    empty: 'No saved games yet. Finish a game of Omok and it will appear here.',
+    empty: 'No saved games yet. Finish a game of Gomoku and it will appear here.',
     openFile: 'Open file',
     sharedTitle: 'Opened record',
     noRecord: 'Pick a game from the list, or open a link or file, to replay it here.',
@@ -46,7 +46,7 @@ export const RECORD_STRINGS = {
     saveToList: 'Save to My games', savedToList: 'Saved to My games',
     remove: 'Delete', confirmRemove: 'Delete this record from this browser?',
     linkInvalid: "That link's record couldn't be read.",
-    fileInvalid: "That file isn't a 15×15 Omok record.",
+    fileInvalid: "That file isn't a 15×15 Gomoku record.",
     modeAi: 'vs AI', modeLocal: '2 players', modeOnline: 'Online',
     ruleFree: 'Freestyle', ruleRenju: 'Renju',
     moves: (n) => `${n} moves`,
@@ -106,10 +106,10 @@ export const RECORD_STRINGS = {
     credit: (link) => `훈수는 브라우저 안에서 ${link}(GPL-3.0)가 계산합니다.`,
   },
   es: {
-    title: 'Partidas de Omok',
+    title: 'Partidas de Gomoku',
     intro: 'Repasa tus partidas jugada a jugada y pregunta a RAPFI —el motor campeón de Gomocup 2025— dónde jugaría en cualquier posición.',
     myGames: 'Mis partidas',
-    empty: 'Aún no hay partidas guardadas. Termina una partida de Omok y aparecerá aquí.',
+    empty: 'Aún no hay partidas guardadas. Termina una partida de Gomoku y aparecerá aquí.',
     openFile: 'Abrir archivo',
     sharedTitle: 'Partida abierta',
     noRecord: 'Elige una partida de la lista, o abre un enlace o archivo, para repasarla aquí.',
@@ -134,7 +134,7 @@ export const RECORD_STRINGS = {
     saveToList: 'Guardar en Mis partidas', savedToList: 'Guardada en Mis partidas',
     remove: 'Eliminar', confirmRemove: '¿Eliminar esta partida de este navegador?',
     linkInvalid: 'No se pudo leer la partida del enlace.',
-    fileInvalid: 'Ese archivo no es una partida de Omok 15×15.',
+    fileInvalid: 'Ese archivo no es una partida de Gomoku 15×15.',
     modeAi: 'Contra la IA', modeLocal: '2 jugadores', modeOnline: 'En línea',
     ruleFree: 'Freestyle', ruleRenju: 'Renju',
     moves: (n) => `${n} jugadas`,
