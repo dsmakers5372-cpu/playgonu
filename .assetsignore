@@ -17,3 +17,4 @@ src/server/auth.js
 src/server/site.js
 src/server/account.js
 src/server/users.js
+.git
