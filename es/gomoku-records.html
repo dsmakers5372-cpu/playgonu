@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Partidas de Omok y repaso con sugerencias de RAPFI | PlayGonu</title>
+<meta name="description" content="Repasa tus partidas de Omok (Gomoku) jugada a jugada con los botones ◀ ▶, comparte una partida como enlace o archivo y pregunta a RAPFI, el motor campeón de Gomocup 2025, dónde jugaría. Sin iniciar sesión.">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/es/gomoku-records">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/es/gomoku-records">
+<meta property="og:title" content="Partidas de Omok y repaso con sugerencias de RAPFI | PlayGonu">
+<meta property="og:description" content="Repasa tus partidas de Omok (Gomoku) jugada a jugada con los botones ◀ ▶, comparte una partida como enlace o archivo y pregunta a RAPFI, el motor campeón de Gomocup 2025, dónde jugaría. Sin iniciar sesión.">
+<meta property="og:image" content="https://playgonu.com/og-image-es.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">Cham-gonu</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">Gomoku</a>
+        <a href="gomoku-records.html" class="variant-tab is-active">Partidas</a>
+        <a href="howto.html" class="variant-tab">Cómo jugar</a>
+        <a href="online.html" class="variant-tab">En línea</a>
+        <a href="../blog/index.html" class="variant-tab">Blog</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <h1 class="serif" style="margin:0;font-size:26px;text-align:center;">Partidas de Omok</h1>
+      <p style="margin:0;font-size:14.5px;line-height:1.6;color:var(--ink-soft);text-align:center;max-width:520px;">Repasa tus partidas jugada a jugada y pregunta a RAPFI —el motor campeón de Gomocup 2025— dónde jugaría en cualquier posición.</p>
+      <div data-records-viewer style="width:100%;display:flex;flex-direction:column;gap:14px;align-items:center;"></div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" data-records-list style="padding:20px 24px;display:flex;flex-direction:column;gap:10px;"></div>
+      <div><button type="button" class="btn" data-records-open-file></button><input type="file" accept=".psq,.txt,text/plain" data-records-file hidden></div>
+      <div class="card" data-records-guide style="padding:24px;display:flex;flex-direction:column;gap:14px;"></div>
+    </div>
+
+  </div>
+
+  <div data-records-flash role="status" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:4px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;"></div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">Política de privacidad</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountGomokuRecords } from '../src/ui/gomokuRecords.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountGomokuRecords(document.querySelector('[data-root]'), { lang: 'es' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'es', currentPage: 'gomoku-records.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'es', currentPage: 'gomoku-records.html' });
+</script>
+</body>
+</html>

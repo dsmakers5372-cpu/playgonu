@@ -1,0 +1,11 @@
+This directory contains Rapfi (https://github.com/dhbloo/rapfi), a gomoku/renju engine
+by Yuanhang Zhang (dhbloo) et al., licensed under GPL-3.0 (LICENSE-RAPFI-GPL-3.0.txt),
+compiled to WebAssembly with Emscripten (single-thread, SIMD128).
+Source commit: 3c94c2a976f24a0dd1c5517623e9ab6fffe66bd7 (rapfi master, 2026-07-23).
+Complete corresponding source: ../source/rapfi-3c94c2a-source.zip
+Neural-network weights (mix9svq freestyle) are from https://github.com/dhbloo/rapfi-networks
+(CC0-1.0, LICENSE-NETWORKS-CC0.txt, commit e32ad77a5364363b3e3a02b3f9e8610ade19ea98).
+The Renju weights (renju/mix9svqrenju_bs15_black.bin.lz4, renju/mix9svqrenju_bs15_white.bin.lz4) come from the same repository
+and commit; worker.js fetches them on demand and writes them into the engine's file system when a Renju game is analysed.
+Build: emcmake cmake Rapfi -DNO_COMMAND_MODULES=ON -DNO_MULTI_THREADING=ON -DUSE_WASM_SIMD=ON
+(Networks/ trimmed to config-example, classical, mix9svq/mix9svqfreestyle_bsmix.bin.lz4).

@@ -17,6 +17,8 @@ import { mountTapModeSelect, currentTapMode } from './tapMode.js';
 import { guardedSelect } from './guardedSelect.js';
 import { createGameStats, formatElapsed } from './gameStats.js';
 import { playPlaceSound } from './sound.js';
+import { saveRecord } from '../engine/gomokuRecord.js';
+import { createChampion, championSupported } from './gomokuChampion.js';
 
 const AI_MOVE_DELAY_MS = 450;
 
@@ -120,8 +122,18 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
   const rulesetSelect = root.querySelector('[data-ruleset]');
   const foulNote = root.querySelector('[data-foul-note]');
 
+  const champion = aiDifficultySelect && championSupported() ? createChampion({ lang }) : null;
+  if (!champion && aiDifficultySelect) {
+    const championOption = aiDifficultySelect.querySelector('option[value="champion"]');
+    if (championOption) championOption.remove();
+  }
+  let aiToken = 0;
+  let lastDifficulty = aiDifficultySelect ? aiDifficultySelect.value : 'normal';
+
   let game = createInitialState({ ruleset: rulesetSelect ? rulesetSelect.value : RULESETS.FREESTYLE });
   let history = [];
+  let moveLog = [];
+  let gameId = Date.now();
   // On a dense 15x15 board, a mis-tap is easy on mobile — in the default
   // "safe" tap mode the first tap on a point just previews a faint stone
   // there and tapping that same point again commits the move; "fast" mode
@@ -156,6 +168,7 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
   function applyAction(to) {
     history.push(game);
     game = move(game, null, to);
+    moveLog.push(to);
     stats.recordMove();
     playPlaceSound();
     renderBoard();
@@ -164,19 +177,69 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
     maybeTriggerAI();
   }
 
+  function commitAIMove(to) {
+    history.push(game);
+    game = move(game, null, to);
+    moveLog.push(to);
+    stats.recordMove();
+    playPlaceSound();
+    renderBoard();
+    renderToolbar();
+    showWinBanner();
+  }
+
   function maybeTriggerAI() {
     if (!aiEnabled || game.winner || game.turn !== aiPlayer) return;
+    if (champion && aiDifficultySelect.value === 'champion') {
+      playChampionMove();
+      return;
+    }
     setTimeout(() => {
       const aiMove = chooseAIMove(game, { difficulty: aiDifficultySelect.value });
       if (!aiMove) return;
-      history.push(game);
-      game = move(game, null, aiMove.to);
-      stats.recordMove();
-      playPlaceSound();
-      renderBoard();
-      renderToolbar();
-      showWinBanner();
+      commitAIMove(aiMove.to);
     }, AI_MOVE_DELAY_MS);
+  }
+
+  // Drops any champion search still in flight (new game, undo, level change);
+  // its answer is discarded when it arrives.
+  function cancelChampion() {
+    aiToken++;
+  }
+
+  async function playChampionMove() {
+    const token = ++aiToken;
+    const length = moveLog.length;
+    const stale = () => token !== aiToken || moveLog.length !== length || game.winner || game.turn !== aiPlayer;
+    let to = null;
+    try {
+      to = await champion.chooseMove(moveLog.slice(), game.ruleset);
+    } catch {
+      if (stale()) return;
+    }
+    if (stale()) return;
+    if (to === null || game.cells[to] !== null) {
+      const fallbackMove = chooseAIMove(game, { difficulty: 'pro' });
+      if (!fallbackMove) return;
+      to = fallbackMove.to;
+    }
+    commitAIMove(to);
+  }
+
+  // The champion always plays White, so the player's first move buys the
+  // engine time to load: lock the side while it is the opponent.
+  function enterChampionMode() {
+    aiEnabled = true;
+    opponentModeSelect.value = 'ai';
+    if (sideSelect) {
+      sideSelect.value = PLAYERS.A;
+      sideSelect.disabled = true;
+    }
+    updateAiPlayer();
+  }
+
+  function leaveChampionMode() {
+    if (sideSelect) sideSelect.disabled = false;
   }
 
   function applyTheme(key) {
@@ -275,8 +338,13 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
     undoBtn.disabled = history.length === 0;
   }
 
+  function saveFinishedGame() {
+    saveRecord({ id: gameId, t: Date.now(), ruleset: game.ruleset, moves: moveLog.slice(), mode: aiEnabled ? 'ai' : 'local' });
+  }
+
   function showWinBanner() {
     if (!game.winner) return;
+    saveFinishedGame();
     stats.stop();
     winMessage.textContent = statusText(lang, game);
     if (winMoves) winMoves.textContent = String(stats.moveCount);
@@ -307,7 +375,10 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
   function newGame() {
     game = createInitialState({ ruleset: rulesetSelect ? rulesetSelect.value : RULESETS.FREESTYLE });
     history = [];
+    moveLog = [];
+    gameId = Date.now();
     previewIndex = null;
+    cancelChampion();
     stats.reset();
     stats.start();
     hideWinBanner();
@@ -319,12 +390,14 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
   function undo() {
     if (history.length === 0) return;
     previewIndex = null;
+    cancelChampion();
     game = history.pop();
     let undone = 1;
     if (aiEnabled && history.length > 0 && game.turn === aiPlayer) {
       game = history.pop();
       undone = 2;
     }
+    moveLog.length = history.length;
     stats.unrecordMove(undone);
     stats.start();
     hideWinBanner();
@@ -342,6 +415,26 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
     }
     aiEnabled = opponentModeSelect.value === 'ai';
     maybeTriggerAI();
+  });
+  aiDifficultySelect.addEventListener('change', () => {
+    if (champion && aiDifficultySelect.value === 'champion') {
+      champion.openIntro({
+        onPlay: () => {
+          lastDifficulty = 'champion';
+          enterChampionMode();
+          newGame();
+        },
+        onCancel: () => { aiDifficultySelect.value = lastDifficulty; },
+      }, rulesetSelect ? rulesetSelect.value : RULESETS.FREESTYLE);
+      return;
+    }
+    const wasChampion = lastDifficulty === 'champion';
+    lastDifficulty = aiDifficultySelect.value;
+    if (wasChampion) {
+      cancelChampion();
+      leaveChampionMode();
+      maybeTriggerAI();
+    }
   });
   if (modeBannerLocal) {
     modeBannerLocal.addEventListener('click', () => {
@@ -366,7 +459,14 @@ export function mountGomokuGame(root, { lang: requestedLang = 'en' } = {}) {
     guardedSelect(sideSelect, { lang, inProgress, onConfirmed: () => { updateAiPlayer(); newGame(); } });
   }
   if (rulesetSelect) {
-    guardedSelect(rulesetSelect, { lang, inProgress, onConfirmed: newGame });
+    guardedSelect(rulesetSelect, {
+      lang,
+      inProgress,
+      onConfirmed: () => {
+        if (champion && lastDifficulty === 'champion') champion.warmUp(rulesetSelect.value);
+        newGame();
+      },
+    });
   }
 
   renderThemeSwatches(swatchRow, { current: getStoredTheme(), onSelect: (key) => { setStoredTheme(key); applyTheme(key); } });

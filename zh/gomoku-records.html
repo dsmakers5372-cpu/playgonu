@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>五子棋棋谱复盘与 RAPFI 提示 | PlayGonu</title>
+<meta name="description" content="用 ◀ ▶ 按钮逐手复盘五子棋对局，通过链接或文件保存分享棋谱，并向 Gomocup 2025 冠军引擎 RAPFI 请教下法。无需登录。">
+<link rel="icon" type="image/svg+xml" href="../favicon.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32.png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<link rel="canonical" href="https://playgonu.com/zh/gomoku-records">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PlayGonu">
+<meta property="og:url" content="https://playgonu.com/zh/gomoku-records">
+<meta property="og:title" content="五子棋棋谱复盘与 RAPFI 提示 | PlayGonu">
+<meta property="og:description" content="用 ◀ ▶ 按钮逐手复盘五子棋对局，通过链接或文件保存分享棋谱，并向 Gomocup 2025 冠军引擎 RAPFI 请教下法。无需登录。">
+<meta property="og:image" content="https://playgonu.com/og-image-zh.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@500;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../styles/main.css">
+</head>
+<body>
+<div data-root>
+
+  <header class="site-header">
+    <div class="site-header__inner">
+      <a href="index.html" style="display:flex;align-items:baseline;gap:8px;">
+        <span class="serif" style="font-size:21px;font-weight:700;color:var(--ink);">PlayGonu</span>
+      </a>
+      <nav style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <a href="index.html" class="variant-tab">参高努</a>
+        <span data-variant-menu></span>
+        <a href="gomoku.html" class="variant-tab">五子棋</a>
+        <a href="gomoku-records.html" class="variant-tab is-active">棋谱</a>
+        <a href="howto.html" class="variant-tab">玩法</a>
+        <a href="online.html" class="variant-tab">在线对战</a>
+        <a href="../blog/index.html" class="variant-tab">博客</a>
+        <span data-lang-switcher></span>
+      </nav>
+    </div>
+  </header>
+
+  <div class="main-layout">
+
+    <div class="board-column">
+      <h1 class="serif" style="margin:0;font-size:26px;text-align:center;">五子棋棋谱复盘</h1>
+      <p style="margin:0;font-size:14.5px;line-height:1.6;color:var(--ink-soft);text-align:center;max-width:520px;">逐手回顾已完成的对局，并可在任意局面询问 Gomocup 2025 冠军引擎 RAPFI：如果是它，会下在哪里。</p>
+      <div data-records-viewer style="width:100%;display:flex;flex-direction:column;gap:14px;align-items:center;"></div>
+    </div>
+
+    <div class="rules-panel">
+      <div class="card" data-records-list style="padding:20px 24px;display:flex;flex-direction:column;gap:10px;"></div>
+      <div><button type="button" class="btn" data-records-open-file></button><input type="file" accept=".psq,.txt,text/plain" data-records-file hidden></div>
+      <div class="card" data-records-guide style="padding:24px;display:flex;flex-direction:column;gap:14px;"></div>
+    </div>
+
+  </div>
+
+  <div data-records-flash role="status" style="position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:4px;font-size:14px;opacity:0;transition:opacity .2s;pointer-events:none;"></div>
+
+  <footer style="max-width:1280px;margin:40px auto 0;padding:20px 40px;text-align:center;font-size:12px;color:var(--muted);">
+    &copy; 2026 PlayGonu &middot; <a href="../privacy.html" style="color:var(--muted);text-decoration:underline;">隐私政策</a>
+  </footer>
+
+</div>
+<script type="module">
+  import { mountGomokuRecords } from '../src/ui/gomokuRecords.js';
+  import { mountLanguageSwitcher } from '../src/ui/languageSwitcher.js';
+  import { mountVariantMenu } from '../src/ui/variantMenu.js';
+  mountGomokuRecords(document.querySelector('[data-root]'), { lang: 'zh' });
+  mountLanguageSwitcher(document.querySelector('[data-lang-switcher]'), { currentLang: 'zh', currentPage: 'gomoku-records.html' });
+  mountVariantMenu(document.querySelector('[data-variant-menu]'), { lang: 'zh', currentPage: 'gomoku-records.html' });
+</script>
+</body>
+</html>

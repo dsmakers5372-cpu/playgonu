@@ -1,5 +1,6 @@
 import { move, allLegalMoves, analyzeMove, opponent, toIndex, toCoords, BOARD_SIZE, PLAYERS } from './gomoku.js';
 import { createMinimaxAI } from './minimaxAI.js';
+import { chooseProMove } from './gomokuPro.js';
 
 // hard used to be depth 2, same as normal — identical search depth meant
 // they played at basically the same strength, with any win/loss split just
@@ -228,6 +229,9 @@ const tacticalChooseAIMove = createMinimaxAI({
 // where a multi-second depth-5 search would freeze the page.
 export function chooseAIMove(state, options) {
   const difficulty = options?.difficulty;
+  if (difficulty === 'pro') {
+    return chooseProMove(state, { nodeBudget: options.nodeBudget ?? 200000, timeMs: options.timeMs ?? 6000, random: options.random ?? Math.random });
+  }
   if (difficulty === 'master') {
     const stoneCount = state.cells.filter(Boolean).length;
     DIFFICULTY_DEPTH.master = options.deepMidgame && stoneCount >= MASTER_DEEP_STONE_THRESHOLD ? 5 : 4;
